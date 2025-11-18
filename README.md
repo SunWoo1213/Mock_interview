@@ -102,10 +102,10 @@ AI_Service2_3/
 DATABASE_URL=postgresql://username:password@localhost:5432/ai_interview_db
 
 # AWS S3
-AWS_REGION=eu-west-2
+AWS_REGION=ap-southeast-2  # Sydney (버킷 실제 위치)
 AWS_ACCESS_KEY_ID=your_access_key
 AWS_SECRET_ACCESS_KEY=your_secret_key
-S3_BUCKET_NAME=ai-interview-bucket
+S3_BUCKET_NAME=ai-interview-bucket  # ⚠️ BUCKET (철자 확인!)
 
 # OpenAI
 OPENAI_API_KEY=sk-your-openai-api-key
@@ -116,6 +116,8 @@ JWT_SECRET=your-super-secret-jwt-key
 # Next.js
 NEXT_PUBLIC_API_URL=http://localhost:3000
 ```
+
+> 📚 **환경 변수 가이드**: 자세한 설명은 [환경 변수 문서](./docs/ENVIRONMENT_VARIABLES.md) 참고
 
 ### 2. 의존성 설치
 
@@ -165,12 +167,14 @@ vercel
 Vercel 대시보드 > 프로젝트 > Settings > Environment Variables에서 다음 환경 변수를 추가하세요:
 
 - `DATABASE_URL`
-- `AWS_REGION`
+- `AWS_REGION` (예: `ap-southeast-2` - Sydney)
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`
-- `S3_BUCKET_NAME`
+- `S3_BUCKET_NAME` ⚠️ **BUCKET** (철자 확인!)
 - `OPENAI_API_KEY`
 - `JWT_SECRET`
+
+> 🔧 **환경 변수 정리**: 중복 변수 제거는 [fix-env-variables.ps1](./fix-env-variables.ps1) 스크립트 사용
 
 ### 4. 프로덕션 배포
 
