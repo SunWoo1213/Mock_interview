@@ -212,6 +212,19 @@ export class ApiClient {
       total: number;
     }>('/api/history/interviews');
   }
+
+  // Interview Early Finish
+  async finishInterview(sessionId: number) {
+    return this.request<{
+      message: string;
+      isCompleted: boolean;
+      isEarlyFinish: boolean;
+      sessionId: number;
+      totalQuestionsAnswered: number;
+    }>(`/api/interview/${sessionId}/finish`, {
+      method: 'POST',
+    });
+  }
 }
 
 export const apiClient = new ApiClient();

@@ -265,12 +265,34 @@ export default function InterviewPage({
   };
 
   /**
-   * 면접 종료 (중간에 나가기)
+   * 면접 조기 종료 (부분 피드백 받기)
    */
-  const handleEndInterview = () => {
-    if (confirm('면접을 중단하고 나가시겠습니까? (진행 상황은 저장되지 않습니다)')) {
+  const handleEarlyFinish = async () => {
+    const confirmed = confirm(
+      `면접을 조기 종료하시겠습니까?\n\n` +
+      `현재까지 ${turnNumber - 1}개의 질문에 답변하셨습니다.\n` +
+      `조기 종료하시면 답변하신 내용에 대한 피드백을 받을 수 있습니다.\n\n` +
+      `(5개 질문을 모두 완료하지 않아도 피드백을 받을 수 있습니다)`
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setInterviewState('processing');
+      console.log('🔚 면접 조기 종료 요청...');
+
+      const response = await apiClient.finishInterview(sessionId);
+
+      console.log('✅ 조기 종료 완료:', response);
+      alert(`면접이 조기 종료되었습니다.\n${response.totalQuestionsAnswered}개 질문에 대한 피드백이 생성되었습니다.`);
+
+      // 정리 및 결과 페이지로 이동
       cleanupMediaStream();
-      window.location.href = '/';
+      onInterviewComplete(sessionId);
+    } catch (error) {
+      console.error('❌ 조기 종료 실패:', error);
+      alert('조기 종료 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
+      setInterviewState('waiting_next');
     }
   };
 
@@ -303,12 +325,21 @@ export default function InterviewPage({
       <header className="border-b border-gray-800 p-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <h1 className="text-xl font-bold">AI 모의 면접</h1>
-          <button
-            onClick={handleEndInterview}
-            className="px-4 py-2 bg-red-600/20 hover:bg-red-600/30 border border-red-600 rounded-lg transition-colors text-sm"
-          >
-            면접 중단
-          </button>
+          <div className="flex items-center gap-3">
+            {/* 조기 종료 버튼 (답변이 1개 이상 있을 때만 활성화) */}
+            <button
+              onClick={handleEarlyFinish}
+              disabled={turnNumber < 2 || interviewState === 'processing'}
+              className={`px-4 py-2 rounded-lg transition-colors text-sm font-semibold ${
+                turnNumber < 2 || interviewState === 'processing'
+                  ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                  : 'bg-orange-600/20 hover:bg-orange-600/30 border border-orange-600 text-orange-400'
+              }`}
+              title={turnNumber < 2 ? '최소 1개 이상의 질문에 답변해야 조기 종료할 수 있습니다' : '현재까지 답변에 대한 피드백을 받고 종료합니다'}
+            >
+              ⚡ 조기 종료
+            </button>
+          </div>
         </div>
       </header>
 

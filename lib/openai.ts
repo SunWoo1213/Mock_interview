@@ -315,20 +315,36 @@ export interface FinalInterviewFeedback {
     answer: string;
     feedback: string;
   }>;
+  is_early_finish?: boolean;
+  total_questions_answered?: number;
 }
 
 /**
  * 최종 면접 피드백 생성
+ * @param context - 면접 컨텍스트 (사용자 프로필, 채용공고, 자기소개서)
+ * @param turns - 질문/답변 턴 배열
+ * @param isEarlyFinish - 조기 종료 여부 (기본값: false)
  */
 export async function generateFinalInterviewFeedback(
   context: InterviewContext,
-  turns: Array<{ question_text: string; user_answer_text: string }>
+  turns: Array<{ question_text: string; user_answer_text: string }>,
+  isEarlyFinish: boolean = false
 ): Promise<FinalInterviewFeedback> {
+  const totalQuestionsAnswered = turns.filter(t => t.user_answer_text).length;
+  
+  const earlyFinishNote = isEarlyFinish 
+    ? `\n\n⚠️ **중요**: 사용자가 면접을 조기 종료했습니다 (총 ${totalQuestionsAnswered}개 질문에 답변).
+- 질문 수가 적다고 절대로 점수를 깎지 마세요.
+- 제공된 질문/답변만 분석하고, "더 많은 질문이 있었다면..."과 같은 가정은 하지 마세요.
+- 종합 피드백에서 면접이 조기 종료되었음을 자연스럽게 언급해주세요. (예: "면접을 조기 종료하셨지만, ${totalQuestionsAnswered}개의 질문에 대한 답변을 바탕으로...")
+- 답변의 질과 깊이에 집중하여 피드백을 제공하세요.`
+    : '';
+  
   const prompt = `너는 ${context.jobPosting.title} 분야의 최고 전문가 면접관이자 피드백 전문가야.
 
 ### 면접 대화 기록:
 ${turns.map((turn, idx) => 
-  `[질문 ${idx + 1}] ${turn.question_text}\n[답변 ${idx + 1}] ${turn.user_answer_text}`
+  `[질문 ${idx + 1}] ${turn.question_text}\n[답변 ${idx + 1}] ${turn.user_answer_text || '(답변 없음)'}`
 ).join('\n\n')}
 
 ### 사용자 스펙:
@@ -336,10 +352,11 @@ ${JSON.stringify(context.userProfile, null, 2)}
 
 ### 채용 공고:
 ${JSON.stringify(context.jobPosting.analysis_json, null, 2)}
+${earlyFinishNote}
 
 위 면접 내용을 바탕으로 다음 형식의 JSON 피드백을 제공해줘:
 {
-  "overall_feedback": "종합 피드백 (5-7문장). 면접 태도, 답변 내용, 일관성, 직무 적합성에 대한 상세한 설명을 포함해줘.",
+  "overall_feedback": "종합 피드백 (5-7문장). 면접 태도, 답변 내용, 일관성, 직무 적합성에 대한 상세한 설명을 포함해줘.${isEarlyFinish ? ' 면접이 조기 종료되었음을 자연스럽게 언급해줘.' : ''}",
   "per_turn_feedback": [
     {
       "turn_number": 1,
@@ -354,7 +371,7 @@ ${JSON.stringify(context.jobPosting.analysis_json, null, 2)}
     const response = await openai.chat.completions.create({
       model: 'gpt-4o',
       messages: [
-        { role: 'system', content: '당신은 전문 면접관이자 피드백 전문가입니다.' },
+        { role: 'system', content: '당신은 전문 면접관이자 피드백 전문가입니다. 제공된 답변의 질과 깊이에 집중하여 공정하고 건설적인 피드백을 제공합니다.' },
         { role: 'user', content: prompt },
       ],
       response_format: { type: 'json_object' },
@@ -362,7 +379,14 @@ ${JSON.stringify(context.jobPosting.analysis_json, null, 2)}
     });
 
     const content = response.choices[0].message.content;
-    return JSON.parse(content || '{}');
+    const feedback = JSON.parse(content || '{}');
+    
+    // 메타데이터 추가
+    return {
+      ...feedback,
+      is_early_finish: isEarlyFinish,
+      total_questions_answered: totalQuestionsAnswered,
+    };
   } catch (error) {
     console.error('최종 피드백 에러:', error);
     throw new Error('면접 피드백 생성에 실패했습니다.');
