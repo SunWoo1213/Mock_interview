@@ -39,75 +39,92 @@ export default function InterviewPage({
   const audioChunksRef = useRef<Blob[]>([]);
   const recordedAudioRef = useRef<Blob | null>(null);
   
-  // 자동 재생 실패 상태
-  const [autoplayFailed, setAutoplayFailed] = useState(false);
+  // 폴백(Fallback) 상태: 자동 재생 실패 시 수동 버튼 표시
+  const [showPlayButton, setShowPlayButton] = useState(false);
 
   /**
-   * 질문 오디오 자동 재생 (강제)
+   * 견고한 오디오 재생 로직
+   * questionAudioUrl이 변경될 때만 실행
    */
-  const playQuestionAudio = useCallback(async () => {
+  useEffect(() => {
+    // 디버그 로깅 1: URL 확인
+    console.log('🎵 [TTS DEBUG] Current Audio URL:', questionAudioUrl);
+    console.log('🎵 [TTS DEBUG] URL Type:', typeof questionAudioUrl);
+    console.log('🎵 [TTS DEBUG] URL Length:', questionAudioUrl?.length);
+    console.log('📊 [TTS DEBUG] Interview State:', interviewState);
+
+    // URL이 없거나 빈 문자열이면 종료
+    if (!questionAudioUrl || questionAudioUrl.trim().length === 0) {
+      console.warn('⚠️ [TTS DEBUG] 유효하지 않은 오디오 URL');
+      return;
+    }
+
+    // 'listening' 상태가 아니면 재생하지 않음
+    if (interviewState !== 'listening') {
+      console.log('⏸️ [TTS DEBUG] Not in listening state, skipping playback');
+      return;
+    }
+
+    // audioRef가 없으면 종료
     if (!audioRef.current) {
-      console.error('❌ Audio ref가 없습니다!');
+      console.error('❌ [TTS DEBUG] Audio element ref is null');
+      return;
+    }
+
+    // 재생 시도 함수
+    const attemptPlay = async () => {
+      try {
+        console.log('🔄 [TTS DEBUG] Loading audio...');
+        audioRef.current!.load();
+
+        console.log('▶️ [TTS DEBUG] Attempting to play audio...');
+        await audioRef.current!.play();
+
+        console.log('✅ [TTS DEBUG] Audio playback successful!');
+        setShowPlayButton(false); // 성공 시 버튼 숨김
+      } catch (error: any) {
+        console.error('❌ [TTS DEBUG] Audio playback failed:', error);
+        console.error('Error name:', error.name);
+        console.error('Error message:', error.message);
+
+        // 브라우저 자동 재생 정책으로 차단된 경우
+        if (error.name === 'NotAllowedError' || error.name === 'NotSupportedError') {
+          console.warn('⚠️ [TTS DEBUG] Blocked by browser autoplay policy');
+          setShowPlayButton(true); // 수동 재생 버튼 표시
+        } else {
+          console.error('⚠️ [TTS DEBUG] Other audio error');
+          setShowPlayButton(true);
+        }
+      }
+    };
+
+    // 약간의 지연 후 재생 시도 (DOM 준비 대기)
+    const timer = setTimeout(attemptPlay, 100);
+
+    return () => clearTimeout(timer);
+  }, [questionAudioUrl, interviewState]);
+
+
+  /**
+   * 수동 재생 버튼 클릭 (폴백)
+   */
+  const handleManualPlay = async () => {
+    console.log('🖱️ [TTS DEBUG] User clicked manual play button');
+    
+    if (!audioRef.current) {
+      console.error('❌ [TTS DEBUG] Audio ref is null on manual play');
       return;
     }
 
     try {
-      console.log('🔄 오디오 로드 중...');
-      audioRef.current.load();
-      
-      console.log('▶️ 오디오 재생 시도 (play() 호출)...');
+      console.log('▶️ [TTS DEBUG] Manual play attempt...');
       await audioRef.current.play();
-      
-      console.log('✅ 오디오 재생 성공!');
-      setAutoplayFailed(false);
+      console.log('✅ [TTS DEBUG] Manual play successful!');
+      setShowPlayButton(false); // 재생 성공 시 버튼 숨김
     } catch (error: any) {
-      console.error('❌ 오디오 자동 재생 실패:', error);
-      console.error('에러 이름:', error.name);
-      console.error('에러 메시지:', error.message);
-      
-      // 자동 재생 정책으로 인한 실패
-      if (error.name === 'NotAllowedError' || error.name === 'NotSupportedError') {
-        console.warn('⚠️ 브라우저 자동 재생 정책으로 인해 차단됨');
-        setAutoplayFailed(true);
-      } else {
-        console.error('⚠️ 기타 오디오 재생 오류');
-        setAutoplayFailed(true);
-      }
+      console.error('❌ [TTS DEBUG] Manual play failed:', error);
+      alert('오디오 재생에 실패했습니다. 브라우저 설정을 확인해주세요.');
     }
-  }, []);
-
-  // 첫 질문 자동 재생
-  useEffect(() => {
-    console.log('🎵 초기 질문 오디오 URL:', questionAudioUrl);
-    if (questionAudioUrl) {
-      playQuestionAudio();
-    }
-  }, [questionAudioUrl, playQuestionAudio]);
-
-  // 질문 오디오 URL이 변경될 때 자동 재생
-  useEffect(() => {
-    console.log('🎵 질문 오디오 URL 변경됨:', questionAudioUrl);
-    console.log('📊 현재 상태:', interviewState);
-    
-    if (interviewState === 'listening' && questionAudioUrl) {
-      // URL이 유효한지 확인
-      if (questionAudioUrl.trim().length === 0) {
-        console.error('❌ 질문 오디오 URL이 비어있습니다!');
-        return;
-      }
-      
-      console.log('▶️ 질문 오디오 재생 시도...');
-      playQuestionAudio();
-    }
-  }, [questionAudioUrl, interviewState, playQuestionAudio]);
-
-
-  /**
-   * 수동 재생 버튼 클릭
-   */
-  const handleManualPlay = async () => {
-    console.log('🖱️ 사용자가 수동 재생 버튼 클릭');
-    await playQuestionAudio();
   };
 
   /**
@@ -372,20 +389,31 @@ export default function InterviewPage({
           <audio
             ref={audioRef}
             src={questionAudioUrl}
-            onEnded={handleQuestionAudioEnded}
+            playsInline // 모바일에서 전체화면 방지
+            muted={false} // 볼륨 체크: 음소거 안 됨
+            preload="auto" // 미리 로드
+            onEnded={() => {
+              console.log('🏁 [TTS DEBUG] Audio playback ended');
+              handleQuestionAudioEnded();
+            }}
             onPlay={() => {
-              console.log('✅ 질문 오디오 재생 시작됨');
-              setAutoplayFailed(false);
+              console.log('✅ [TTS DEBUG] Audio started playing');
+              setShowPlayButton(false);
             }}
-            onPause={() => console.log('⏸️ 질문 오디오 일시정지됨')}
+            onPause={() => console.log('⏸️ [TTS DEBUG] Audio paused')}
             onError={(e) => {
-              console.error('❌ 오디오 로드 에러:', e);
+              console.error('❌ [TTS DEBUG] Audio load error:', e);
               const audio = e.currentTarget;
-              console.error('오디오 에러 코드:', audio.error?.code);
-              console.error('오디오 에러 메시지:', audio.error?.message);
+              console.error('[TTS DEBUG] Error code:', audio.error?.code);
+              console.error('[TTS DEBUG] Error message:', audio.error?.message);
+              console.error('[TTS DEBUG] Audio src:', audio.src);
+              setShowPlayButton(true); // 에러 시 수동 버튼 표시
             }}
-            onLoadedData={() => console.log('📥 오디오 데이터 로드 완료')}
-            onCanPlay={() => console.log('✅ 오디오 재생 가능 상태')}
+            onLoadedData={() => console.log('📥 [TTS DEBUG] Audio data loaded')}
+            onCanPlay={() => console.log('✅ [TTS DEBUG] Audio can play now')}
+            onLoadStart={() => console.log('🔄 [TTS DEBUG] Audio load started')}
+            onSuspend={() => console.log('⏸️ [TTS DEBUG] Audio load suspended')}
+            onStalled={() => console.log('⚠️ [TTS DEBUG] Audio load stalled')}
             className="hidden"
           />
 
@@ -451,8 +479,8 @@ export default function InterviewPage({
           {/* 청취 중 표시 */}
           {interviewState === 'listening' && (
             <div className="text-center">
-              {autoplayFailed ? (
-                // 자동 재생 실패 시 수동 재생 버튼 표시
+              {showPlayButton ? (
+                // 자동 재생 실패 시 수동 재생 버튼 표시 (폴백)
                 <div>
                   <div className="mb-6">
                     <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-yellow-600/20 flex items-center justify-center">
@@ -460,10 +488,10 @@ export default function InterviewPage({
                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                       </svg>
                     </div>
-                    <p className="text-xl text-yellow-400 mb-2">자동 재생이 차단되었습니다</p>
+                    <p className="text-xl text-yellow-400 mb-2">🔊 질문 듣기</p>
                     <p className="text-sm text-gray-400 mb-6">
                       브라우저 설정으로 인해 자동 재생이 차단되었습니다.<br />
-                      버튼을 클릭하여 질문을 들어주세요.
+                      아래 버튼을 클릭하여 질문을 들어주세요.
                     </p>
                   </div>
                   <button
@@ -473,7 +501,7 @@ export default function InterviewPage({
                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
                     </svg>
-                    질문 재생하기
+                    🔊 질문 듣기
                   </button>
                 </div>
               ) : (
