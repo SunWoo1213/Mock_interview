@@ -3,9 +3,10 @@
  */
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import CountdownTimer from './CountdownTimer';
 import AudioVisualizer from './AudioVisualizer';
+import { apiClient } from '@/lib/api-client';
 
 interface InterviewPageProps {
   sessionId: number;
@@ -41,35 +42,10 @@ export default function InterviewPage({
   // 자동 재생 실패 상태
   const [autoplayFailed, setAutoplayFailed] = useState(false);
 
-  // 첫 질문 자동 재생
-  useEffect(() => {
-    console.log('🎵 초기 질문 오디오 URL:', questionAudioUrl);
-    if (questionAudioUrl) {
-      playQuestionAudio();
-    }
-  }, []);
-
-  // 질문 오디오 URL이 변경될 때 자동 재생
-  useEffect(() => {
-    console.log('🎵 질문 오디오 URL 변경됨:', questionAudioUrl);
-    console.log('📊 현재 상태:', interviewState);
-    
-    if (interviewState === 'listening' && questionAudioUrl) {
-      // URL이 유효한지 확인
-      if (questionAudioUrl.trim().length === 0) {
-        console.error('❌ 질문 오디오 URL이 비어있습니다!');
-        return;
-      }
-      
-      console.log('▶️ 질문 오디오 재생 시도...');
-      playQuestionAudio();
-    }
-  }, [questionAudioUrl, interviewState]);
-
   /**
    * 질문 오디오 자동 재생 (강제)
    */
-  const playQuestionAudio = async () => {
+  const playQuestionAudio = useCallback(async () => {
     if (!audioRef.current) {
       console.error('❌ Audio ref가 없습니다!');
       return;
@@ -98,7 +74,33 @@ export default function InterviewPage({
         setAutoplayFailed(true);
       }
     }
-  };
+  }, []);
+
+  // 첫 질문 자동 재생
+  useEffect(() => {
+    console.log('🎵 초기 질문 오디오 URL:', questionAudioUrl);
+    if (questionAudioUrl) {
+      playQuestionAudio();
+    }
+  }, [questionAudioUrl, playQuestionAudio]);
+
+  // 질문 오디오 URL이 변경될 때 자동 재생
+  useEffect(() => {
+    console.log('🎵 질문 오디오 URL 변경됨:', questionAudioUrl);
+    console.log('📊 현재 상태:', interviewState);
+    
+    if (interviewState === 'listening' && questionAudioUrl) {
+      // URL이 유효한지 확인
+      if (questionAudioUrl.trim().length === 0) {
+        console.error('❌ 질문 오디오 URL이 비어있습니다!');
+        return;
+      }
+      
+      console.log('▶️ 질문 오디오 재생 시도...');
+      playQuestionAudio();
+    }
+  }, [questionAudioUrl, interviewState, playQuestionAudio]);
+
 
   /**
    * 수동 재생 버튼 클릭
