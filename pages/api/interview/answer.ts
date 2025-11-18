@@ -87,9 +87,9 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
       [sessionId]
     );
 
-    // 관련 정보 조회
+    // 관련 정보 조회 (전체 컨텍스트)
     const coverLetterResult = await query(
-      `SELECT cl.content_text, jp.title, jp.company_name, jp.analysis_json
+      `SELECT cl.content_text, jp.title, jp.company_name, jp.extracted_text, jp.analysis_json
        FROM cover_letters cl
        LEFT JOIN job_postings jp ON cl.job_posting_id = jp.id
        WHERE cl.id = $1`,
@@ -97,7 +97,8 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
     );
 
     const profileResult = await query(
-      `SELECT age, gender, career_json, education_json, certificates_json, skills_json
+      `SELECT age, gender, current_job, career_summary, certifications,
+              career_json, education_json, certificates_json, skills_json
        FROM user_profiles WHERE user_id = $1`,
       [userId]
     );
@@ -110,6 +111,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
       jobPosting: {
         title: coverLetter.title,
         company_name: coverLetter.company_name,
+        extracted_text: coverLetter.extracted_text,
         analysis_json: coverLetter.analysis_json,
       },
       coverLetter: coverLetter.content_text,
@@ -151,7 +153,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
   }));
 
   const coverLetterResult = await query(
-    `SELECT cl.content_text, jp.title, jp.company_name, jp.analysis_json
+    `SELECT cl.content_text, jp.title, jp.company_name, jp.extracted_text, jp.analysis_json
      FROM cover_letters cl
      LEFT JOIN job_postings jp ON cl.job_posting_id = jp.id
      WHERE cl.id = $1`,
@@ -159,7 +161,8 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
   );
 
   const profileResult = await query(
-    `SELECT age, gender, career_json, education_json, certificates_json, skills_json
+    `SELECT age, gender, current_job, career_summary, certifications,
+            career_json, education_json, certificates_json, skills_json
      FROM user_profiles WHERE user_id = $1`,
     [userId]
   );
@@ -172,6 +175,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
     jobPosting: {
       title: coverLetter.title,
       company_name: coverLetter.company_name,
+      extracted_text: coverLetter.extracted_text,
       analysis_json: coverLetter.analysis_json,
     },
     coverLetter: coverLetter.content_text,

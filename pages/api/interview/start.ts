@@ -20,11 +20,11 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
     return res.status(400).json({ error: 'coverLetterId가 필요합니다.' });
   }
 
-  // 자소서 및 관련 정보 조회
+  // 자소서 및 관련 정보 조회 (채용공고 원문 포함)
   const coverLetterResult = await query(
     `SELECT 
       cl.id, cl.content_text, cl.job_posting_id,
-      jp.title, jp.company_name, jp.analysis_json
+      jp.title, jp.company_name, jp.extracted_text, jp.analysis_json
      FROM cover_letters cl
      LEFT JOIN job_postings jp ON cl.job_posting_id = jp.id
      WHERE cl.id = $1 AND cl.user_id = $2`,
@@ -37,9 +37,10 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
 
   const coverLetter = coverLetterResult.rows[0];
 
-  // 사용자 프로필 조회
+  // 사용자 프로필 조회 (모든 필드 포함)
   const profileResult = await query(
-    `SELECT age, gender, career_json, education_json, certificates_json, skills_json
+    `SELECT age, gender, current_job, career_summary, certifications,
+            career_json, education_json, certificates_json, skills_json
      FROM user_profiles WHERE user_id = $1`,
     [userId]
   );
@@ -57,12 +58,13 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
 
   const sessionId = sessionResult.rows[0].id;
 
-  // 첫 번째 질문 생성
+  // 첫 번째 질문 생성 (전체 컨텍스트 전달)
   const context = {
     userProfile,
     jobPosting: {
       title: coverLetter.title,
       company_name: coverLetter.company_name,
+      extracted_text: coverLetter.extracted_text,
       analysis_json: coverLetter.analysis_json,
     },
     coverLetter: coverLetter.content_text,
