@@ -1,5 +1,5 @@
 /**
- * My Activity History 페이지
+ * 나의 활동 기록 페이지
  */
 'use client';
 
@@ -7,7 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/api-client';
 
-type TabType = 'cover-letters' | 'interviews';
+type TabType = 'interviews' | 'cover-letters';
 
 interface CoverLetter {
   id: number;
@@ -43,7 +43,7 @@ interface Interview {
 
 export default function HistoryPage() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<TabType>('cover-letters');
+  const [activeTab, setActiveTab] = useState<TabType>('interviews');
   const [coverLetters, setCoverLetters] = useState<CoverLetter[]>([]);
   const [interviews, setInterviews] = useState<Interview[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -58,13 +58,20 @@ export default function HistoryPage() {
     setError('');
 
     try {
-      const [coverLetterData, interviewData] = await Promise.all([
-        apiClient.getCoverLetterHistory(),
-        apiClient.getInterviewHistory(),
-      ]);
+      // 통합 API 호출
+      const response = await fetch('/api/history', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
 
-      setCoverLetters(coverLetterData.coverLetters);
-      setInterviews(interviewData.interviews);
+      if (!response.ok) {
+        throw new Error('데이터를 불러오는데 실패했습니다.');
+      }
+
+      const data = await response.json();
+      setCoverLetters(data.coverLetters || []);
+      setInterviews(data.interviews || []);
     } catch (err: any) {
       console.error('히스토리 로드 에러:', err);
       setError(err.message || '데이터를 불러오는데 실패했습니다.');
@@ -103,7 +110,7 @@ export default function HistoryPage() {
           >
             ← 홈으로 돌아가기
           </button>
-          <h1 className="text-4xl font-bold mb-2">📊 My Activity History</h1>
+          <h1 className="text-4xl font-bold mb-2">📊 나의 활동 기록</h1>
           <p className="text-gray-400">
             내 자기소개서 피드백과 모의 면접 기록을 확인하세요
           </p>
@@ -112,16 +119,6 @@ export default function HistoryPage() {
         {/* Tabs */}
         <div className="flex gap-4 mb-8 border-b border-gray-800">
           <button
-            onClick={() => setActiveTab('cover-letters')}
-            className={`px-6 py-3 font-semibold transition-all ${
-              activeTab === 'cover-letters'
-                ? 'text-primary-500 border-b-2 border-primary-500'
-                : 'text-gray-400 hover:text-gray-300'
-            }`}
-          >
-            📝 Cover Letter Feedbacks ({coverLetters.length})
-          </button>
-          <button
             onClick={() => setActiveTab('interviews')}
             className={`px-6 py-3 font-semibold transition-all ${
               activeTab === 'interviews'
@@ -129,7 +126,17 @@ export default function HistoryPage() {
                 : 'text-gray-400 hover:text-gray-300'
             }`}
           >
-            🎤 Mock Interview Sessions ({interviews.length})
+            🎤 모의면접 기록 ({interviews.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('cover-letters')}
+            className={`px-6 py-3 font-semibold transition-all ${
+              activeTab === 'cover-letters'
+                ? 'text-primary-500 border-b-2 border-primary-500'
+                : 'text-gray-400 hover:text-gray-300'
+            }`}
+          >
+            📝 자기소개서 피드백 ({coverLetters.length})
           </button>
         </div>
 
@@ -148,74 +155,6 @@ export default function HistoryPage() {
           </div>
         ) : (
           <>
-            {/* Cover Letters Tab */}
-            {activeTab === 'cover-letters' && (
-              <div className="space-y-4">
-                {coverLetters.length === 0 ? (
-                  <div className="text-center py-20">
-                    <div className="text-6xl mb-4">📝</div>
-                    <p className="text-xl text-gray-400 mb-4">
-                      아직 작성한 자기소개서가 없습니다.
-                    </p>
-                    <button
-                      onClick={() => router.push('/cover-letters')}
-                      className="px-6 py-3 bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors"
-                    >
-                      자기소개서 작성하기
-                    </button>
-                  </div>
-                ) : (
-                  coverLetters.map((letter) => (
-                    <div
-                      key={letter.id}
-                      onClick={() => handleCoverLetterClick(letter.id)}
-                      className="p-6 bg-gray-900 rounded-lg border border-gray-800 hover:border-primary-500 transition-all cursor-pointer group"
-                    >
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex-1">
-                          {letter.jobPosting ? (
-                            <div className="mb-2">
-                              <h3 className="text-xl font-bold text-white group-hover:text-primary-400 transition-colors">
-                                {letter.jobPosting.companyName} - {letter.jobPosting.title}
-                              </h3>
-                            </div>
-                          ) : (
-                            <h3 className="text-xl font-bold text-white group-hover:text-primary-400 transition-colors mb-2">
-                              자기소개서 #{letter.id}
-                            </h3>
-                          )}
-                          <p className="text-gray-400 text-sm line-clamp-2">
-                            {letter.contentPreview}
-                          </p>
-                        </div>
-                        <div className="ml-4">
-                          <span
-                            className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                              letter.status === 'Feedback Complete'
-                                ? 'bg-green-900/30 text-green-400 border border-green-600'
-                                : 'bg-gray-800 text-gray-400 border border-gray-700'
-                            }`}
-                          >
-                            {letter.status}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-6 text-sm text-gray-500">
-                        <span>📅 작성일: {formatDate(letter.createdAt)}</span>
-                        {letter.feedbackCount > 0 && (
-                          <span>💬 피드백: {letter.feedbackCount}개</span>
-                        )}
-                        {letter.lastFeedbackDate && (
-                          <span>🕒 최근 피드백: {formatDate(letter.lastFeedbackDate)}</span>
-                        )}
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            )}
-
             {/* Interviews Tab */}
             {activeTab === 'interviews' && (
               <div className="space-y-4">
@@ -282,6 +221,74 @@ export default function HistoryPage() {
                         )}
                         {!interview.completedAt && interview.createdAt && (
                           <span>📅 생성: {formatDate(interview.createdAt)}</span>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+
+            {/* Cover Letters Tab */}
+            {activeTab === 'cover-letters' && (
+              <div className="space-y-4">
+                {coverLetters.length === 0 ? (
+                  <div className="text-center py-20">
+                    <div className="text-6xl mb-4">📝</div>
+                    <p className="text-xl text-gray-400 mb-4">
+                      아직 작성한 자기소개서가 없습니다.
+                    </p>
+                    <button
+                      onClick={() => router.push('/cover-letters')}
+                      className="px-6 py-3 bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors"
+                    >
+                      자기소개서 작성하기
+                    </button>
+                  </div>
+                ) : (
+                  coverLetters.map((letter) => (
+                    <div
+                      key={letter.id}
+                      onClick={() => handleCoverLetterClick(letter.id)}
+                      className="p-6 bg-gray-900 rounded-lg border border-gray-800 hover:border-primary-500 transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          {letter.jobPosting ? (
+                            <div className="mb-2">
+                              <h3 className="text-xl font-bold text-white group-hover:text-primary-400 transition-colors">
+                                {letter.jobPosting.companyName} - {letter.jobPosting.title}
+                              </h3>
+                            </div>
+                          ) : (
+                            <h3 className="text-xl font-bold text-white group-hover:text-primary-400 transition-colors mb-2">
+                              자기소개서 #{letter.id}
+                            </h3>
+                          )}
+                          <p className="text-gray-400 text-sm line-clamp-2">
+                            {letter.contentPreview}
+                          </p>
+                        </div>
+                        <div className="ml-4">
+                          <span
+                            className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                              letter.status === 'Feedback Complete'
+                                ? 'bg-green-900/30 text-green-400 border border-green-600'
+                                : 'bg-gray-800 text-gray-400 border border-gray-700'
+                            }`}
+                          >
+                            {letter.status}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-6 text-sm text-gray-500">
+                        <span>📅 작성일: {formatDate(letter.createdAt)}</span>
+                        {letter.feedbackCount > 0 && (
+                          <span>💬 피드백: {letter.feedbackCount}개</span>
+                        )}
+                        {letter.lastFeedbackDate && (
+                          <span>🕒 최근 피드백: {formatDate(letter.lastFeedbackDate)}</span>
                         )}
                       </div>
                     </div>

@@ -1,5 +1,7 @@
 // AI Interview Service - Prisma Schema
 // PostgreSQL 데이터베이스 스키마 정의
+// 최종 업데이트: 2025-11-18
+// 면접 조기 종료 기능 포함
 
 generator client {
   provider = "prisma-client-js"
@@ -9,6 +11,18 @@ datasource db {
   provider = "postgresql"
   url      = env("POSTGRES_URL")
 }
+
+// ==================== Enums ====================
+
+// 면접 세션 상태
+enum InterviewSessionStatus {
+  PENDING      @map("pending")      // 대기 중
+  IN_PROGRESS  @map("in_progress")  // 진행 중
+  COMPLETED    @map("completed")    // 완료 (정상 완료 또는 조기 종료)
+  CANCELLED    @map("cancelled")    // 취소됨
+}
+
+// ==================== Models ====================
 
 // Users 테이블
 model User {
@@ -28,19 +42,26 @@ model User {
   @@map("users")
 }
 
-// User Profiles 테이블
+// User Profiles 테이블 (사용자 스펙 정보)
+// 면접 질문 생성 시 컨텍스트로 사용됨
 model UserProfile {
   id               Int      @id @default(autoincrement())
   userId           Int      @unique @map("user_id")
-  age              Int?
-  gender           String?  @db.VarChar(20)
-  currentJob       String?  @map("current_job") @db.VarChar(200)
-  careerSummary    String?  @map("career_summary") @db.Text
-  certifications   String?  @db.Text
-  careerJson       Json     @default("[]") @map("career_json") @db.JsonB
-  educationJson    Json     @default("[]") @map("education_json") @db.JsonB
-  certificatesJson Json     @default("[]") @map("certificates_json") @db.JsonB
-  skillsJson       Json     @default("[]") @map("skills_json") @db.JsonB
+  
+  // 기본 정보
+  age              Int?                                    // 나이
+  gender           String?  @db.VarChar(20)                // 성별
+  currentJob       String?  @map("current_job") @db.VarChar(200)      // 현재 직업 (예: "소프트웨어 엔지니어")
+  careerSummary    String?  @map("career_summary") @db.Text           // 경력 요약 (간단한 텍스트)
+  certifications   String?  @db.Text                       // 자격증 (간단한 텍스트)
+  
+  // 상세 정보 (JSON 형태)
+  careerJson       Json     @default("[]") @map("career_json") @db.JsonB        // 상세 경력 [{"company": "...", "position": "...", "period": "..."}]
+  educationJson    Json     @default("[]") @map("education_json") @db.JsonB     // 학력 [{"school": "...", "major": "...", "degree": "...", "graduation_year": ...}]
+  certificatesJson Json     @default("[]") @map("certificates_json") @db.JsonB  // 자격증 상세 [{"name": "...", "issued_date": "..."}]
+  skillsJson       Json     @default("[]") @map("skills_json") @db.JsonB        // 보유 기술 ["Python", "React", "AWS"]
+  
+  // 타임스탬프
   createdAt        DateTime @default(now()) @map("created_at")
   updatedAt        DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -48,6 +69,8 @@ model UserProfile {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_profiles")
+  @@index([userId])
+  @@index([currentJob])
 }
 
 // Job Postings 테이블
@@ -104,17 +127,24 @@ model CoverLetterFeedback {
   @@map("cover_letter_feedbacks")
 }
 
-// Interview Sessions 테이블
+// Interview Sessions 테이블 (모의 면접 세션)
+// 조기 종료 기능 지원: 5개 질문 전이라도 'COMPLETED' 상태로 변경 가능
 model InterviewSession {
   id                Int       @id @default(autoincrement())
   userId            Int       @map("user_id")
-  coverLetterId     Int?      @map("cover_letter_id")
-  jobPostingId      Int?      @map("job_posting_id")
-  status            String    @default("pending") @db.VarChar(50)
-  totalQuestions    Int       @default(5) @map("total_questions")
-  finalFeedbackJson Json?     @map("final_feedback_json") @db.JsonB
-  startedAt         DateTime? @map("started_at")
-  completedAt       DateTime? @map("completed_at")
+  coverLetterId     Int?      @map("cover_letter_id")              // 참조 자기소개서
+  jobPostingId      Int?      @map("job_posting_id")               // 참조 채용공고
+  
+  // 상태 관리
+  status            InterviewSessionStatus @default(PENDING)       // 'pending' | 'in_progress' | 'completed' | 'cancelled'
+  totalQuestions    Int       @default(5) @map("total_questions")  // 총 질문 수 (기본값: 5)
+  
+  // 피드백 (면접 완료 시 생성)
+  finalFeedbackJson Json?     @map("final_feedback_json") @db.JsonB  // {"overall_feedback": "...", "per_turn_feedback": [...], "is_early_finish": true, "total_questions_answered": 2}
+  
+  // 타임스탬프
+  startedAt         DateTime? @map("started_at")                   // 면접 시작 시간
+  completedAt       DateTime? @map("completed_at")                 // 면접 완료 시간 (정상 완료 또는 조기 종료)
   createdAt         DateTime  @default(now()) @map("created_at")
   updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at")
 
@@ -125,21 +155,38 @@ model InterviewSession {
   turns        InterviewTurn[]
 
   @@map("interview_sessions")
+  @@index([userId])
+  @@index([status])
+  @@index([coverLetterId])
+  @@index([jobPostingId])
 }
 
-// Interview Turns 테이블
+// Interview Turns 테이블 (면접 질문-답변 턴)
+// 하나의 턴은 1개의 질문 + 1개의 답변으로 구성됨
 model InterviewTurn {
   id                     Int      @id @default(autoincrement())
   sessionId              Int      @map("session_id")
-  turnNumber             Int      @map("turn_number")
-  questionText           String   @map("question_text") @db.Text
-  questionAudioS3Url     String?  @map("question_audio_s3_url") @db.Text
-  userAnswerText         String?  @map("user_answer_text") @db.Text
-  userAnswerAudioS3Url   String?  @map("user_answer_audio_s3_url") @db.Text
+  turnNumber             Int      @map("turn_number")                     // 질문 순서 (1~5)
+  
+  // 질문 (AI 생성)
+  questionText           String   @map("question_text") @db.Text          // GPT-4o가 생성한 질문 텍스트
+  questionAudioS3Url     String?  @map("question_audio_s3_url") @db.Text  // TTS로 생성된 질문 오디오 S3 URL
+  
+  // 답변 (사용자)
+  userAnswerText         String?  @map("user_answer_text") @db.Text           // STT로 변환된 사용자 답변 텍스트
+  userAnswerAudioS3Url   String?  @map("user_answer_audio_s3_url") @db.Text   // 사용자가 녹음한 답변 오디오 S3 URL
+  
+  // 개별 피드백 (면접 완료 시 생성, 현재는 finalFeedbackJson의 per_turn_feedback에 통합 저장)
+  feedbackText           String?  @map("feedback_text") @db.Text          // 이 턴에 대한 AI 피드백 (선택적)
+  
+  // 타임스탬프
   createdAt              DateTime @default(now()) @map("created_at")
 
   // Relations
   session InterviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
+  @@unique([sessionId, turnNumber])  // 같은 세션 내에서 턴 번호는 중복 불가
   @@map("interview_turns")
+  @@index([sessionId])
+  @@index([turnNumber])
 }
