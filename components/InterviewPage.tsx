@@ -265,33 +265,36 @@ export default function InterviewPage({
   };
 
   /**
-   * 면접 조기 종료 (부분 피드백 받기)
+   * 면접 종료 및 결과 보기 (언제든 가능)
    */
-  const handleEarlyFinish = async () => {
+  const handleFinishAndViewResults = async () => {
+    // 답변이 하나도 없으면 종료 불가
+    if (turnNumber < 2) {
+      alert('최소 1개 이상의 질문에 답변해야 결과를 볼 수 있습니다.');
+      return;
+    }
+
     const confirmed = confirm(
-      `면접을 조기 종료하시겠습니까?\n\n` +
-      `현재까지 ${turnNumber - 1}개의 질문에 답변하셨습니다.\n` +
-      `조기 종료하시면 답변하신 내용에 대한 피드백을 받을 수 있습니다.\n\n` +
-      `(5개 질문을 모두 완료하지 않아도 피드백을 받을 수 있습니다)`
+      `현재까지의 답변으로 평가를 진행하시겠습니까?\n\n` +
+      `답변하신 ${turnNumber - 1}개의 질문에 대한 AI 피드백을 받으실 수 있습니다.`
     );
 
     if (!confirmed) return;
 
     try {
       setInterviewState('processing');
-      console.log('🔚 면접 조기 종료 요청...');
+      console.log('🔚 면접 종료 및 평가 시작...');
 
       const response = await apiClient.finishInterview(sessionId);
 
-      console.log('✅ 조기 종료 완료:', response);
-      alert(`면접이 조기 종료되었습니다.\n${response.totalQuestionsAnswered}개 질문에 대한 피드백이 생성되었습니다.`);
+      console.log('✅ 평가 완료:', response);
 
       // 정리 및 결과 페이지로 이동
       cleanupMediaStream();
       onInterviewComplete(sessionId);
     } catch (error) {
-      console.error('❌ 조기 종료 실패:', error);
-      alert('조기 종료 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
+      console.error('❌ 평가 처리 실패:', error);
+      alert('평가 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
       setInterviewState('waiting_next');
     }
   };
@@ -322,24 +325,30 @@ export default function InterviewPage({
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
       {/* Header */}
-      <header className="border-b border-gray-800 p-4">
+      <header className="border-b border-gray-800 p-4 bg-gray-900/50">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <h1 className="text-xl font-bold">AI 모의 면접</h1>
-          <div className="flex items-center gap-3">
-            {/* 조기 종료 버튼 (답변이 1개 이상 있을 때만 활성화) */}
-            <button
-              onClick={handleEarlyFinish}
-              disabled={turnNumber < 2 || interviewState === 'processing'}
-              className={`px-4 py-2 rounded-lg transition-colors text-sm font-semibold ${
-                turnNumber < 2 || interviewState === 'processing'
-                  ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                  : 'bg-orange-600/20 hover:bg-orange-600/30 border border-orange-600 text-orange-400'
-              }`}
-              title={turnNumber < 2 ? '최소 1개 이상의 질문에 답변해야 조기 종료할 수 있습니다' : '현재까지 답변에 대한 피드백을 받고 종료합니다'}
-            >
-              ⚡ 조기 종료
-            </button>
-          </div>
+          
+          {/* 면접 종료 및 결과 보기 버튼 */}
+          <button
+            onClick={handleFinishAndViewResults}
+            disabled={turnNumber < 2 || interviewState === 'processing'}
+            className={`px-6 py-2.5 rounded-lg transition-all duration-200 text-sm font-bold flex items-center gap-2 shadow-lg ${
+              turnNumber < 2 || interviewState === 'processing'
+                ? 'bg-gray-700 text-gray-500 cursor-not-allowed opacity-50'
+                : 'bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 text-white transform hover:scale-105'
+            }`}
+            title={
+              turnNumber < 2 
+                ? '최소 1개 이상의 질문에 답변해야 결과를 볼 수 있습니다' 
+                : '현재까지의 답변으로 AI 평가를 받고 결과를 확인합니다'
+            }
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+            면접 종료 및 결과 보기
+          </button>
         </div>
       </header>
 
@@ -430,9 +439,10 @@ export default function InterviewPage({
           {/* 처리 중 표시 */}
           {interviewState === 'processing' && (
             <div className="text-center">
-              <div className="inline-block animate-spin rounded-full h-16 w-16 border-4 border-primary-500 border-t-transparent" />
-              <p className="mt-6 text-xl text-gray-300">AI가 답변을 분석하고 있습니다...</p>
-              <p className="mt-2 text-sm text-gray-500">잠시만 기다려주세요</p>
+              <div className="inline-block animate-spin rounded-full h-16 w-16 border-4 border-primary-500 border-t-transparent mb-6" />
+              <p className="text-2xl font-bold text-primary-400 mb-3">결과 분석 중...</p>
+              <p className="text-lg text-gray-300 mb-2">AI가 답변을 분석하고 있습니다</p>
+              <p className="text-sm text-gray-500">잠시만 기다려주세요. 곧 상세한 피드백을 확인하실 수 있습니다.</p>
             </div>
           )}
 
