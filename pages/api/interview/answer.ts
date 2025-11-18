@@ -76,7 +76,12 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
   const totalQuestions = 5;
   const isLastQuestion = turnNumber >= totalQuestions;
 
+  console.log(`📊 현재 턴: ${turnNumber} / ${totalQuestions}`);
+  console.log(`📊 마지막 질문 여부: ${isLastQuestion}`);
+
   if (isLastQuestion) {
+    console.log(`🏁 [면접 완료] 5번째 질문 답변 완료, 피드백 생성 시작...`);
+    
     // 최종 피드백 생성
     // 모든 턴 조회
     const turnsResult = await query(
@@ -86,6 +91,8 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
        ORDER BY turn_number`,
       [sessionId]
     );
+
+    console.log(`📊 총 턴 수: ${turnsResult.rows.length}`);
 
     // 관련 정보 조회 (전체 컨텍스트)
     const coverLetterResult = await query(
@@ -121,21 +128,29 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
       })),
     };
 
-    const finalFeedback = await generateFinalInterviewFeedback(context, turnsResult.rows);
+    console.log(`🤖 AI 피드백 생성 시작 (정상 완료 모드)...`);
+    const finalFeedback = await generateFinalInterviewFeedback(context, turnsResult.rows, false);
+    console.log(`✅ AI 피드백 생성 완료`);
 
     // 세션 완료 처리
-    await query(
+    console.log(`💾 세션 상태를 'completed'로 업데이트 중...`);
+    const updateResult = await query(
       `UPDATE interview_sessions 
        SET status = 'completed', final_feedback_json = $1, completed_at = NOW() 
-       WHERE id = $2`,
+       WHERE id = $2
+       RETURNING id, status`,
       [JSON.stringify(finalFeedback), sessionId]
     );
 
-    return res.status(200).json({
+    console.log(`✅ 세션 업데이트 완료:`, updateResult.rows[0]);
+    console.log(`🎉 면접 완료 처리 성공! Session ${sessionId}`);
+
+    res.status(200).json({
       message: '면접이 완료되었습니다.',
       isCompleted: true,
       sessionId,
     });
+    return;
   }
 
   // 다음 질문 생성
