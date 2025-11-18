@@ -169,6 +169,49 @@ export class ApiClient {
       `/api/interview/result/${sessionId}`
     );
   }
+
+  // History
+  async getCoverLetterHistory() {
+    return this.request<{
+      coverLetters: Array<{
+        id: number;
+        contentPreview: string;
+        createdAt: string;
+        updatedAt: string;
+        jobPosting: {
+          id: number;
+          title: string;
+          companyName: string;
+        } | null;
+        feedbackCount: number;
+        lastFeedbackDate: string | null;
+        status: string;
+      }>;
+      total: number;
+    }>('/api/history/cover-letters');
+  }
+
+  async getInterviewHistory() {
+    return this.request<{
+      interviews: Array<{
+        id: number;
+        status: string;
+        totalQuestions: number;
+        answeredQuestions: number;
+        startedAt: string;
+        completedAt: string | null;
+        createdAt: string;
+        jobPosting: {
+          id: number;
+          title: string;
+          companyName: string;
+        } | null;
+        coverLetterId: number | null;
+        statusLabel: string;
+      }>;
+      total: number;
+    }>('/api/history/interviews');
+  }
 }
 
 export const apiClient = new ApiClient();
