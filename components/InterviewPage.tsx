@@ -37,31 +37,75 @@ export default function InterviewPage({
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const recordedAudioRef = useRef<Blob | null>(null);
+  
+  // 자동 재생 실패 상태
+  const [autoplayFailed, setAutoplayFailed] = useState(false);
 
   // 첫 질문 자동 재생
   useEffect(() => {
-    playQuestionAudio();
+    console.log('🎵 초기 질문 오디오 URL:', questionAudioUrl);
+    if (questionAudioUrl) {
+      playQuestionAudio();
+    }
   }, []);
 
   // 질문 오디오 URL이 변경될 때 자동 재생
   useEffect(() => {
+    console.log('🎵 질문 오디오 URL 변경됨:', questionAudioUrl);
+    console.log('📊 현재 상태:', interviewState);
+    
     if (interviewState === 'listening' && questionAudioUrl) {
+      // URL이 유효한지 확인
+      if (questionAudioUrl.trim().length === 0) {
+        console.error('❌ 질문 오디오 URL이 비어있습니다!');
+        return;
+      }
+      
+      console.log('▶️ 질문 오디오 재생 시도...');
       playQuestionAudio();
     }
-  }, [questionAudioUrl]);
+  }, [questionAudioUrl, interviewState]);
 
   /**
-   * 질문 오디오 자동 재생
+   * 질문 오디오 자동 재생 (강제)
    */
-  const playQuestionAudio = () => {
-    if (audioRef.current) {
-      audioRef.current.load();
-      audioRef.current.play().catch((error) => {
-        console.error('오디오 재생 실패:', error);
-        // 자동 재생 실패 시 수동 재생 안내
-        alert('질문 음성을 재생하려면 화면을 클릭해주세요.');
-      });
+  const playQuestionAudio = async () => {
+    if (!audioRef.current) {
+      console.error('❌ Audio ref가 없습니다!');
+      return;
     }
+
+    try {
+      console.log('🔄 오디오 로드 중...');
+      audioRef.current.load();
+      
+      console.log('▶️ 오디오 재생 시도 (play() 호출)...');
+      await audioRef.current.play();
+      
+      console.log('✅ 오디오 재생 성공!');
+      setAutoplayFailed(false);
+    } catch (error: any) {
+      console.error('❌ 오디오 자동 재생 실패:', error);
+      console.error('에러 이름:', error.name);
+      console.error('에러 메시지:', error.message);
+      
+      // 자동 재생 정책으로 인한 실패
+      if (error.name === 'NotAllowedError' || error.name === 'NotSupportedError') {
+        console.warn('⚠️ 브라우저 자동 재생 정책으로 인해 차단됨');
+        setAutoplayFailed(true);
+      } else {
+        console.error('⚠️ 기타 오디오 재생 오류');
+        setAutoplayFailed(true);
+      }
+    }
+  };
+
+  /**
+   * 수동 재생 버튼 클릭
+   */
+  const handleManualPlay = async () => {
+    console.log('🖱️ 사용자가 수동 재생 버튼 클릭');
+    await playQuestionAudio();
   };
 
   /**
@@ -287,9 +331,20 @@ export default function InterviewPage({
             ref={audioRef}
             src={questionAudioUrl}
             onEnded={handleQuestionAudioEnded}
-            onPlay={() => console.log('질문 오디오 재생 시작')}
-            onError={(e) => console.error('오디오 로드 에러:', e)}
-            style={{ display: 'none' }}
+            onPlay={() => {
+              console.log('✅ 질문 오디오 재생 시작됨');
+              setAutoplayFailed(false);
+            }}
+            onPause={() => console.log('⏸️ 질문 오디오 일시정지됨')}
+            onError={(e) => {
+              console.error('❌ 오디오 로드 에러:', e);
+              const audio = e.currentTarget;
+              console.error('오디오 에러 코드:', audio.error?.code);
+              console.error('오디오 에러 메시지:', audio.error?.message);
+            }}
+            onLoadedData={() => console.log('📥 오디오 데이터 로드 완료')}
+            onCanPlay={() => console.log('✅ 오디오 재생 가능 상태')}
+            className="hidden"
           />
 
           {/* 녹음 상태 표시 */}
@@ -353,14 +408,45 @@ export default function InterviewPage({
           {/* 청취 중 표시 */}
           {interviewState === 'listening' && (
             <div className="text-center">
-              <div className="inline-block">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-primary-500 rounded-full animate-pulse" style={{ animationDelay: '0ms' }} />
-                  <div className="w-3 h-3 bg-primary-500 rounded-full animate-pulse" style={{ animationDelay: '150ms' }} />
-                  <div className="w-3 h-3 bg-primary-500 rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
+              {autoplayFailed ? (
+                // 자동 재생 실패 시 수동 재생 버튼 표시
+                <div>
+                  <div className="mb-6">
+                    <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-yellow-600/20 flex items-center justify-center">
+                      <svg className="w-10 h-10 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <p className="text-xl text-yellow-400 mb-2">자동 재생이 차단되었습니다</p>
+                    <p className="text-sm text-gray-400 mb-6">
+                      브라우저 설정으로 인해 자동 재생이 차단되었습니다.<br />
+                      버튼을 클릭하여 질문을 들어주세요.
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleManualPlay}
+                    className="px-12 py-4 bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors font-bold text-lg shadow-xl flex items-center gap-3 mx-auto"
+                  >
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                    </svg>
+                    질문 재생하기
+                  </button>
                 </div>
-              </div>
-              <p className="mt-4 text-gray-400">질문을 재생 중입니다...</p>
+              ) : (
+                // 정상 재생 중
+                <div>
+                  <div className="inline-block mb-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-primary-500 rounded-full animate-pulse" style={{ animationDelay: '0ms' }} />
+                      <div className="w-3 h-3 bg-primary-500 rounded-full animate-pulse" style={{ animationDelay: '150ms' }} />
+                      <div className="w-3 h-3 bg-primary-500 rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
+                    </div>
+                  </div>
+                  <p className="text-gray-400">질문을 재생 중입니다...</p>
+                  <p className="text-xs text-gray-500 mt-2">재생이 완료되면 자동으로 녹음이 시작됩니다</p>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -368,4 +454,5 @@ export default function InterviewPage({
     </div>
   );
 }
+
 
