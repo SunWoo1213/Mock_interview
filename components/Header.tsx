@@ -39,6 +39,12 @@ export default function Header() {
                 >
                   프로필
                 </Link>
+                <Link
+                  href="/history"
+                  className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
+                >
+                  📊 활동 기록
+                </Link>
                 <button
                   onClick={logout}
                   className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors text-white"
