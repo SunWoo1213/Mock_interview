@@ -7,7 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/api-client';
 
-type TabType = 'interviews' | 'cover-letters';
+type TabType = 'interviews' | 'cover-letters' | 'job-postings';
 
 interface CoverLetter {
   id: number;
@@ -41,15 +41,29 @@ interface Interview {
   statusLabel: string;
 }
 
+interface JobPosting {
+  id: number;
+  title: string | null;
+  companyName: string | null;
+  extractedText: string;
+  analysisJson: any;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export default function HistoryPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabType>('interviews');
   const [coverLetters, setCoverLetters] = useState<CoverLetter[]>([]);
   const [interviews, setInterviews] = useState<Interview[]>([]);
+  const [jobPostings, setJobPostings] = useState<JobPosting[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [selectedPosting, setSelectedPosting] = useState<JobPosting | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -74,6 +88,10 @@ export default function HistoryPage() {
       const data = await response.json();
       setCoverLetters(data.coverLetters || []);
       setInterviews(data.interviews || []);
+
+      // 채용공고 히스토리 로드
+      const jobPostingsResult = await apiClient.getJobPostingHistory();
+      setJobPostings(jobPostingsResult.jobPostings || []);
     } catch (err: any) {
       console.error('히스토리 로드 에러:', err);
       setError(err.message || '데이터를 불러오는데 실패했습니다.');
@@ -101,14 +119,14 @@ export default function HistoryPage() {
     router.push(`/interview/result/${id}`);
   };
 
-  const handleDelete = async (id: number, type: 'interview' | 'cover_letter', e: React.MouseEvent) => {
+  const handleDelete = async (id: number, type: 'interview' | 'cover_letter' | 'job_posting', e: React.MouseEvent) => {
     // 이벤트 전파 방지 (카드 클릭 이벤트와 충돌 방지)
     e.stopPropagation();
 
     // 확인 대화상자
-    const itemName = type === 'interview' ? '면접' : '자기소개서';
+    const itemName = type === 'interview' ? '면접' : type === 'cover_letter' ? '자기소개서' : '채용공고';
     const confirmed = window.confirm(
-      `정말 이 ${itemName}을(를) 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`
+      `정말 이 ${itemName}을(를) 삭제하시겠습니까?\n${type === 'job_posting' ? '연결된 자기소개서도 함께 삭제됩니다.\n' : ''}이 작업은 되돌릴 수 없습니다.`
     );
 
     if (!confirmed) {
@@ -120,27 +138,34 @@ export default function HistoryPage() {
     setSuccessMessage('');
 
     try {
-      const response = await fetch('/api/history/delete', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify({ id, type }),
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || '삭제에 실패했습니다.');
-      }
-
-      // UI에서 항목 제거
-      if (type === 'interview') {
-        setInterviews((prev) => prev.filter((item) => item.id !== id));
-        setSuccessMessage('면접이 삭제되었습니다.');
+      if (type === 'job_posting') {
+        await apiClient.deleteJobPosting(id);
+        setJobPostings((prev) => prev.filter((item) => item.id !== id));
+        setSuccessMessage('채용공고가 삭제되었습니다.');
+        setShowModal(false);
       } else {
-        setCoverLetters((prev) => prev.filter((item) => item.id !== id));
-        setSuccessMessage('자기소개서가 삭제되었습니다.');
+        const response = await fetch('/api/history/delete', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+          body: JSON.stringify({ id, type }),
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.error || '삭제에 실패했습니다.');
+        }
+
+        // UI에서 항목 제거
+        if (type === 'interview') {
+          setInterviews((prev) => prev.filter((item) => item.id !== id));
+          setSuccessMessage('면접이 삭제되었습니다.');
+        } else {
+          setCoverLetters((prev) => prev.filter((item) => item.id !== id));
+          setSuccessMessage('자기소개서가 삭제되었습니다.');
+        }
       }
 
       // 3초 후 성공 메시지 자동 제거
@@ -156,6 +181,16 @@ export default function HistoryPage() {
     }
   };
 
+  const handleJobPostingClick = (posting: JobPosting) => {
+    setSelectedPosting(posting);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedPosting(null);
+  };
+
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="max-w-6xl mx-auto px-8 py-16">
@@ -169,7 +204,7 @@ export default function HistoryPage() {
           </button>
           <h1 className="text-4xl font-bold mb-2">📊 나의 활동 기록</h1>
           <p className="text-gray-400">
-            내 자기소개서 피드백과 모의 면접 기록을 확인하세요
+            자기소개서, 모의 면접, 채용공고 분석 기록을 확인하세요
           </p>
         </div>
 
@@ -183,7 +218,7 @@ export default function HistoryPage() {
                 : 'text-gray-400 hover:text-gray-300'
             }`}
           >
-            🎤 모의면접 기록 ({interviews.length})
+            🎤 모의면접 ({interviews.length})
           </button>
           <button
             onClick={() => setActiveTab('cover-letters')}
@@ -193,7 +228,17 @@ export default function HistoryPage() {
                 : 'text-gray-400 hover:text-gray-300'
             }`}
           >
-            📝 자기소개서 피드백 ({coverLetters.length})
+            📝 자기소개서 ({coverLetters.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('job-postings')}
+            className={`px-6 py-3 font-semibold transition-all ${
+              activeTab === 'job-postings'
+                ? 'text-primary-500 border-b-2 border-primary-500'
+                : 'text-gray-400 hover:text-gray-300'
+            }`}
+          >
+            📋 채용공고 분석 ({jobPostings.length})
           </button>
         </div>
 
@@ -384,9 +429,226 @@ export default function HistoryPage() {
                 )}
               </div>
             )}
+
+            {/* Job Postings Tab */}
+            {activeTab === 'job-postings' && (
+              <div className="space-y-4">
+                {jobPostings.length === 0 ? (
+                  <div className="text-center py-20">
+                    <div className="text-6xl mb-4">📋</div>
+                    <p className="text-xl text-gray-400 mb-4">
+                      아직 분석한 채용공고가 없습니다.
+                    </p>
+                    <button
+                      onClick={() => router.push('/job-postings/upload')}
+                      className="px-6 py-3 bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors"
+                    >
+                      채용공고 분석하기
+                    </button>
+                  </div>
+                ) : (
+                  jobPostings.map((posting) => (
+                    <div
+                      key={posting.id}
+                      onClick={() => handleJobPostingClick(posting)}
+                      className="p-6 bg-gray-900 rounded-lg border border-gray-800 hover:border-primary-500 transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold text-white group-hover:text-primary-400 transition-colors mb-2">
+                            {posting.title || posting.companyName || '제목 없음'}
+                          </h3>
+                          {posting.companyName && posting.title && (
+                            <p className="text-gray-400 text-sm mb-3">{posting.companyName}</p>
+                          )}
+                          
+                          {/* 키워드 미리보기 */}
+                          {posting.analysisJson?.keywords && (
+                            <div className="flex flex-wrap gap-2 mt-3">
+                              {posting.analysisJson.keywords.slice(0, 5).map((keyword: string, idx: number) => (
+                                <span
+                                  key={idx}
+                                  className="px-2 py-1 bg-primary-900/30 text-primary-400 text-xs rounded border border-primary-700"
+                                >
+                                  {keyword}
+                                </span>
+                              ))}
+                              {posting.analysisJson.keywords.length > 5 && (
+                                <span className="px-2 py-1 text-gray-500 text-xs">
+                                  +{posting.analysisJson.keywords.length - 5}
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                        
+                        <div className="ml-4 flex items-center gap-3">
+                          <span
+                            className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                              posting.status === 'analyzed'
+                                ? 'bg-green-900/30 text-green-400 border border-green-600'
+                                : posting.status === 'pending'
+                                ? 'bg-yellow-900/30 text-yellow-400 border border-yellow-600'
+                                : 'bg-red-900/30 text-red-400 border border-red-600'
+                            }`}
+                          >
+                            {posting.status === 'analyzed' ? '✅ 분석 완료' : 
+                             posting.status === 'pending' ? '⏳ 분석 대기' : '❌ 실패'}
+                          </span>
+                          <button
+                            onClick={(e) => handleDelete(posting.id, 'job_posting', e)}
+                            disabled={deletingId === posting.id}
+                            className="p-2 text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            title="삭제"
+                          >
+                            {deletingId === posting.id ? (
+                              <span className="inline-block animate-spin">⏳</span>
+                            ) : (
+                              <span className="text-xl">🗑️</span>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-6 text-sm text-gray-500">
+                        <span>📅 분석일: {formatDate(posting.createdAt)}</span>
+                        <span className="text-primary-400 group-hover:text-primary-300">
+                          👁️ 상세보기 →
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
           </>
         )}
       </div>
+
+      {/* 채용공고 상세보기 모달 */}
+      {showModal && selectedPosting && (
+        <div 
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
+          onClick={closeModal}
+        >
+          <div 
+            className="bg-gray-900 rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border-2 border-primary-500/50"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* 모달 헤더 */}
+            <div className="sticky top-0 bg-gray-900 border-b border-gray-800 p-6 flex items-start justify-between">
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold text-white mb-2">
+                  {selectedPosting.title || selectedPosting.companyName || '채용공고'}
+                </h2>
+                {selectedPosting.companyName && selectedPosting.title && (
+                  <p className="text-gray-400">{selectedPosting.companyName}</p>
+                )}
+              </div>
+              <button
+                onClick={closeModal}
+                className="ml-4 p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all"
+              >
+                <span className="text-2xl">✕</span>
+              </button>
+            </div>
+
+            {/* 모달 내용 */}
+            <div className="p-6 space-y-6">
+              {selectedPosting.analysisJson ? (
+                <>
+                  {/* 요약 */}
+                  {selectedPosting.analysisJson.summary && (
+                    <div>
+                      <h3 className="text-lg font-bold text-primary-400 mb-3">📝 요약</h3>
+                      <p className="text-gray-300 leading-relaxed bg-gray-800 p-4 rounded-lg">
+                        {selectedPosting.analysisJson.summary}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* 핵심 키워드 */}
+                  {selectedPosting.analysisJson.keywords && (
+                    <div>
+                      <h3 className="text-lg font-bold text-primary-400 mb-3">🏷️ 핵심 키워드</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedPosting.analysisJson.keywords.map((keyword: string, idx: number) => (
+                          <span
+                            key={idx}
+                            className="px-3 py-2 bg-primary-900/30 text-primary-300 text-sm rounded-lg border border-primary-700"
+                          >
+                            {keyword}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 필수 요건 */}
+                  {selectedPosting.analysisJson.must_have && (
+                    <div>
+                      <h3 className="text-lg font-bold text-red-400 mb-3">⭐ 필수 요건</h3>
+                      <ul className="space-y-2 bg-gray-800 p-4 rounded-lg">
+                        {selectedPosting.analysisJson.must_have.map((item: string, idx: number) => (
+                          <li key={idx} className="flex items-start gap-2">
+                            <span className="text-red-400 mt-1">•</span>
+                            <span className="text-gray-300">{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* 우대 사항 */}
+                  {selectedPosting.analysisJson.nice_to_have && (
+                    <div>
+                      <h3 className="text-lg font-bold text-blue-400 mb-3">✨ 우대 사항</h3>
+                      <ul className="space-y-2 bg-gray-800 p-4 rounded-lg">
+                        {selectedPosting.analysisJson.nice_to_have.map((item: string, idx: number) => (
+                          <li key={idx} className="flex items-start gap-2">
+                            <span className="text-blue-400 mt-1">•</span>
+                            <span className="text-gray-300">{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* 원본 텍스트 */}
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-400 mb-3">📄 원본 공고 내용</h3>
+                    <div className="bg-gray-800 p-4 rounded-lg max-h-96 overflow-y-auto">
+                      <pre className="whitespace-pre-wrap text-gray-300 text-sm leading-relaxed font-sans">
+                        {selectedPosting.extractedText}
+                      </pre>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-12 text-gray-500">
+                  <p>분석 결과가 없습니다.</p>
+                </div>
+              )}
+            </div>
+
+            {/* 모달 푸터 */}
+            <div className="sticky bottom-0 bg-gray-900 border-t border-gray-800 p-6 flex gap-4">
+              <button
+                onClick={() => router.push(`/cover-letters/create?jobPostingId=${selectedPosting.id}`)}
+                className="flex-1 px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-lg transition-colors"
+              >
+                📝 이 공고로 자소서 작성하기
+              </button>
+              <button
+                onClick={closeModal}
+                className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors"
+              >
+                닫기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
