@@ -189,3 +189,4 @@ curl -O "S3_URL"
 - [AWS S3 CORS 설정 가이드](https://docs.aws.amazon.com/AmazonS3/latest/userguide/cors.html)
 - [HTML5 Audio crossOrigin 속성](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio#attr-crossorigin)
 
+

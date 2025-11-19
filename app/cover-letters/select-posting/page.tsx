@@ -74,10 +74,10 @@ export default function SelectPostingPage() {
         {/* 헤더 */}
         <div className="mb-8">
           <button
-            onClick={() => router.push('/dashboard')}
+            onClick={() => router.push('/')}
             className="mb-4 text-gray-400 hover:text-white transition-colors"
           >
-            ← 대시보드로
+            ← 홈으로
           </button>
           <h1 className="text-4xl font-black mb-2">
             📋 공고 선택

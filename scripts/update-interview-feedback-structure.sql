@@ -60,3 +60,4 @@ WHERE table_name IN ('interview_turns', 'interview_sessions')
   AND column_name IN ('feedback_text', 'final_feedback_json')
 ORDER BY table_name, ordinal_position;
 
+
