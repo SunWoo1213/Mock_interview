@@ -15,13 +15,25 @@ interface CoverLetterDetail {
   title?: string;
   company_name?: string;
   feedback_json?: {
-    overall_feedback: string;
+    overallScore?: number;
+    summary?: string;
+    overall_feedback?: string; // 하위 호환성
     strengths?: string[];
+    weaknesses?: string[];
     improvements?: Array<{
       issue: string;
       suggestion: string;
       example: string;
     }> | string[];
+    detailedAnalysis?: Array<{
+      section: string;
+      feedback: string;
+    }>;
+    actionableFixes?: Array<{
+      original: string;
+      improved: string;
+      reason: string;
+    }>;
     suggestions?: string[];
     interview_questions?: string[];
   };
@@ -164,89 +176,138 @@ export default function CoverLetterDetailPage() {
 
         {/* AI 피드백 */}
         {coverLetter.feedback_json ? (
-          <div className="p-8 bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg border border-primary-600">
-            <h2 className="text-2xl font-bold mb-6">🤖 AI 피드백</h2>
-
-            {/* 종합 피드백 */}
-            <div className="mb-8">
-              <h3 className="text-xl font-bold mb-3 text-primary-400">종합 피드백</h3>
+          <div className="space-y-6">
+            {/* 점수 및 종합 평가 */}
+            <div className="p-8 bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg border-2 border-primary-600">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-3xl font-bold">🤖 AI 분석 결과</h2>
+                {coverLetter.feedback_json.overallScore !== undefined && (
+                  <div className="text-right">
+                    <div className="text-5xl font-bold text-primary-400">
+                      {coverLetter.feedback_json.overallScore}
+                    </div>
+                    <div className="text-sm text-gray-400">/ 100점</div>
+                  </div>
+                )}
+              </div>
+              
+              {/* 종합 평가 */}
               <div className="p-4 bg-black/30 rounded-lg">
-                <p className="text-gray-300 whitespace-pre-wrap leading-relaxed">
-                  {coverLetter.feedback_json.overall_feedback}
+                <h3 className="text-lg font-semibold mb-3 text-primary-300">종합 평가</h3>
+                <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">
+                  {coverLetter.feedback_json.summary || coverLetter.feedback_json.overall_feedback}
                 </p>
               </div>
             </div>
 
-            {/* 강점 */}
-            {coverLetter.feedback_json.strengths && coverLetter.feedback_json.strengths.length > 0 && (
-              <div className="mb-8">
-                <h3 className="text-xl font-bold mb-3 text-green-400">✅ 잘 쓴 부분</h3>
-                <div className="space-y-3">
-                  {coverLetter.feedback_json.strengths.map((strength, idx) => {
-                    const strengthText = typeof strength === 'string' ? strength : JSON.stringify(strength);
-                    return (
-                      <div key={idx} className="flex items-start gap-3 p-3 bg-green-900/20 rounded-lg border border-green-700">
-                        <span className="text-green-400 text-xl flex-shrink-0">●</span>
-                        <span className="text-gray-300">{strengthText}</span>
-                      </div>
-                    );
-                  })}
+            {/* 강점 & 약점 */}
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* 강점 */}
+              {coverLetter.feedback_json.strengths && coverLetter.feedback_json.strengths.length > 0 && (
+                <div className="p-6 bg-green-900/20 rounded-lg border border-green-700">
+                  <h3 className="text-xl font-bold mb-4 text-green-400 flex items-center gap-2">
+                    <span>✅</span> 잘 쓴 부분
+                  </h3>
+                  <ul className="space-y-3">
+                    {coverLetter.feedback_json.strengths.map((strength, idx) => {
+                      const strengthText = typeof strength === 'string' ? strength : JSON.stringify(strength);
+                      return (
+                        <li key={idx} className="flex items-start gap-3">
+                          <span className="text-green-400 mt-1 font-bold">{idx + 1}.</span>
+                          <span className="text-gray-300 leading-relaxed">{strengthText}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              )}
+
+              {/* 약점/개선점 */}
+              {coverLetter.feedback_json.weaknesses && coverLetter.feedback_json.weaknesses.length > 0 && (
+                <div className="p-6 bg-yellow-900/20 rounded-lg border border-yellow-700">
+                  <h3 className="text-xl font-bold mb-4 text-yellow-400 flex items-center gap-2">
+                    <span>⚠️</span> 보완이 필요한 부분
+                  </h3>
+                  <ul className="space-y-3">
+                    {coverLetter.feedback_json.weaknesses.map((weakness, idx) => {
+                      const weaknessText = typeof weakness === 'string' ? weakness : JSON.stringify(weakness);
+                      return (
+                        <li key={idx} className="flex items-start gap-3">
+                          <span className="text-yellow-400 mt-1 font-bold">{idx + 1}.</span>
+                          <span className="text-gray-300 leading-relaxed">{weaknessText}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            {/* 섹션별 상세 분석 */}
+            {coverLetter.feedback_json.detailedAnalysis && coverLetter.feedback_json.detailedAnalysis.length > 0 && (
+              <div className="p-6 bg-gray-900 rounded-lg border border-gray-700">
+                <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                  <span>🔍</span> 섹션별 상세 분석
+                </h3>
+                <div className="space-y-4">
+                  {coverLetter.feedback_json.detailedAnalysis.map((analysis, idx) => (
+                    <div key={idx} className="p-4 bg-gray-800 rounded-lg border-l-4 border-primary-500">
+                      <h4 className="font-bold text-primary-400 mb-2">{analysis.section}</h4>
+                      <p className="text-gray-300 leading-relaxed">{analysis.feedback}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
 
-            {/* 개선점 */}
-            {coverLetter.feedback_json.improvements && coverLetter.feedback_json.improvements.length > 0 && (
-              <div className="mb-8">
-                <h3 className="text-xl font-bold mb-3 text-yellow-400">⚠️ 개선이 필요한 부분</h3>
-                <div className="space-y-3">
-                  {coverLetter.feedback_json.improvements.map((improvement, idx) => {
-                    // 안전하게 문자열로 변환
-                    if (typeof improvement === 'string') {
-                      return (
-                        <div key={idx} className="flex items-start gap-3 p-3 bg-yellow-900/20 rounded-lg border border-yellow-700">
-                          <span className="text-yellow-400 text-xl flex-shrink-0">●</span>
-                          <span className="text-gray-300">{improvement}</span>
+            {/* 실질적인 수정 예시 */}
+            {coverLetter.feedback_json.actionableFixes && coverLetter.feedback_json.actionableFixes.length > 0 && (
+              <div className="p-6 bg-blue-900/20 rounded-lg border border-blue-700">
+                <h3 className="text-2xl font-bold mb-4 flex items-center gap-2 text-blue-400">
+                  <span>✏️</span> 즉시 적용 가능한 수정 예시
+                </h3>
+                <div className="space-y-6">
+                  {coverLetter.feedback_json.actionableFixes.map((fix, idx) => (
+                    <div key={idx} className="p-5 bg-gray-800 rounded-lg">
+                      <div className="mb-4">
+                        <div className="text-sm text-gray-400 mb-1">❌ 수정 전</div>
+                        <div className="p-3 bg-red-900/20 border-l-4 border-red-500 rounded">
+                          <p className="text-gray-300 italic">"{fix.original}"</p>
                         </div>
-                      );
-                    } else {
-                      // 객체 형식인 경우
-                      const issue = typeof improvement.issue === 'string' ? improvement.issue : JSON.stringify(improvement.issue || improvement);
-                      const suggestion = typeof improvement.suggestion === 'string' ? improvement.suggestion : JSON.stringify(improvement.suggestion || '');
-                      const example = typeof improvement.example === 'string' ? improvement.example : (improvement.example ? JSON.stringify(improvement.example) : '');
-                      
-                      return (
-                        <div key={idx} className="p-3 bg-yellow-900/20 rounded-lg border border-yellow-700">
-                          <p className="font-semibold text-yellow-400 mb-2">문제: {issue}</p>
-                          {suggestion && (
-                            <p className="text-gray-300 mb-2">제안: {suggestion}</p>
-                          )}
-                          {example && (
-                            <p className="text-sm text-gray-400 italic">예시: {example}</p>
-                          )}
+                      </div>
+                      <div className="mb-4">
+                        <div className="text-sm text-gray-400 mb-1">✅ 수정 후</div>
+                        <div className="p-3 bg-green-900/20 border-l-4 border-green-500 rounded">
+                          <p className="text-gray-300 font-medium">"{fix.improved}"</p>
                         </div>
-                      );
-                    }
-                  })}
+                      </div>
+                      <div className="p-3 bg-blue-900/20 rounded">
+                        <div className="text-sm text-blue-400 mb-1">💡 개선 이유</div>
+                        <p className="text-gray-300 text-sm">{fix.reason}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
 
-            {/* 추천 사항 */}
-            {coverLetter.feedback_json.suggestions && coverLetter.feedback_json.suggestions.length > 0 && (
-              <div>
-                <h3 className="text-xl font-bold mb-3 text-blue-400">💡 추천 사항</h3>
-                <div className="space-y-3">
-                  {coverLetter.feedback_json.suggestions.map((suggestion, idx) => {
-                    const suggestionText = typeof suggestion === 'string' ? suggestion : JSON.stringify(suggestion);
+            {/* 예상 면접 질문 */}
+            {coverLetter.feedback_json.interview_questions && coverLetter.feedback_json.interview_questions.length > 0 && (
+              <div className="p-6 bg-purple-900/20 rounded-lg border border-purple-700">
+                <h3 className="text-2xl font-bold mb-4 flex items-center gap-2 text-purple-400">
+                  <span>💬</span> 예상 면접 질문
+                </h3>
+                <ul className="space-y-3">
+                  {coverLetter.feedback_json.interview_questions.map((question, idx) => {
+                    const questionText = typeof question === 'string' ? question : JSON.stringify(question);
                     return (
-                      <div key={idx} className="flex items-start gap-3 p-3 bg-blue-900/20 rounded-lg border border-blue-700">
-                        <span className="text-blue-400 text-xl flex-shrink-0">●</span>
-                        <span className="text-gray-300">{suggestionText}</span>
-                      </div>
+                      <li key={idx} className="flex items-start gap-3 p-4 bg-gray-800 rounded-lg">
+                        <span className="text-purple-400 font-bold mt-1">Q{idx + 1}.</span>
+                        <span className="text-gray-300 leading-relaxed">{questionText}</span>
+                      </li>
                     );
                   })}
-                </div>
+                </ul>
               </div>
             )}
           </div>

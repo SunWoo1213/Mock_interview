@@ -63,87 +63,176 @@ ${extractedText}
 }
 
 export interface CoverLetterFeedback {
-  strengths: string[];
-  improvements: Array<{
-    issue: string;
-    suggestion: string;
-    example: string;
+  overallScore: number; // 0-100점 점수
+  summary: string; // 전문적인 총평
+  strengths: string[]; // 강점 목록
+  weaknesses: string[]; // 약점/보완점 목록
+  detailedAnalysis: Array<{
+    section: string; // 서론/본론/결론 등
+    feedback: string; // 섹션별 상세 피드백
   }>;
-  interview_questions: string[];
-  overall_feedback: string;
+  actionableFixes: Array<{
+    original: string; // 원본 약한 문장
+    improved: string; // 개선된 문장
+    reason: string; // 개선 이유
+  }>;
+  interview_questions: string[]; // 예상 면접 질문
 }
 
 /**
- * 자기소개서 피드백 생성
+ * 자기소개서 피드백 생성 (고급 분석)
  */
 export async function generateCoverLetterFeedback(
   userProfile: any,
   jobPosting: any,
   coverLetterText: string
 ): Promise<CoverLetterFeedback> {
-  const prompt = `너는 ${jobPosting.position || '해당'} 분야 최고의 커리어 코치이자 채용 전문가야.
+  const systemPrompt = `당신은 글로벌 기업의 수석 채용 담당자이자 기술 채용 전문가입니다.
 
-### 사용자 프로필:
+# 역할 및 전문성
+- 10년 이상의 채용 경험을 보유한 인사 전문가
+- ${jobPosting.title || '해당 직무'} 분야의 깊은 이해
+- STAR 기법, 임팩트 중심 작성법에 대한 전문 지식
+- 명확하고 실용적인 피드백 제공
+
+# 평가 기준
+1. **명확성 및 논리**: 구조가 논리적이고 읽기 쉬운가?
+2. **직무 적합성**: 공고의 요구사항을 명확히 언급하는가?
+3. **임팩트 (STAR 기법)**: 상황(Situation), 과제(Task), 행동(Action), 결과(Result)를 포함하는가?
+4. **구체성**: 추상적인 표현이 아닌 구체적인 사례와 수치를 제시하는가?
+5. **차별성**: 다른 지원자와 구별되는 독특한 경험이나 역량을 보여주는가?`;
+
+  const userPrompt = `다음 자기소개서를 채용 공고와 비교하여 전문적으로 분석해주세요.
+
+## 📋 채용 공고 정보
+**회사**: ${jobPosting.company_name || '미상'}
+**직무**: ${jobPosting.title || '미상'}
+**핵심 키워드**: ${JSON.stringify(jobPosting.analysis_json?.keywords || [])}
+
+**필수 요건**:
+${jobPosting.analysis_json?.must_have?.map((item: string, idx: number) => `${idx + 1}. ${item}`).join('\n') || '제공되지 않음'}
+
+**우대 사항**:
+${jobPosting.analysis_json?.nice_to_have?.map((item: string, idx: number) => `${idx + 1}. ${item}`).join('\n') || '제공되지 않음'}
+
+## 👤 지원자 프로필
 - 나이: ${userProfile.age || '미상'}
-- 성별: ${userProfile.gender || '미상'}
-- 경력: ${JSON.stringify(userProfile.career_json || [], null, 2)}
-- 학력: ${JSON.stringify(userProfile.education_json || [], null, 2)}
-- 자격증: ${JSON.stringify(userProfile.certificates_json || [], null, 2)}
+- 현재 직무: ${userProfile.current_job || '미상'}
+- 경력 요약: ${userProfile.career_summary || '제공되지 않음'}
+- 경력 상세: ${JSON.stringify(userProfile.career_json || [])}
+- 학력: ${JSON.stringify(userProfile.education_json || [])}
+- 자격증: ${userProfile.certifications || JSON.stringify(userProfile.certificates_json || [])}
 
-### 채용 공고 정보:
-- 회사: ${jobPosting.company_name || '미상'}
-- 직무: ${jobPosting.title || '미상'}
-- 필수 요건: ${JSON.stringify(jobPosting.analysis_json?.must_have || [], null, 2)}
-- 우대 사항: ${JSON.stringify(jobPosting.analysis_json?.nice_to_have || [], null, 2)}
-
-### 자기소개서:
+## 📝 자기소개서 전문
 ${coverLetterText}
 
-위 정보를 바탕으로 다음 형식의 JSON으로 피드백을 제공해줘:
+---
+
+위 정보를 바탕으로 다음 JSON 형식으로 깊이 있는 분석을 제공해주세요:
+
+\`\`\`json
 {
-  "overall_feedback": "종합 피드백 (3-5문장)",
-  "strengths": ["잘 쓴 부분 3-5개"],
-  "improvements": [
+  "overallScore": 85,
+  "summary": "전체적으로 직무 경험이 잘 드러나는 자기소개서입니다. 다만 구체적인 성과 수치와 STAR 기법을 보완하면 더욱 강력해질 것입니다.",
+  "strengths": [
+    "채용 공고의 필수 요건인 'React 개발 경험'을 명확히 언급하고 있습니다.",
+    "프로젝트 맥락과 본인의 역할이 명확하게 서술되어 있습니다.",
+    "기술 스택을 구체적으로 나열하여 역량을 잘 보여줍니다."
+  ],
+  "weaknesses": [
+    "정량적 성과(사용자 증가율, 성능 개선 수치 등)가 부족합니다.",
+    "STAR 기법의 'Result(결과)' 부분이 약합니다. 프로젝트의 비즈니스 임팩트를 추가하세요.",
+    "회사의 비전이나 직무에 대한 열정이 잘 드러나지 않습니다."
+  ],
+  "detailedAnalysis": [
     {
-      "issue": "개선이 필요한 부분",
-      "suggestion": "구체적인 개선 방안",
-      "example": "수정 예시"
+      "section": "서론",
+      "feedback": "자기소개는 간결하나, 지원 동기가 명확하지 않습니다. 회사의 특정 가치나 제품에 대한 관심을 추가하면 좋습니다."
+    },
+    {
+      "section": "본론 - 프로젝트 경험",
+      "feedback": "기술 스택과 역할은 잘 서술되었으나, '어떤 문제를 해결했는가'와 '그 결과 어떤 성과가 있었는가'가 부족합니다. STAR 기법을 활용하세요."
+    },
+    {
+      "section": "결론",
+      "feedback": "입사 후 포부가 추상적입니다. 구체적으로 '어떤 프로젝트에 기여하고 싶은지', '어떤 가치를 창출할 것인지' 명시하세요."
     }
   ],
-  "interview_questions": ["예상 면접 질문 3-5개"]
-}`;
+  "actionableFixes": [
+    {
+      "original": "React를 사용하여 웹 애플리케이션을 개발했습니다.",
+      "improved": "React와 TypeScript를 활용하여 월 10만 사용자가 이용하는 전자상거래 플랫폼의 프론트엔드를 개발했으며, 페이지 로딩 속도를 40% 개선했습니다.",
+      "reason": "구체적인 규모(10만 사용자)와 정량적 성과(40% 개선)를 추가하여 임팩트를 명확히 했습니다."
+    },
+    {
+      "original": "팀원들과 협업하여 프로젝트를 성공적으로 완료했습니다.",
+      "improved": "5명의 백엔드 개발자와 긴밀히 협업하여 RESTful API 설계 단계부터 참여했고, 주 2회 코드 리뷰를 통해 버그를 출시 전 90% 감소시켰습니다.",
+      "reason": "협업의 구체적인 방식과 정량적 결과를 추가하여 '어떻게' 협업했는지 보여줍니다."
+    },
+    {
+      "original": "귀사에 입사하여 성장하고 싶습니다.",
+      "improved": "귀사의 AI 기반 추천 시스템 개발팀에 합류하여, 제 React 및 머신러닝 인터페이스 구현 경험을 바탕으로 사용자 경험을 혁신하고, 나아가 팀의 기술 블로그 기고를 통해 개발 문화 확산에도 기여하고 싶습니다.",
+      "reason": "추상적인 '성장'이 아닌 구체적인 팀, 기여 방식, 그리고 부가 가치까지 명시했습니다."
+    }
+  ],
+  "interview_questions": [
+    "자기소개서에 언급한 '페이지 로딩 속도 40% 개선' 과정을 구체적으로 설명해주시겠습니까? 어떤 최적화 기법을 사용했나요?",
+    "React 프로젝트에서 가장 어려웠던 기술적 도전은 무엇이었고, 어떻게 해결하셨나요?",
+    "팀 협업 중 의견 충돌이 있었던 경험과 해결 방법을 말씀해주세요.",
+    "우리 회사의 제품/서비스에 대해 알고 계신 것과, 개선하고 싶은 점이 있다면 무엇인가요?",
+    "입사 후 3개월, 6개월, 1년 차에 각각 어떤 목표를 달성하고 싶으신가요?"
+  ]
+}
+\`\`\`
+
+**중요 지침**:
+- overallScore는 0-100점 사이의 정수로 제공
+- strengths, weaknesses는 각각 3-5개 항목
+- detailedAnalysis는 자기소개서의 주요 섹션별(서론, 본론, 결론 등) 분석
+- actionableFixes는 **반드시 3개**의 구체적인 수정 예시 제공
+- 모든 피드백은 실용적이고 즉시 적용 가능해야 함`;
 
   try {
     const response = await openai.chat.completions.create({
       model: 'gpt-4o',
       messages: [
-        { role: 'system', content: '당신은 전문 커리어 코치입니다.' },
-        { role: 'user', content: prompt },
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
       ],
       response_format: { type: 'json_object' },
-      temperature: 0.5,
+      temperature: 0.7, // 창의적이고 구체적인 피드백을 위해 약간 높임
     });
 
     const content = response.choices[0].message.content;
     const parsed = JSON.parse(content || '{}');
     
+    console.log('✅ [Cover Letter Feedback] AI 분석 완료');
+    console.log(`📊 [Cover Letter Feedback] Overall Score: ${parsed.overallScore || 0}`);
+    
     // 데이터 구조 검증 및 정규화
     const feedback: CoverLetterFeedback = {
-      overall_feedback: String(parsed.overall_feedback || ''),
+      overallScore: typeof parsed.overallScore === 'number' 
+        ? Math.max(0, Math.min(100, parsed.overallScore)) 
+        : 70, // 기본값
+      summary: String(parsed.summary || '종합 분석이 생성되지 않았습니다.'),
       strengths: Array.isArray(parsed.strengths) 
         ? parsed.strengths.map((s: any) => String(s)) 
         : [],
-      improvements: Array.isArray(parsed.improvements)
-        ? parsed.improvements.map((item: any) => {
-            if (typeof item === 'string') {
-              return { issue: item, suggestion: '', example: '' };
-            }
-            return {
-              issue: String(item.issue || ''),
-              suggestion: String(item.suggestion || ''),
-              example: String(item.example || ''),
-            };
-          })
+      weaknesses: Array.isArray(parsed.weaknesses)
+        ? parsed.weaknesses.map((w: any) => String(w))
+        : [],
+      detailedAnalysis: Array.isArray(parsed.detailedAnalysis)
+        ? parsed.detailedAnalysis.map((item: any) => ({
+            section: String(item.section || ''),
+            feedback: String(item.feedback || ''),
+          }))
+        : [],
+      actionableFixes: Array.isArray(parsed.actionableFixes)
+        ? parsed.actionableFixes.map((fix: any) => ({
+            original: String(fix.original || ''),
+            improved: String(fix.improved || ''),
+            reason: String(fix.reason || ''),
+          })).slice(0, 3) // 최대 3개만
         : [],
       interview_questions: Array.isArray(parsed.interview_questions)
         ? parsed.interview_questions.map((q: any) => String(q))
@@ -152,7 +241,7 @@ ${coverLetterText}
     
     return feedback;
   } catch (error) {
-    console.error('자소서 피드백 에러:', error);
+    console.error('❌ [Cover Letter Feedback] 피드백 생성 에러:', error);
     throw new Error('자기소개서 피드백 생성에 실패했습니다.');
   }
 }
