@@ -39,7 +39,7 @@ export default function JobPostingAnalysis({ analysisJson }: JobPostingAnalysisP
           {keywords.map((keyword, index) => (
             <span
               key={index}
-              className="px-3 py-1 text-sm bg-primary-50 text-primary-700 border border-primary-200 rounded-full"
+              className="px-3 py-1 text-sm bg-blue-50 text-blue-700 border border-blue-200 rounded-full"
             >
               {keyword}
             </span>

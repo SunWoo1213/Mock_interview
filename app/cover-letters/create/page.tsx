@@ -215,7 +215,7 @@ export default function CreateCoverLetterPage() {
                   {/* 요약 */}
                   {jobPosting.analysisJson.summary && (
                     <div className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm">
-                      <h3 className="text-sm font-bold text-primary-600 mb-2">📝 요약</h3>
+                      <h3 className="text-sm font-bold text-blue-600 mb-2">📝 요약</h3>
                       <p className="text-slate-700 text-sm leading-relaxed">
                         {jobPosting.analysisJson.summary}
                       </p>
@@ -225,12 +225,12 @@ export default function CreateCoverLetterPage() {
                   {/* 핵심 키워드 */}
                   {jobPosting.analysisJson.keywords && (
                     <div>
-                      <h3 className="text-sm font-bold text-primary-600 mb-3">🏷️ 핵심 키워드</h3>
+                      <h3 className="text-sm font-bold text-blue-600 mb-3">🏷️ 핵심 키워드</h3>
                       <div className="flex flex-wrap gap-2">
                         {jobPosting.analysisJson.keywords.map((keyword: string, idx: number) => (
                           <span
                             key={idx}
-                            className="px-3 py-1.5 bg-primary-50 text-primary-700 text-sm rounded-full border border-primary-200"
+                            className="px-3 py-1.5 bg-blue-50 text-blue-700 text-sm rounded-full border border-blue-200"
                           >
                             {keyword}
                           </span>
@@ -338,12 +338,12 @@ export default function CreateCoverLetterPage() {
       ) : (
         <div className="max-w-5xl mx-auto px-8 py-12 space-y-8">
             {/* 종합 평가 */}
-            <div className="p-8 bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg border-2 border-primary-600">
-              <h2 className="text-3xl font-bold mb-6">📊 AI 분석 결과</h2>
+            <div className="p-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border-2 border-blue-200">
+              <h2 className="text-3xl font-bold mb-6 text-slate-900">📊 AI 분석 결과</h2>
               
-              <div className="p-4 bg-black/30 rounded-lg">
-                <h3 className="text-lg font-semibold mb-3 text-primary-300">종합 평가</h3>
-                <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">
+              <div className="p-4 bg-white rounded-lg border border-gray-200">
+                <h3 className="text-lg font-semibold mb-3 text-blue-600">종합 평가</h3>
+                <p className="text-slate-700 leading-relaxed whitespace-pre-wrap">
                   {feedback.summary || feedback.overall_feedback}
                 </p>
               </div>
@@ -400,9 +400,9 @@ export default function CreateCoverLetterPage() {
                 </h3>
                 <div className="space-y-4">
                   {feedback.detailedAnalysis.map((analysis: any, idx: number) => (
-                    <div key={idx} className="p-4 bg-gray-800 rounded-lg border-l-4 border-blue-500">
-                      <h4 className="font-bold text-primary-400 mb-2">{analysis.section}</h4>
-                      <p className="text-gray-300 leading-relaxed">{analysis.feedback}</p>
+                    <div key={idx} className="p-4 bg-white rounded-lg border-l-4 border-blue-500">
+                      <h4 className="font-bold text-blue-600 mb-2">{analysis.section}</h4>
+                      <p className="text-slate-700 leading-relaxed">{analysis.feedback}</p>
                     </div>
                   ))}
                 </div>

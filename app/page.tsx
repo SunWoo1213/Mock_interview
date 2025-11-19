@@ -36,7 +36,7 @@ export default function HomePage() {
             자기소개서 피드백부터 실전 모의면접까지, AI가 함께합니다
           </p>
           {user && (
-            <p className="text-lg text-primary-600">
+            <p className="text-lg text-blue-600">
               환영합니다, <span className="font-semibold">{user.name || user.email}</span>님!
             </p>
           )}
@@ -85,7 +85,7 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="p-8 bg-gradient-to-br from-primary-50 to-purple-50 rounded-lg border-2 border-primary-200 hover:border-primary-400 hover:shadow-md transition-all">
+          <div className="p-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border-2 border-blue-200 hover:border-blue-400 hover:shadow-md transition-all">
             <div className="text-4xl mb-4">📊</div>
             <h3 className="text-2xl font-bold mb-2 text-gray-900">활동 히스토리</h3>
             <p className="text-gray-600 mb-4">

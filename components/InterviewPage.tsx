@@ -354,8 +354,8 @@ export default function InterviewPage({
             disabled={turnNumber < 2 || interviewState === 'processing'}
             className={`px-6 py-2.5 rounded-lg transition-all duration-200 text-sm font-bold flex items-center gap-2 shadow-lg ${
               turnNumber < 2 || interviewState === 'processing'
-                ? 'bg-gray-700 text-gray-500 cursor-not-allowed opacity-50'
-                : 'bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 text-white transform hover:scale-105'
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
+                : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white transform hover:scale-105'
             }`}
             title={
               turnNumber < 2 

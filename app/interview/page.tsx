@@ -119,7 +119,7 @@ export default function InterviewStartPage() {
 
             {isLoadingList ? (
               <div className="flex items-center justify-center py-8">
-                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500" />
+                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
                 <span className="ml-3 text-gray-600">자기소개서 목록 불러오는 중...</span>
               </div>
             ) : coverLetters.length === 0 ? (
@@ -140,7 +140,7 @@ export default function InterviewStartPage() {
                     onClick={() => setCoverLetterId(letter.id)}
                     className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
                       coverLetterId === letter.id
-                        ? 'border-primary-500 bg-primary-50'
+                        ? 'border-blue-500 bg-blue-50'
                         : 'border-gray-200 bg-gray-50 hover:border-gray-300'
                     }`}
                   >
@@ -161,7 +161,7 @@ export default function InterviewStartPage() {
                       </div>
                       <div className="ml-4 flex-shrink-0">
                         {coverLetterId === letter.id && (
-                          <div className="w-6 h-6 rounded-full bg-primary-500 flex items-center justify-center">
+                          <div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center">
                             <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                             </svg>
@@ -202,7 +202,7 @@ export default function InterviewStartPage() {
               아직 자기소개서를 작성하지 않으셨나요?{' '}
               <button
                 onClick={() => router.push('/cover-letters')}
-                className="text-primary-600 hover:text-primary-700 font-semibold"
+                className="text-blue-600 hover:text-blue-700 font-semibold"
               >
                 자소서 작성하기
               </button>

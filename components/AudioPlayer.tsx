@@ -66,7 +66,7 @@ export default function AudioPlayer({ audioUrl, onEnded, autoPlay = false }: Aud
 
       <button
         onClick={togglePlayPause}
-        className="w-12 h-12 flex items-center justify-center bg-blue-500 hover:bg-primary-600 rounded-full transition-colors"
+        className="w-12 h-12 flex items-center justify-center bg-blue-600 hover:bg-blue-700 rounded-full transition-colors"
       >
         {isPlaying ? (
           <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
