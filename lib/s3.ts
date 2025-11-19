@@ -31,19 +31,32 @@ export async function uploadToS3(options: UploadOptions): Promise<string> {
   const { folder, fileName, contentType, buffer } = options;
   const key = `${folder}/${Date.now()}_${fileName}`;
 
+  // 오디오 파일인 경우 버퍼 검증
+  if (contentType.startsWith('audio/')) {
+    console.log(`🎵 [S3 Upload] Audio buffer size: ${buffer.length} bytes`);
+    if (buffer.length < 100) {
+      console.error('❌ [S3 Upload] Audio buffer too small, likely invalid');
+      throw new Error('생성된 오디오 파일이 유효하지 않습니다.');
+    }
+  }
+
   const command = new PutObjectCommand({
     Bucket: BUCKET_NAME,
     Key: key,
     Body: buffer,
     ContentType: contentType,
+    // 추가 메타데이터 설정
+    CacheControl: 'max-age=31536000', // 1년 캐싱
+    // ACL은 버킷 정책으로 관리 (ACL 비활성화 시 에러 방지)
   });
 
   try {
     await s3Client.send(command);
+    console.log(`✅ [S3 Upload] Successfully uploaded: ${key}`);
     // 리전별 올바른 URL 형식 사용
     return `https://${BUCKET_NAME}.s3.${BUCKET_REGION}.amazonaws.com/${key}`;
   } catch (error) {
-    console.error('S3 업로드 에러:', error);
+    console.error('❌ [S3 Upload] Error:', error);
     throw new Error('파일 업로드에 실패했습니다.');
   }
 }

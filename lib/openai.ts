@@ -425,17 +425,38 @@ ${earlyFinishNote}
  */
 export async function textToSpeech(text: string): Promise<Buffer> {
   try {
+    console.log(`🎤 [TTS] Generating speech for text (${text.length} chars)`);
+    
     const mp3 = await openai.audio.speech.create({
       model: 'tts-1',
       voice: 'nova', // alloy, echo, fable, onyx, nova, shimmer
       input: text,
       speed: 1.0,
+      response_format: 'mp3', // 명시적으로 MP3 포맷 지정
     });
 
-    const buffer = Buffer.from(await mp3.arrayBuffer());
+    const arrayBuffer = await mp3.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    
+    console.log(`✅ [TTS] Speech generated successfully (${buffer.length} bytes)`);
+    
+    // 버퍼 유효성 검증
+    if (buffer.length < 100) {
+      console.error('❌ [TTS] Generated audio buffer is too small');
+      throw new Error('생성된 오디오가 유효하지 않습니다.');
+    }
+    
+    // MP3 파일 헤더 확인 (ID3 또는 MPEG 헤더)
+    const isValidMP3 = buffer[0] === 0xFF || 
+                       (buffer[0] === 0x49 && buffer[1] === 0x44 && buffer[2] === 0x33); // ID3
+    
+    if (!isValidMP3) {
+      console.warn('⚠️ [TTS] Audio buffer may not be valid MP3 format');
+    }
+    
     return buffer;
   } catch (error) {
-    console.error('TTS 에러:', error);
+    console.error('❌ [TTS] Error:', error);
     throw new Error('음성 생성에 실패했습니다.');
   }
 }

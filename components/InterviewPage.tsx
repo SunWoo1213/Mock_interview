@@ -388,10 +388,10 @@ export default function InterviewPage({
           {/* 숨겨진 오디오 플레이어 (TTS 자동 재생) */}
           <audio
             ref={audioRef}
-            src={questionAudioUrl}
             playsInline // 모바일에서 전체화면 방지
             muted={false} // 볼륨 체크: 음소거 안 됨
             preload="auto" // 미리 로드
+            crossOrigin="anonymous" // CORS 지원
             onEnded={() => {
               console.log('🏁 [TTS DEBUG] Audio playback ended');
               handleQuestionAudioEnded();
@@ -407,6 +407,8 @@ export default function InterviewPage({
               console.error('[TTS DEBUG] Error code:', audio.error?.code);
               console.error('[TTS DEBUG] Error message:', audio.error?.message);
               console.error('[TTS DEBUG] Audio src:', audio.src);
+              console.error('[TTS DEBUG] Network state:', audio.networkState);
+              console.error('[TTS DEBUG] Ready state:', audio.readyState);
               setShowPlayButton(true); // 에러 시 수동 버튼 표시
             }}
             onLoadedData={() => console.log('📥 [TTS DEBUG] Audio data loaded')}
@@ -415,7 +417,12 @@ export default function InterviewPage({
             onSuspend={() => console.log('⏸️ [TTS DEBUG] Audio load suspended')}
             onStalled={() => console.log('⚠️ [TTS DEBUG] Audio load stalled')}
             className="hidden"
-          />
+          >
+            {/* source 태그로 명시적 MIME type 지정 */}
+            <source src={questionAudioUrl} type="audio/mpeg" />
+            {/* 폴백 메시지 */}
+            Your browser does not support the audio element.
+          </audio>
 
           {/* 녹음 상태 표시 */}
           {interviewState === 'recording' && (
