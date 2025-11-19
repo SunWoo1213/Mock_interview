@@ -106,7 +106,7 @@ export default function HomePage() {
             </button>
           </div>
 
-          <div className="p-6 md:p-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border-2 border-blue-200 hover:border-blue-400 hover:shadow-md transition-all">
+          <div className="p-6 md:p-8 bg-white rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow-md transition-all">
             <div className="text-3xl md:text-4xl mb-3 md:mb-4">📊</div>
             <h3 className="text-xl md:text-2xl font-bold mb-2 text-gray-900">활동 히스토리</h3>
             <p className="text-sm md:text-base text-gray-600 mb-4">
