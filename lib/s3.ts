@@ -25,7 +25,7 @@ export interface UploadOptions {
 }
 
 /**
- * S3에 파일 업로드
+ * S3에 파일 업로드 (Presigned URL 반환)
  */
 export async function uploadToS3(options: UploadOptions): Promise<string> {
   const { folder, fileName, contentType, buffer } = options;
@@ -53,8 +53,19 @@ export async function uploadToS3(options: UploadOptions): Promise<string> {
   try {
     await s3Client.send(command);
     console.log(`✅ [S3 Upload] Successfully uploaded: ${key}`);
-    // 리전별 올바른 URL 형식 사용
-    return `https://${BUCKET_NAME}.s3.${BUCKET_REGION}.amazonaws.com/${key}`;
+    
+    // Presigned URL 생성 (24시간 유효)
+    const getCommand = new GetObjectCommand({
+      Bucket: BUCKET_NAME,
+      Key: key,
+    });
+    
+    const presignedUrl = await getSignedUrl(s3Client, getCommand, { 
+      expiresIn: 86400 // 24시간
+    });
+    
+    console.log(`🔗 [S3 Upload] Presigned URL generated`);
+    return presignedUrl;
   } catch (error) {
     console.error('❌ [S3 Upload] Error:', error);
     throw new Error('파일 업로드에 실패했습니다.');
