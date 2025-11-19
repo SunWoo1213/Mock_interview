@@ -106,26 +106,26 @@ export default function InterviewStartPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-8 py-16">
-      <div className="mb-8">
+    <div className="max-w-2xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-12 lg:py-16">
+      <div className="mb-6 md:mb-8">
         <button
           onClick={() => router.push('/')}
-          className="text-gray-600 hover:text-gray-900 transition-colors"
+          className="text-gray-600 hover:text-gray-900 transition-colors text-sm md:text-base"
         >
           ← 홈으로 돌아가기
         </button>
       </div>
 
-      <div className="text-center mb-12">
-        <div className="text-6xl mb-4">🎤</div>
-        <h1 className="text-4xl font-bold mb-4">AI 모의 면접</h1>
-        <p className="text-xl text-gray-600">
+      <div className="text-center mb-8 md:mb-12">
+        <div className="text-4xl md:text-5xl lg:text-6xl mb-3 md:mb-4">🎤</div>
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4">AI 모의 면접</h1>
+        <p className="text-base md:text-lg lg:text-xl text-gray-600 px-4">
           실전처럼 AI 면접관과 음성으로 면접을 진행하세요
         </p>
       </div>
 
-      <div className="p-8 bg-white rounded-lg border border-gray-200 shadow-sm">
-          <h2 className="text-2xl font-bold mb-6">면접 시작하기</h2>
+      <div className="p-4 md:p-6 lg:p-8 bg-white rounded-lg border border-gray-200 shadow-sm">
+          <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">면접 시작하기</h2>
 
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -203,14 +203,14 @@ export default function InterviewStartPage() {
           <button
             onClick={handleStart}
             disabled={isLoading || !coverLetterId || isLoadingList}
-            className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-semibold shadow-sm"
+            className="w-full px-4 md:px-6 py-2.5 md:py-3 text-sm md:text-base bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-semibold shadow-sm"
           >
             {isLoading ? '면접 준비 중...' : '면접 시작'}
           </button>
 
-          <div className="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <h3 className="font-bold mb-2 text-gray-900">📌 안내사항</h3>
-            <ul className="text-sm text-gray-700 space-y-1">
+          <div className="mt-6 md:mt-8 p-3 md:p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <h3 className="text-sm md:text-base font-bold mb-2 text-gray-900">📌 안내사항</h3>
+            <ul className="text-xs md:text-sm text-gray-700 space-y-1">
               <li>• 총 5개의 질문이 진행됩니다.</li>
               <li>• 각 질문당 60초의 답변 시간이 주어집니다.</li>
               <li>• 마이크 권한을 허용해주세요.</li>
@@ -218,8 +218,8 @@ export default function InterviewStartPage() {
             </ul>
           </div>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
+          <div className="mt-4 md:mt-6 text-center">
+            <p className="text-xs md:text-sm text-gray-600">
               아직 자기소개서를 작성하지 않으셨나요?{' '}
               <button
                 onClick={() => router.push('/cover-letters')}

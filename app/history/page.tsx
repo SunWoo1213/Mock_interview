@@ -193,26 +193,26 @@ export default function HistoryPage() {
 
   return (
     <>
-    <div className="max-w-6xl mx-auto px-8 py-16">
+    <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-12 lg:py-16">
       {/* Header */}
-      <div className="mb-8">
+      <div className="mb-6 md:mb-8">
         <button
           onClick={() => router.push('/')}
-          className="text-gray-600 hover:text-gray-900 transition-colors mb-4"
+          className="text-gray-600 hover:text-gray-900 transition-colors mb-3 md:mb-4 text-sm md:text-base"
         >
           ← 홈으로 돌아가기
         </button>
-        <h1 className="text-4xl font-bold mb-2">📊 나의 활동 기록</h1>
-        <p className="text-gray-600">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">📊 나의 활동 기록</h1>
+        <p className="text-sm md:text-base text-gray-600">
           자기소개서, 모의 면접, 채용공고 분석 기록을 확인하세요
         </p>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-4 mb-8 border-b border-gray-200">
+      <div className="flex flex-wrap gap-2 md:gap-4 mb-6 md:mb-8 border-b border-gray-200 overflow-x-auto">
           <button
             onClick={() => setActiveTab('interviews')}
-            className={`px-6 py-3 font-semibold transition-all ${
+            className={`px-3 md:px-6 py-2 md:py-3 text-sm md:text-base font-semibold transition-all whitespace-nowrap ${
               activeTab === 'interviews'
                 ? 'text-blue-600 border-b-2 border-blue-600 font-bold'
                 : 'text-gray-500 hover:text-gray-900'
@@ -222,7 +222,7 @@ export default function HistoryPage() {
           </button>
           <button
             onClick={() => setActiveTab('cover-letters')}
-            className={`px-6 py-3 font-semibold transition-all ${
+            className={`px-3 md:px-6 py-2 md:py-3 text-sm md:text-base font-semibold transition-all whitespace-nowrap ${
               activeTab === 'cover-letters'
                 ? 'text-blue-600 border-b-2 border-blue-600 font-bold'
                 : 'text-gray-500 hover:text-gray-900'
@@ -232,7 +232,7 @@ export default function HistoryPage() {
           </button>
           <button
             onClick={() => setActiveTab('job-postings')}
-            className={`px-6 py-3 font-semibold transition-all ${
+            className={`px-3 md:px-6 py-2 md:py-3 text-sm md:text-base font-semibold transition-all whitespace-nowrap ${
               activeTab === 'job-postings'
                 ? 'text-blue-600 border-b-2 border-blue-600 font-bold'
                 : 'text-gray-500 hover:text-gray-900'

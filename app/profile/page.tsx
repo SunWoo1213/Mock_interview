@@ -89,10 +89,10 @@ export default function ProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500 mb-4" />
-          <p className="text-gray-600">프로필 로딩 중...</p>
+          <div className="inline-block animate-spin rounded-full h-12 md:h-16 w-12 md:w-16 border-b-2 border-blue-500 mb-4" />
+          <p className="text-sm md:text-base text-gray-600">프로필 로딩 중...</p>
         </div>
       </div>
     );
@@ -100,12 +100,12 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-8 py-16">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-slate-900">내 프로필</h1>
+      <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-12 lg:py-16">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-900">내 프로필</h1>
           <button
             onClick={handleLogout}
-            className="px-4 py-2 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+            className="px-4 py-2 text-sm md:text-base bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
           >
             로그아웃
           </button>
@@ -193,17 +193,17 @@ export default function ProfilePage() {
           </div>
 
           {/* 저장 버튼 */}
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white disabled:bg-gray-400 disabled:cursor-not-allowed rounded-lg transition-colors font-semibold"
+              className="flex-1 px-4 md:px-6 py-2.5 md:py-3 text-sm md:text-base bg-blue-600 hover:bg-blue-700 text-white disabled:bg-gray-400 disabled:cursor-not-allowed rounded-lg transition-colors font-semibold"
             >
               {isSaving ? '저장 중...' : '프로필 저장'}
             </button>
             <button
               onClick={() => router.push('/')}
-              className="px-6 py-3 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+              className="px-4 md:px-6 py-2.5 md:py-3 text-sm md:text-base bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
             >
               홈으로
             </button>
