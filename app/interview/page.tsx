@@ -85,50 +85,49 @@ export default function InterviewStartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <div className="max-w-2xl mx-auto px-8 py-16">
-        <div className="mb-8">
-          <button
-            onClick={() => router.push('/')}
-            className="text-gray-400 hover:text-white transition-colors"
-          >
-            ← 홈으로 돌아가기
-          </button>
-        </div>
+    <div className="max-w-2xl mx-auto px-8 py-16">
+      <div className="mb-8">
+        <button
+          onClick={() => router.push('/')}
+          className="text-gray-600 hover:text-gray-900 transition-colors"
+        >
+          ← 홈으로 돌아가기
+        </button>
+      </div>
 
-        <div className="text-center mb-12">
-          <div className="text-6xl mb-4">🎤</div>
-          <h1 className="text-4xl font-bold mb-4">AI 모의 면접</h1>
-          <p className="text-xl text-gray-400">
-            실전처럼 AI 면접관과 음성으로 면접을 진행하세요
-          </p>
-        </div>
+      <div className="text-center mb-12">
+        <div className="text-6xl mb-4">🎤</div>
+        <h1 className="text-4xl font-bold mb-4">AI 모의 면접</h1>
+        <p className="text-xl text-gray-600">
+          실전처럼 AI 면접관과 음성으로 면접을 진행하세요
+        </p>
+      </div>
 
-        <div className="p-8 bg-gray-900 rounded-lg border border-gray-800">
+      <div className="p-8 bg-white rounded-lg border border-gray-200 shadow-sm">
           <h2 className="text-2xl font-bold mb-6">면접 시작하기</h2>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-900/20 border border-red-500 rounded-lg">
-              <p className="text-red-400">{error}</p>
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-600">{error}</p>
             </div>
           )}
 
           <div className="mb-6">
-            <label className="block text-sm font-medium mb-3">
+            <label className="block text-sm font-medium mb-3 text-gray-700">
               자기소개서 선택
             </label>
 
             {isLoadingList ? (
               <div className="flex items-center justify-center py-8">
                 <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500" />
-                <span className="ml-3 text-gray-400">자기소개서 목록 불러오는 중...</span>
+                <span className="ml-3 text-gray-600">자기소개서 목록 불러오는 중...</span>
               </div>
             ) : coverLetters.length === 0 ? (
-              <div className="p-6 bg-gray-800 rounded-lg border border-gray-700 text-center">
-                <p className="text-gray-400 mb-4">작성된 자기소개서가 없습니다.</p>
+              <div className="p-6 bg-gray-50 rounded-lg border border-gray-200 text-center">
+                <p className="text-gray-600 mb-4">작성된 자기소개서가 없습니다.</p>
                 <button
                   onClick={() => router.push('/cover-letters/create')}
-                  className="px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors text-sm"
+                  className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors text-sm shadow-sm"
                 >
                   자기소개서 작성하러 가기
                 </button>
@@ -141,22 +140,22 @@ export default function InterviewStartPage() {
                     onClick={() => setCoverLetterId(letter.id)}
                     className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
                       coverLetterId === letter.id
-                        ? 'border-primary-500 bg-primary-900/20'
-                        : 'border-gray-700 bg-gray-800 hover:border-gray-600'
+                        ? 'border-primary-500 bg-primary-50'
+                        : 'border-gray-200 bg-gray-50 hover:border-gray-300'
                     }`}
                   >
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1">
                         {letter.jobPosting ? (
                           <div className="mb-2">
-                            <h3 className="font-semibold text-white">
+                            <h3 className="font-semibold text-gray-900">
                               {letter.jobPosting.companyName} - {letter.jobPosting.title}
                             </h3>
                           </div>
                         ) : (
-                          <h3 className="font-semibold text-white mb-2">자기소개서</h3>
+                          <h3 className="font-semibold text-gray-900 mb-2">자기소개서</h3>
                         )}
-                        <p className="text-sm text-gray-400 line-clamp-2">
+                        <p className="text-sm text-gray-600 line-clamp-2">
                           {letter.contentPreview}
                         </p>
                       </div>
@@ -183,14 +182,14 @@ export default function InterviewStartPage() {
           <button
             onClick={handleStart}
             disabled={isLoading || !coverLetterId || isLoadingList}
-            className="w-full px-6 py-3 bg-primary-600 hover:bg-primary-700 disabled:bg-gray-700 disabled:cursor-not-allowed rounded-lg transition-colors font-semibold"
+            className="w-full px-6 py-3 bg-primary-600 hover:bg-primary-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-semibold shadow-sm"
           >
             {isLoading ? '면접 준비 중...' : '면접 시작'}
           </button>
 
-          <div className="mt-8 p-4 bg-gray-800 rounded-lg">
-            <h3 className="font-bold mb-2">📌 안내사항</h3>
-            <ul className="text-sm text-gray-400 space-y-1">
+          <div className="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <h3 className="font-bold mb-2 text-gray-900">📌 안내사항</h3>
+            <ul className="text-sm text-gray-700 space-y-1">
               <li>• 총 5개의 질문이 진행됩니다.</li>
               <li>• 각 질문당 60초의 답변 시간이 주어집니다.</li>
               <li>• 마이크 권한을 허용해주세요.</li>
@@ -199,11 +198,11 @@ export default function InterviewStartPage() {
           </div>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-600">
               아직 자기소개서를 작성하지 않으셨나요?{' '}
               <button
                 onClick={() => router.push('/cover-letters')}
-                className="text-primary-500 hover:text-primary-400 font-semibold"
+                className="text-primary-600 hover:text-primary-700 font-semibold"
               >
                 자소서 작성하기
               </button>
@@ -211,7 +210,6 @@ export default function InterviewStartPage() {
           </div>
         </div>
       </div>
-    </div>
   );
 }
 

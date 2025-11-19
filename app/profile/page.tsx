@@ -89,17 +89,17 @@ export default function ProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      <div className="max-w-4xl mx-auto px-8 py-16 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-2 border-primary-500 mb-4" />
-          <p className="text-gray-400">프로필 로딩 중...</p>
+          <p className="text-gray-600">프로필 로딩 중...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="max-w-4xl mx-auto px-8 py-16">
       <div className="max-w-4xl mx-auto px-8 py-16">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold">내 프로필</h1>
@@ -125,7 +125,7 @@ export default function ProfilePage() {
 
         <div className="space-y-8">
           {/* 기본 정보 */}
-          <div className="p-6 bg-gray-900 rounded-lg border border-gray-800">
+          <div className="p-6 bg-white rounded-lg border border-gray-200">
             <h2 className="text-2xl font-bold mb-4">기본 정보</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -156,7 +156,7 @@ export default function ProfilePage() {
           </div>
 
           {/* 직업 및 경력 정보 */}
-          <div className="p-6 bg-gray-900 rounded-lg border border-gray-800">
+          <div className="p-6 bg-white rounded-lg border border-gray-200">
             <h2 className="text-2xl font-bold mb-4">직업 및 경력</h2>
             <div className="space-y-4">
               <div>
@@ -210,8 +210,8 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className="mt-8 p-4 bg-gray-900 rounded-lg border border-gray-800">
-          <p className="text-sm text-gray-400">
+        <div className="mt-8 p-4 bg-white rounded-lg border border-gray-200">
+          <p className="text-sm text-gray-600">
             💡 <strong>팁:</strong> 자세한 프로필 정보를 입력할수록 AI가 더 정확한 피드백을 제공할 수 있습니다.
             경력, 학력, 자격증 등의 정보는 추후 업데이트 예정입니다.
           </p>

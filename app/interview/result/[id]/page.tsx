@@ -35,7 +35,7 @@ export default function InterviewResultDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      <div className="max-w-5xl mx-auto px-8 py-16 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-2 border-primary-500 mb-4" />
           <p className="text-gray-400">면접 결과 로딩 중...</p>
@@ -46,7 +46,7 @@ export default function InterviewResultDetailPage() {
 
   if (error || !data) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      <div className="max-w-5xl mx-auto px-8 py-16 flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-4">❌</div>
           <h1 className="text-2xl font-bold mb-4">결과를 불러올 수 없습니다</h1>

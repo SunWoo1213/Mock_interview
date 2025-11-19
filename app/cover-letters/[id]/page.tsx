@@ -90,7 +90,7 @@ export default function CoverLetterDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      <div className="max-w-5xl mx-auto px-8 py-16 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-2 border-primary-500 mb-4" />
           <p className="text-gray-400">자기소개서를 불러오는 중...</p>
@@ -101,7 +101,7 @@ export default function CoverLetterDetailPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-black text-white">
+      <div className="max-w-5xl mx-auto px-8 py-16">
         <div className="max-w-4xl mx-auto px-8 py-16">
           <div className="mb-8">
             <button
@@ -121,7 +121,7 @@ export default function CoverLetterDetailPage() {
 
   if (!coverLetter) {
     return (
-      <div className="min-h-screen bg-black text-white">
+      <div className="max-w-5xl mx-auto px-8 py-16">
         <div className="max-w-4xl mx-auto px-8 py-16">
           <div className="mb-8">
             <button
@@ -138,7 +138,7 @@ export default function CoverLetterDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="max-w-5xl mx-auto px-8 py-16">
       <div className="max-w-4xl mx-auto px-8 py-16">
         {/* Header */}
         <div className="mb-8">
@@ -165,7 +165,7 @@ export default function CoverLetterDetailPage() {
         </div>
 
         {/* 자기소개서 본문 */}
-        <div className="mb-8 p-8 bg-gray-900 rounded-lg border border-gray-800">
+        <div className="mb-8 p-8 bg-white rounded-lg border border-gray-800">
           <h2 className="text-2xl font-bold mb-4">자기소개서 내용</h2>
           <div className="text-gray-300 whitespace-pre-wrap leading-relaxed">
             {coverLetter.content_text}
@@ -232,7 +232,7 @@ export default function CoverLetterDetailPage() {
 
             {/* 섹션별 상세 분석 */}
             {coverLetter.feedback_json.detailedAnalysis && coverLetter.feedback_json.detailedAnalysis.length > 0 && (
-              <div className="p-6 bg-gray-900 rounded-lg border border-gray-700">
+              <div className="p-6 bg-white rounded-lg border border-gray-700">
                 <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
                   <span>🔍</span> 섹션별 상세 분석
                 </h3>
@@ -299,7 +299,7 @@ export default function CoverLetterDetailPage() {
             )}
           </div>
         ) : (
-          <div className="p-8 bg-gray-900 rounded-lg border border-gray-800 text-center">
+          <div className="p-8 bg-white rounded-lg border border-gray-800 text-center">
             <div className="text-4xl mb-4">💬</div>
             <p className="text-xl text-gray-400 mb-4">아직 AI 피드백이 생성되지 않았습니다.</p>
             <p className="text-sm text-gray-500">자기소개서 작성 후 AI 피드백을 받아보세요.</p>

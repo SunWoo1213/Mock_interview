@@ -69,7 +69,7 @@ export default function JobPostingDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      <div className="max-w-5xl mx-auto px-8 py-16 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mx-auto mb-4"></div>
           <p className="text-gray-400">공고를 불러오는 중...</p>
@@ -80,7 +80,7 @@ export default function JobPostingDetailPage() {
 
   if (error || !jobPosting) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      <div className="max-w-5xl mx-auto px-8 py-16 flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-400 mb-4">{error || '공고를 찾을 수 없습니다.'}</p>
           <button
@@ -95,7 +95,7 @@ export default function JobPostingDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="max-w-5xl mx-auto px-8 py-16">
       <div className="max-w-5xl mx-auto px-4 py-8">
         {/* 헤더 */}
         <div className="mb-8">

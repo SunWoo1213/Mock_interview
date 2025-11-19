@@ -59,7 +59,7 @@ export default function SelectPostingPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      <div className="max-w-6xl mx-auto px-8 py-16 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mx-auto mb-4"></div>
           <p className="text-gray-400">공고 목록을 불러오는 중...</p>
@@ -69,7 +69,7 @@ export default function SelectPostingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="max-w-6xl mx-auto px-8 py-16">
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* 헤더 */}
         <div className="mb-8">
@@ -139,7 +139,7 @@ export default function SelectPostingPage() {
                 <button
                   key={posting.id}
                   onClick={() => handleSelectPosting(posting.id)}
-                  className="relative p-6 bg-gray-900 border-2 border-gray-800 rounded-xl hover:border-primary-500 transition-all text-left group"
+                  className="relative p-6 bg-white border-2 border-gray-800 rounded-xl hover:border-primary-500 transition-all text-left group"
                 >
                   {/* 체크 아이콘 (호버 시) */}
                   <div className="absolute top-4 right-4 w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">

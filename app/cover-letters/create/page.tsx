@@ -80,7 +80,7 @@ export default function CreateCoverLetterPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      <div className="max-w-[1800px] mx-auto px-6 py-8 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-2 border-primary-500 mb-4" />
           <p className="text-gray-400">로딩 중...</p>
@@ -92,7 +92,7 @@ export default function CreateCoverLetterPage() {
   // 공고 ID가 없는 경우
   if (!jobPostingId) {
     return (
-      <div className="min-h-screen bg-black text-white">
+      <div className="max-w-[1800px] mx-auto px-6 py-8">
         <div className="max-w-4xl mx-auto px-8 py-16">
           <button
             onClick={() => router.back()}
@@ -152,9 +152,9 @@ export default function CreateCoverLetterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="max-w-[1800px] mx-auto px-6 py-8">
       {/* 헤더 */}
-      <div className="border-b border-gray-800 bg-gray-900/50">
+      <div className="border-b border-gray-800 bg-white/50">
         <div className="max-w-[1800px] mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -198,7 +198,7 @@ export default function CreateCoverLetterPage() {
         /* Split View: 공고 분석 (좌) + 자소서 작성 (우) */
         <div className="flex h-[calc(100vh-120px)]">
           {/* 왼쪽: 공고 분석 결과 (참고용) */}
-          <div className="w-2/5 border-r border-gray-800 overflow-y-auto bg-gray-900/30">
+          <div className="w-2/5 border-r border-gray-800 overflow-y-auto bg-white/30">
             <div className="p-6">
               <div className="mb-6">
                 <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
@@ -302,7 +302,7 @@ export default function CreateCoverLetterPage() {
                 <textarea
                   value={contentText}
                   onChange={(e) => setContentText(e.target.value)}
-                  className="w-full h-[calc(100vh-280px)] px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:border-primary-500 transition-colors resize-none text-gray-100 leading-relaxed"
+                  className="w-full h-[calc(100vh-280px)] px-4 py-3 bg-white border border-gray-700 rounded-lg focus:outline-none focus:border-primary-500 transition-colors resize-none text-gray-100 leading-relaxed"
                   placeholder="여기에 자기소개서를 작성해주세요...
 
 팁:
@@ -322,7 +322,7 @@ export default function CreateCoverLetterPage() {
                 </div>
               </div>
 
-              <div className="border-t border-gray-800 p-6 bg-gray-900/50">
+              <div className="border-t border-gray-800 p-6 bg-white/50">
                 <button
                   type="submit"
                   disabled={isSubmitting}
@@ -393,7 +393,7 @@ export default function CreateCoverLetterPage() {
 
             {/* 섹션별 상세 분석 */}
             {feedback.detailedAnalysis && feedback.detailedAnalysis.length > 0 && (
-              <div className="p-6 bg-gray-900 rounded-lg border border-gray-700">
+              <div className="p-6 bg-white rounded-lg border border-gray-700">
                 <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
                   <span>🔍</span> 섹션별 상세 분석
                 </h3>
