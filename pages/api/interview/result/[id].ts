@@ -37,11 +37,12 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse): Promise
   console.log(`📊 완료 시각: ${session.completed_at}`);
   console.log(`📊 피드백 존재: ${session.final_feedback_json ? '있음' : '없음'}`);
 
-  // 모든 턴 조회 (답변 여부 확인)
+  // 모든 턴 조회 (답변 및 피드백 포함)
   const turnsResult = await query(
     `SELECT 
       turn_number, question_text, question_audio_s3_url,
-      user_answer_text, user_answer_audio_s3_url
+      user_answer_text, user_answer_audio_s3_url,
+      feedback_text
      FROM interview_turns 
      WHERE session_id = $1 
      ORDER BY turn_number`,

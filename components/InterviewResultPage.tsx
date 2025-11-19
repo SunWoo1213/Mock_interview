@@ -17,7 +17,10 @@ interface InterviewResultPageProps {
         turn_number: number;
         question: string;
         answer: string;
-        feedback: string;
+        user_answer_summary: string;
+        strengths: string[];
+        improvements: string[];
+        better_answer_example: string;
       }>;
     };
   };
@@ -26,6 +29,7 @@ interface InterviewResultPageProps {
     question_text: string;
     user_answer_text: string;
     user_answer_audio_s3_url: string;
+    feedback_text: any;
   }>;
 }
 
@@ -75,9 +79,12 @@ export default function InterviewResultPage({ session, turns }: InterviewResultP
             <h2 className="text-2xl font-bold mb-4">질문별 상세 피드백</h2>
 
             {turns.map((turn) => {
-              const turnFeedback = finalFeedback.per_turn_feedback.find(
-                (f) => f.turn_number === turn.turn_number
-              );
+              // feedback_text는 JSONB 형태로 저장되어 있으므로 문자열로 변환
+              const feedbackText = turn.feedback_text 
+                ? (typeof turn.feedback_text === 'string' 
+                    ? turn.feedback_text 
+                    : JSON.stringify(turn.feedback_text))
+                : undefined;
 
               return (
                 <InterviewTurnCard
@@ -86,7 +93,7 @@ export default function InterviewResultPage({ session, turns }: InterviewResultP
                   questionText={turn.question_text}
                   userAnswerText={turn.user_answer_text}
                   userAnswerAudioUrl={turn.user_answer_audio_s3_url}
-                  turnFeedbackText={turnFeedback?.feedback}
+                  turnFeedbackText={feedbackText}
                 />
               );
             })}
