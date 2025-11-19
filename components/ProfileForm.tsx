@@ -93,7 +93,7 @@ export default function ProfileForm() {
 
         {/* 나이 */}
         <div>
-          <label htmlFor="age" className="block text-sm font-medium mb-2 text-gray-300">
+          <label htmlFor="age" className="block text-sm font-medium mb-2 text-gray-700">
             나이
           </label>
           <input
@@ -101,7 +101,7 @@ export default function ProfileForm() {
             type="number"
             value={age}
             onChange={(e) => setAge(e.target.value)}
-            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-primary-500 text-white placeholder-gray-500"
+            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 text-gray-900 placeholder:text-gray-400"
             placeholder="예: 28"
             min="0"
             max="150"
@@ -110,14 +110,14 @@ export default function ProfileForm() {
 
         {/* 성별 */}
         <div>
-          <label htmlFor="gender" className="block text-sm font-medium mb-2 text-gray-300">
+          <label htmlFor="gender" className="block text-sm font-medium mb-2 text-gray-700">
             성별
           </label>
           <select
             id="gender"
             value={gender}
             onChange={(e) => setGender(e.target.value)}
-            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-primary-500 text-white"
+            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 text-gray-900"
           >
             <option value="">선택하세요</option>
             <option value="male">남자</option>
@@ -127,7 +127,7 @@ export default function ProfileForm() {
 
         {/* 현재 직업 */}
         <div>
-          <label htmlFor="currentJob" className="block text-sm font-medium mb-2 text-gray-300">
+          <label htmlFor="currentJob" className="block text-sm font-medium mb-2 text-gray-700">
             현재 직업
           </label>
           <input
@@ -135,14 +135,14 @@ export default function ProfileForm() {
             type="text"
             value={currentJob}
             onChange={(e) => setCurrentJob(e.target.value)}
-            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-primary-500 text-white placeholder-gray-500"
+            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 text-gray-900 placeholder:text-gray-400"
             placeholder="예: 소프트웨어 엔지니어"
           />
         </div>
 
         {/* 경력 */}
         <div>
-          <label htmlFor="careerSummary" className="block text-sm font-medium mb-2 text-gray-300">
+          <label htmlFor="careerSummary" className="block text-sm font-medium mb-2 text-gray-700">
             경력
           </label>
           <textarea
@@ -150,14 +150,14 @@ export default function ProfileForm() {
             value={careerSummary}
             onChange={(e) => setCareerSummary(e.target.value)}
             rows={5}
-            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-primary-500 text-white placeholder-gray-500 resize-none"
+            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 text-gray-900 placeholder:text-gray-400 resize-none"
             placeholder="요약된 경력을 입력하세요...&#10;&#10;예:&#10;- ABC 회사 개발팀 (2020-2023)&#10;- XYZ 스타트업 백엔드 개발자 (2018-2020)"
           />
         </div>
 
         {/* 소유한 자격증 */}
         <div>
-          <label htmlFor="certifications" className="block text-sm font-medium mb-2 text-gray-300">
+          <label htmlFor="certifications" className="block text-sm font-medium mb-2 text-gray-700">
             소유한 자격증
           </label>
           <textarea
@@ -165,7 +165,7 @@ export default function ProfileForm() {
             value={certifications}
             onChange={(e) => setCertifications(e.target.value)}
             rows={4}
-            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-primary-500 text-white placeholder-gray-500 resize-none"
+            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 text-gray-900 placeholder:text-gray-400 resize-none"
             placeholder="자격증을 쉼표로 구분하여 입력...&#10;&#10;예: 정보처리기사, AWS Solutions Architect, TOEIC 900점"
           />
         </div>
@@ -182,8 +182,8 @@ export default function ProfileForm() {
         </div>
 
         {/* 도움말 */}
-        <div className="p-4 bg-gray-900/50 border border-gray-800 rounded-lg">
-          <p className="text-sm text-gray-400">
+        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-sm text-slate-700">
             💡 <strong>팁:</strong> 자세한 프로필 정보를 입력할수록 AI가 더 정확한 면접 질문과 피드백을 제공할 수 있습니다.
           </p>
         </div>

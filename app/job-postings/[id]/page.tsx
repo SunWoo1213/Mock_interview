@@ -101,18 +101,18 @@ export default function JobPostingDetailPage() {
         <div className="mb-8">
           <button
             onClick={() => router.push('/job-postings/history')}
-            className="mb-4 text-gray-400 hover:text-white transition-colors"
+            className="mb-4 text-gray-600 hover:text-gray-900 transition-colors"
           >
             ← 히스토리로 돌아가기
           </button>
 
           <div className="flex items-start justify-between mb-4">
             <div>
-              <h1 className="text-4xl font-black mb-2">
+              <h1 className="text-4xl font-black mb-2 text-slate-900">
                 {jobPosting.title || jobPosting.companyName || '공고 상세'}
               </h1>
               {jobPosting.companyName && jobPosting.title && (
-                <p className="text-xl text-gray-400">{jobPosting.companyName}</p>
+                <p className="text-xl text-gray-600">{jobPosting.companyName}</p>
               )}
             </div>
 
@@ -159,9 +159,9 @@ export default function JobPostingDetailPage() {
 
         {/* 원본 텍스트 */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-4">📄 원본 공고 내용</h2>
-          <div className="p-6 bg-gray-900 border border-gray-800 rounded-lg">
-            <pre className="whitespace-pre-wrap text-gray-300 text-sm leading-relaxed font-sans">
+          <h2 className="text-2xl font-bold mb-4 text-slate-900">📄 원본 공고 내용</h2>
+          <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <pre className="whitespace-pre-wrap text-slate-700 text-sm leading-relaxed font-sans">
               {jobPosting.extractedText}
             </pre>
           </div>
@@ -174,7 +174,7 @@ export default function JobPostingDetailPage() {
               href={jobPosting.originalS3Url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors"
+              className="inline-block px-6 py-3 bg-white hover:bg-gray-50 text-slate-900 border border-gray-300 font-medium rounded-lg transition-colors shadow-sm"
             >
               📥 원본 PDF 다운로드
             </a>

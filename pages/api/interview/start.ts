@@ -253,13 +253,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
   } catch (error: any) {
-    console.error('❌ [Interview Start] Unexpected error:', error);
-    console.error('   Stack:', error.stack);
+    console.error('❌❌❌ [Interview Start] CRITICAL ERROR ❌❌❌');
+    console.error('Error Name:', error.name);
+    console.error('Error Message:', error.message);
+    console.error('Error Code:', error.code);
+    console.error('Error Detail:', error.detail);
+    console.error('Full Error Object:', JSON.stringify(error, null, 2));
+    console.error('Stack Trace:', error.stack);
+    console.error('❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌');
+    
     return res.status(500).json({ 
       error: '서버 오류가 발생했습니다.',
+      details: error.message,
       debug: {
+        name: error.name,
         message: error.message,
-        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        code: error.code,
+        detail: error.detail,
+        hint: error.hint,
+        stack: error.stack,
+        // PostgreSQL specific error info
+        column: error.column,
+        table: error.table,
+        constraint: error.constraint
       }
     });
   }

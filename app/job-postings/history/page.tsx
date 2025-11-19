@@ -104,14 +104,14 @@ export default function JobPostingHistoryPage() {
         <div className="mb-8">
           <button
             onClick={() => router.back()}
-            className="mb-4 text-gray-400 hover:text-white transition-colors"
+            className="mb-4 text-gray-600 hover:text-gray-900 transition-colors"
           >
             ← 뒤로 가기
           </button>
-          <h1 className="text-4xl font-black mb-2">
+          <h1 className="text-4xl font-black mb-2 text-slate-900">
             📋 공고 히스토리
           </h1>
-          <p className="text-gray-400">
+          <p className="text-gray-600">
             업로드하고 분석한 공고 목록입니다. 공고를 선택하여 자기소개서를 작성할 수 있습니다.
           </p>
         </div>
@@ -157,7 +157,7 @@ export default function JobPostingHistoryPage() {
               <div
                 key={posting.id}
                 onClick={() => handleSelectPosting(posting.id)}
-                className="relative p-6 bg-gray-900 border-2 border-gray-800 rounded-xl hover:border-primary-500 transition-all cursor-pointer group"
+                className="relative p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-primary-500 transition-all cursor-pointer group shadow-sm"
               >
                 {/* 상태 뱃지 */}
                 <div className="absolute top-4 right-4">
@@ -178,11 +178,11 @@ export default function JobPostingHistoryPage() {
 
                 {/* 공고 정보 */}
                 <div className="mb-4">
-                  <h3 className="text-xl font-bold text-white mb-2 pr-24">
+                  <h3 className="text-xl font-bold text-slate-900 mb-2 pr-24">
                     {posting.title || posting.companyName || '제목 없음'}
                   </h3>
                   {posting.companyName && posting.title && (
-                    <p className="text-gray-400 text-sm">{posting.companyName}</p>
+                    <p className="text-gray-600 text-sm">{posting.companyName}</p>
                   )}
                 </div>
 
@@ -225,7 +225,7 @@ export default function JobPostingHistoryPage() {
                         e.stopPropagation();
                         router.push(`/job-postings/${posting.id}`);
                       }}
-                      className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded transition-colors"
+                      className="px-4 py-2 bg-white hover:bg-gray-50 text-slate-900 border border-gray-300 text-sm font-medium rounded transition-colors"
                     >
                       상세보기
                     </button>

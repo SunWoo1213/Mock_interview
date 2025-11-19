@@ -142,18 +142,18 @@ export default function CoverLetterDetailPage() {
       <div className="max-w-4xl mx-auto px-8 py-16">
         {/* Header */}
         <div className="mb-8">
-          <button
-            onClick={() => router.push('/history')}
-            className="text-gray-400 hover:text-white transition-colors mb-4"
-          >
-            ← 히스토리로 돌아가기
-          </button>
+            <button
+              onClick={() => router.push('/history')}
+              className="text-gray-600 hover:text-gray-900 transition-colors mb-4"
+            >
+              ← 히스토리로 돌아가기
+            </button>
           
           <div className="flex items-start justify-between mb-4">
             <div>
-              <h1 className="text-4xl font-bold mb-2">📝 자기소개서</h1>
+              <h1 className="text-4xl font-bold mb-2 text-slate-900">📝 자기소개서</h1>
               {coverLetter.company_name && coverLetter.title && (
-                <p className="text-xl text-gray-400">
+                <p className="text-xl text-gray-600">
                   {coverLetter.company_name} - {coverLetter.title}
                 </p>
               )}
@@ -165,9 +165,9 @@ export default function CoverLetterDetailPage() {
         </div>
 
         {/* 자기소개서 본문 */}
-        <div className="mb-8 p-8 bg-white rounded-lg border border-gray-800">
-          <h2 className="text-2xl font-bold mb-4">자기소개서 내용</h2>
-          <div className="text-gray-300 whitespace-pre-wrap leading-relaxed">
+        <div className="mb-8 p-8 bg-white rounded-lg border border-gray-200 shadow-sm">
+          <h2 className="text-2xl font-bold mb-4 text-slate-900">자기소개서 내용</h2>
+          <div className="text-slate-700 whitespace-pre-wrap leading-relaxed">
             {coverLetter.content_text}
           </div>
         </div>

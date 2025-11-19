@@ -259,3 +259,5 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoidGVzdEBleGFtcGx
 2. Vercel Functions 로그 (백엔드)
 3. 재현 단계
 
+
+

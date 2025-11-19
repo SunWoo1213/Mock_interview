@@ -31,10 +31,10 @@ export default function AuthGuard({ children }: AuthGuardProps) {
   // 검증 중일 때 로딩 표시
   if (!isVerified) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-2 border-primary-500 mb-4" />
-          <p className="text-gray-400">인증 확인 중...</p>
+          <p className="text-gray-600">인증 확인 중...</p>
         </div>
       </div>
     );
@@ -43,6 +43,8 @@ export default function AuthGuard({ children }: AuthGuardProps) {
   // 검증 완료 시 자식 컴포넌트 렌더링
   return <>{children}</>;
 }
+
+
 
 
 

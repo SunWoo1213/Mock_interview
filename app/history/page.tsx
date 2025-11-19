@@ -214,8 +214,8 @@ export default function HistoryPage() {
             onClick={() => setActiveTab('interviews')}
             className={`px-6 py-3 font-semibold transition-all ${
               activeTab === 'interviews'
-                ? 'text-primary-500 border-b-2 border-primary-500'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'text-primary-600 border-b-2 border-primary-600 font-bold'
+                : 'text-gray-500 hover:text-gray-900'
             }`}
           >
             🎤 모의면접 ({interviews.length})
@@ -224,8 +224,8 @@ export default function HistoryPage() {
             onClick={() => setActiveTab('cover-letters')}
             className={`px-6 py-3 font-semibold transition-all ${
               activeTab === 'cover-letters'
-                ? 'text-primary-500 border-b-2 border-primary-500'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'text-primary-600 border-b-2 border-primary-600 font-bold'
+                : 'text-gray-500 hover:text-gray-900'
             }`}
           >
             📝 자기소개서 ({coverLetters.length})
@@ -234,8 +234,8 @@ export default function HistoryPage() {
             onClick={() => setActiveTab('job-postings')}
             className={`px-6 py-3 font-semibold transition-all ${
               activeTab === 'job-postings'
-                ? 'text-primary-500 border-b-2 border-primary-500'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'text-primary-600 border-b-2 border-primary-600 font-bold'
+                : 'text-gray-500 hover:text-gray-900'
             }`}
           >
             📋 채용공고 분석 ({jobPostings.length})
@@ -291,12 +291,12 @@ export default function HistoryPage() {
                         <div className="flex-1">
                           {interview.jobPosting ? (
                             <div className="mb-2">
-                              <h3 className="text-xl font-bold text-white group-hover:text-primary-400 transition-colors">
+                              <h3 className="text-xl font-bold text-slate-900 group-hover:text-primary-600 transition-colors">
                                 {interview.jobPosting.companyName} - {interview.jobPosting.title}
                               </h3>
                             </div>
                           ) : (
-                            <h3 className="text-xl font-bold text-white group-hover:text-primary-400 transition-colors mb-2">
+                            <h3 className="text-xl font-bold text-slate-900 group-hover:text-primary-600 transition-colors mb-2">
                               모의 면접 #{interview.id}
                             </h3>
                           )}
@@ -377,12 +377,12 @@ export default function HistoryPage() {
                         <div className="flex-1">
                           {letter.jobPosting ? (
                             <div className="mb-2">
-                              <h3 className="text-xl font-bold text-white group-hover:text-primary-400 transition-colors">
+                              <h3 className="text-xl font-bold text-slate-900 group-hover:text-primary-600 transition-colors">
                                 {letter.jobPosting.companyName} - {letter.jobPosting.title}
                               </h3>
                             </div>
                           ) : (
-                            <h3 className="text-xl font-bold text-white group-hover:text-primary-400 transition-colors mb-2">
+                            <h3 className="text-xl font-bold text-slate-900 group-hover:text-primary-600 transition-colors mb-2">
                               자기소개서 #{letter.id}
                             </h3>
                           )}
@@ -455,7 +455,7 @@ export default function HistoryPage() {
                     >
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
-                          <h3 className="text-xl font-bold text-white group-hover:text-primary-400 transition-colors mb-2">
+                          <h3 className="text-xl font-bold text-slate-900 group-hover:text-primary-600 transition-colors mb-2">
                             {posting.title || posting.companyName || '제목 없음'}
                           </h3>
                           {posting.companyName && posting.title && (
@@ -528,17 +528,17 @@ export default function HistoryPage() {
       {/* 채용공고 상세보기 모달 */}
       {showModal && selectedPosting && (
         <div 
-          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
           onClick={closeModal}
         >
           <div 
-            className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border-2 border-primary-500/50"
+            className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-gray-200 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* 모달 헤더 */}
             <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-start justify-between">
               <div className="flex-1">
-                <h2 className="text-2xl font-bold text-white mb-2">
+                <h2 className="text-2xl font-bold text-slate-900 mb-2">
                   {selectedPosting.title || selectedPosting.companyName || '채용공고'}
                 </h2>
                 {selectedPosting.companyName && selectedPosting.title && (
@@ -547,7 +547,8 @@ export default function HistoryPage() {
               </div>
               <button
                 onClick={closeModal}
-                className="ml-4 p-2 text-gray-600 hover:text-white hover:bg-gray-800 rounded-lg transition-all"
+                className="ml-4 p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all"
+                aria-label="닫기"
               >
                 <span className="text-2xl">✕</span>
               </button>
@@ -560,8 +561,8 @@ export default function HistoryPage() {
                   {/* 요약 */}
                   {selectedPosting.analysisJson.summary && (
                     <div>
-                      <h3 className="text-lg font-bold text-primary-400 mb-3">📝 요약</h3>
-                      <p className="text-gray-300 leading-relaxed bg-gray-800 p-4 rounded-lg">
+                      <h3 className="text-lg font-bold text-primary-600 mb-3">📝 요약</h3>
+                      <p className="text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-lg border border-slate-200">
                         {selectedPosting.analysisJson.summary}
                       </p>
                     </div>
@@ -570,12 +571,12 @@ export default function HistoryPage() {
                   {/* 핵심 키워드 */}
                   {selectedPosting.analysisJson.keywords && (
                     <div>
-                      <h3 className="text-lg font-bold text-primary-400 mb-3">🏷️ 핵심 키워드</h3>
+                      <h3 className="text-lg font-bold text-primary-600 mb-3">🏷️ 핵심 키워드</h3>
                       <div className="flex flex-wrap gap-2">
                         {selectedPosting.analysisJson.keywords.map((keyword: string, idx: number) => (
                           <span
                             key={idx}
-                            className="px-3 py-2 bg-primary-900/30 text-primary-300 text-sm rounded-lg border border-primary-700"
+                            className="px-3 py-2 bg-primary-50 text-primary-700 text-sm rounded-lg border border-primary-200"
                           >
                             {keyword}
                           </span>
@@ -587,12 +588,12 @@ export default function HistoryPage() {
                   {/* 필수 요건 */}
                   {selectedPosting.analysisJson.must_have && (
                     <div>
-                      <h3 className="text-lg font-bold text-red-400 mb-3">⭐ 필수 요건</h3>
-                      <ul className="space-y-2 bg-gray-800 p-4 rounded-lg">
+                      <h3 className="text-lg font-bold text-red-600 mb-3">⭐ 필수 요건</h3>
+                      <ul className="space-y-2 bg-red-50 p-4 rounded-lg border border-red-200">
                         {selectedPosting.analysisJson.must_have.map((item: string, idx: number) => (
                           <li key={idx} className="flex items-start gap-2">
-                            <span className="text-red-400 mt-1">•</span>
-                            <span className="text-gray-300">{item}</span>
+                            <span className="text-red-600 mt-1">•</span>
+                            <span className="text-slate-700">{item}</span>
                           </li>
                         ))}
                       </ul>
@@ -602,12 +603,12 @@ export default function HistoryPage() {
                   {/* 우대 사항 */}
                   {selectedPosting.analysisJson.nice_to_have && (
                     <div>
-                      <h3 className="text-lg font-bold text-blue-400 mb-3">✨ 우대 사항</h3>
-                      <ul className="space-y-2 bg-gray-800 p-4 rounded-lg">
+                      <h3 className="text-lg font-bold text-blue-600 mb-3">✨ 우대 사항</h3>
+                      <ul className="space-y-2 bg-blue-50 p-4 rounded-lg border border-blue-200">
                         {selectedPosting.analysisJson.nice_to_have.map((item: string, idx: number) => (
                           <li key={idx} className="flex items-start gap-2">
-                            <span className="text-blue-400 mt-1">•</span>
-                            <span className="text-gray-300">{item}</span>
+                            <span className="text-blue-600 mt-1">•</span>
+                            <span className="text-slate-700">{item}</span>
                           </li>
                         ))}
                       </ul>
@@ -616,9 +617,9 @@ export default function HistoryPage() {
 
                   {/* 원본 텍스트 */}
                   <div>
-                    <h3 className="text-lg font-bold text-gray-600 mb-3">📄 원본 공고 내용</h3>
-                    <div className="bg-gray-800 p-4 rounded-lg max-h-96 overflow-y-auto">
-                      <pre className="whitespace-pre-wrap text-gray-300 text-sm leading-relaxed font-sans">
+                    <h3 className="text-lg font-bold text-slate-700 mb-3">📄 원본 공고 내용</h3>
+                    <div className="bg-slate-50 p-4 rounded-lg max-h-96 overflow-y-auto border border-slate-200">
+                      <pre className="whitespace-pre-wrap text-slate-600 text-sm leading-relaxed font-sans">
                         {selectedPosting.extractedText}
                       </pre>
                     </div>
@@ -641,7 +642,7 @@ export default function HistoryPage() {
               </button>
               <button
                 onClick={closeModal}
-                className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors"
+                className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-slate-900 font-medium rounded-lg transition-colors"
               >
                 닫기
               </button>

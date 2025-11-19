@@ -342,11 +342,11 @@ export default function InterviewPage({
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col">
+    <div className="min-h-screen bg-slate-50 flex flex-col">
       {/* Header */}
-      <header className="border-b border-gray-800 p-4 bg-gray-900/50">
+      <header className="border-b border-gray-200 p-4 bg-white shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <h1 className="text-xl font-bold">AI 모의 면접</h1>
+          <h1 className="text-xl font-bold text-slate-900">AI 모의 면접</h1>
           
           {/* 면접 종료 및 결과 보기 버튼 */}
           <button
@@ -376,13 +376,13 @@ export default function InterviewPage({
         <div className="max-w-4xl w-full space-y-8">
           {/* 진행 상태 */}
           <div className="text-center space-y-2">
-            <span className="text-2xl font-bold text-primary-500">질문 {turnNumber} / 5</span>
-            <p className="text-gray-400 text-sm">{getStateMessage()}</p>
+            <span className="text-2xl font-bold text-primary-600">질문 {turnNumber} / 5</span>
+            <p className="text-gray-600 text-sm">{getStateMessage()}</p>
           </div>
 
           {/* 질문 영역 */}
-          <div className="p-8 bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl border-2 border-gray-700 min-h-[200px] flex items-center justify-center shadow-2xl">
-            <p className="text-2xl text-center leading-relaxed font-medium">{questionText}</p>
+          <div className="p-8 bg-white rounded-2xl border-2 border-gray-200 min-h-[200px] flex items-center justify-center shadow-lg">
+            <p className="text-2xl text-center leading-relaxed font-medium text-slate-900">{questionText}</p>
           </div>
 
           {/* 숨겨진 오디오 플레이어 (TTS 자동 재생) */}
@@ -435,7 +435,7 @@ export default function InterviewPage({
               <AudioVisualizer isRecording={true} />
               <button
                 onClick={stopRecording}
-                className="px-8 py-3 bg-red-600 hover:bg-red-700 rounded-lg transition-colors font-semibold shadow-lg"
+                className="px-8 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-semibold shadow-lg"
               >
                 녹음 중지
               </button>
@@ -446,26 +446,26 @@ export default function InterviewPage({
           {interviewState === 'waiting_next' && (
             <div className="flex flex-col items-center gap-4">
               <div className="text-center">
-                <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-green-600/20 flex items-center justify-center">
-                  <svg className="w-10 h-10 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-green-100 flex items-center justify-center border-2 border-green-300">
+                  <svg className="w-10 h-10 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                 </div>
-                <p className="text-xl font-semibold text-green-400 mb-2">답변 녹음 완료!</p>
-                <p className="text-gray-400 text-sm">다음 질문으로 넘어가시려면 버튼을 클릭하세요</p>
+                <p className="text-xl font-semibold text-green-600 mb-2">답변 녹음 완료!</p>
+                <p className="text-gray-600 text-sm">다음 질문으로 넘어가시려면 버튼을 클릭하세요</p>
               </div>
               
               {turnNumber < 5 ? (
                 <button
                   onClick={handleNextQuestion}
-                  className="px-12 py-4 bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors font-bold text-lg shadow-xl"
+                  className="px-12 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors font-bold text-lg shadow-xl"
                 >
                   다음 질문 →
                 </button>
               ) : (
                 <button
                   onClick={handleNextQuestion}
-                  className="px-12 py-4 bg-green-600 hover:bg-green-700 rounded-lg transition-colors font-bold text-lg shadow-xl"
+                  className="px-12 py-4 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-bold text-lg shadow-xl"
                 >
                   면접 결과 보기 ✓
                 </button>
@@ -477,9 +477,9 @@ export default function InterviewPage({
           {interviewState === 'processing' && (
             <div className="text-center">
               <div className="inline-block animate-spin rounded-full h-16 w-16 border-4 border-primary-500 border-t-transparent mb-6" />
-              <p className="text-2xl font-bold text-primary-400 mb-3">결과 분석 중...</p>
-              <p className="text-lg text-gray-300 mb-2">AI가 답변을 분석하고 있습니다</p>
-              <p className="text-sm text-gray-500">잠시만 기다려주세요. 곧 상세한 피드백을 확인하실 수 있습니다.</p>
+              <p className="text-2xl font-bold text-primary-600 mb-3">결과 분석 중...</p>
+              <p className="text-lg text-slate-700 mb-2">AI가 답변을 분석하고 있습니다</p>
+              <p className="text-sm text-gray-600">잠시만 기다려주세요. 곧 상세한 피드백을 확인하실 수 있습니다.</p>
             </div>
           )}
 
@@ -490,20 +490,20 @@ export default function InterviewPage({
                 // 자동 재생 실패 시 수동 재생 버튼 표시 (폴백)
                 <div>
                   <div className="mb-6">
-                    <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-yellow-600/20 flex items-center justify-center">
-                      <svg className="w-10 h-10 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                    <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-yellow-100 flex items-center justify-center border-2 border-yellow-300">
+                      <svg className="w-10 h-10 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                       </svg>
                     </div>
-                    <p className="text-xl text-yellow-400 mb-2">🔊 질문 듣기</p>
-                    <p className="text-sm text-gray-400 mb-6">
+                    <p className="text-xl text-yellow-700 mb-2">🔊 질문 듣기</p>
+                    <p className="text-sm text-gray-600 mb-6">
                       브라우저 설정으로 인해 자동 재생이 차단되었습니다.<br />
                       아래 버튼을 클릭하여 질문을 들어주세요.
                     </p>
                   </div>
                   <button
                     onClick={handleManualPlay}
-                    className="px-12 py-4 bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors font-bold text-lg shadow-xl flex items-center gap-3 mx-auto"
+                    className="px-12 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors font-bold text-lg shadow-xl flex items-center gap-3 mx-auto"
                   >
                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
@@ -521,7 +521,7 @@ export default function InterviewPage({
                       <div className="w-3 h-3 bg-primary-500 rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
                     </div>
                   </div>
-                  <p className="text-gray-400">질문을 재생 중입니다...</p>
+                  <p className="text-gray-600">질문을 재생 중입니다...</p>
                   <p className="text-xs text-gray-500 mt-2">재생이 완료되면 자동으로 녹음이 시작됩니다</p>
                 </div>
               )}
