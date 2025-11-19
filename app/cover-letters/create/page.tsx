@@ -22,15 +22,29 @@ export default function CreateCoverLetterPage() {
 
   useEffect(() => {
     if (!jobPostingId) {
-      setError('채용 공고 ID가 필요합니다.');
       setIsLoading(false);
       return;
     }
 
-    // TODO: 채용 공고 정보 로드
-    // 현재는 apiClient에 getJobPosting이 없으므로 임시 처리
-    setIsLoading(false);
+    loadJobPosting();
   }, [jobPostingId]);
+
+  const loadJobPosting = async () => {
+    if (!jobPostingId) return;
+
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const result = await apiClient.getJobPosting(parseInt(jobPostingId));
+      setJobPosting(result.jobPosting);
+    } catch (err: any) {
+      console.error('공고 로드 에러:', err);
+      setError(err.message || '공고를 불러오는데 실패했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,17 +89,82 @@ export default function CreateCoverLetterPage() {
     );
   }
 
+  // 공고 ID가 없는 경우
+  if (!jobPostingId) {
+    return (
+      <div className="min-h-screen bg-black text-white">
+        <div className="max-w-4xl mx-auto px-8 py-16">
+          <button
+            onClick={() => router.back()}
+            className="mb-8 text-gray-400 hover:text-white transition-colors"
+          >
+            ← 뒤로 가기
+          </button>
+
+          <div className="text-center py-12">
+            <h1 className="text-4xl font-black mb-4">📝 자기소개서 작성</h1>
+            <p className="text-gray-400 mb-8">
+              자기소개서를 작성하려면 먼저 채용 공고를 선택해주세요.
+            </p>
+
+            <div className="space-y-4">
+              <button
+                onClick={() => router.push('/job-postings/history')}
+                className="block w-full max-w-md mx-auto px-6 py-4 bg-primary-500 hover:bg-primary-600 text-white font-bold rounded-lg transition-colors"
+              >
+                📋 저장된 공고 선택하기
+              </button>
+              <button
+                onClick={() => router.push('/job-postings/upload')}
+                className="block w-full max-w-md mx-auto px-6 py-4 bg-gray-800 hover:bg-gray-700 text-white font-bold rounded-lg transition-colors"
+              >
+                ➕ 새 공고 업로드하기
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="max-w-4xl mx-auto px-8 py-16">
         <div className="mb-8">
           <button
-            onClick={() => router.push('/job-postings/upload')}
+            onClick={() => router.push('/job-postings/history')}
             className="text-gray-400 hover:text-white transition-colors"
           >
-            ← 채용 공고로 돌아가기
+            ← 공고 히스토리
           </button>
         </div>
+
+        {/* 선택된 공고 정보 */}
+        {jobPosting && (
+          <div className="mb-8 p-6 bg-gray-900 border-2 border-primary-500/30 rounded-xl">
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <h2 className="text-2xl font-bold text-white mb-2">
+                  {jobPosting.title || jobPosting.companyName || '선택된 공고'}
+                </h2>
+                {jobPosting.companyName && jobPosting.title && (
+                  <p className="text-gray-400">{jobPosting.companyName}</p>
+                )}
+              </div>
+              <button
+                onClick={() => router.push('/job-postings/history')}
+                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded transition-colors"
+              >
+                공고 변경
+              </button>
+            </div>
+            
+            {/* 분석 결과 미리보기 */}
+            {jobPosting.analysisJson && (
+              <JobPostingAnalysis analysisJson={jobPosting.analysisJson} />
+            )}
+          </div>
+        )}
 
         <h1 className="text-4xl font-bold mb-8">자기소개서 작성</h1>
 

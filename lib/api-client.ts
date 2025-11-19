@@ -100,6 +100,45 @@ export class ApiClient {
     });
   }
 
+  async getJobPostingHistory() {
+    return this.request<{ 
+      jobPostings: Array<{
+        id: number;
+        title: string | null;
+        companyName: string | null;
+        extractedText: string;
+        analysisJson: any;
+        status: string;
+        createdAt: string;
+        updatedAt: string;
+      }>;
+      total: number;
+    }>('/api/job-postings/history');
+  }
+
+  async getJobPosting(id: number) {
+    return this.request<{
+      jobPosting: {
+        id: number;
+        title: string | null;
+        companyName: string | null;
+        originalS3Url: string | null;
+        extractedText: string;
+        analysisJson: any;
+        status: string;
+        createdAt: string;
+        updatedAt: string;
+      };
+    }>(`/api/job-postings/${id}`);
+  }
+
+  async deleteJobPosting(id: number) {
+    return this.request<{ message: string; id: number }>(
+      `/api/job-postings/${id}`,
+      { method: 'DELETE' }
+    );
+  }
+
   // Cover Letters
   async createCoverLetter(data: { jobPostingId: number; contentText: string }) {
     return this.request<{ coverLetterId: number; feedback: any }>(
