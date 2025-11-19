@@ -68,7 +68,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse): Promise
      VALUES ($1, $2, $3)`,
     [
       coverLetterId,
-      feedback.overall_feedback,
+      feedback.summary,
       JSON.stringify(feedback),
     ]
   );
