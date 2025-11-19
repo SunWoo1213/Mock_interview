@@ -334,8 +334,8 @@ export default function CreateCoverLetterPage() {
             </form>
           </div>
         </div>
-        ) : (
-          <div className="max-w-5xl mx-auto px-8 py-12 space-y-8">
+      ) : (
+        <div className="max-w-5xl mx-auto px-8 py-12 space-y-8">
             {/* 종합 평가 */}
             <div className="p-8 bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg border-2 border-primary-600">
               <h2 className="text-3xl font-bold mb-6">📊 AI 분석 결과</h2>
@@ -475,8 +475,8 @@ export default function CreateCoverLetterPage() {
               </button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
