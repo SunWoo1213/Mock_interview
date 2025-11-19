@@ -1,17 +1,38 @@
 /**
- * 홈 페이지 (로그인 필요)
+ * 홈 페이지 (게스트도 접근 가능)
  */
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import Header from '@/components/Header';
 import JobSelectionModal from '@/components/JobSelectionModal';
 
 export default function HomePage() {
+  const router = useRouter();
   const { user, isLoading } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // 네비게이션 핸들러: 로그인 상태 확인 후 이동
+  const handleNavigation = (path: string) => {
+    if (user) {
+      // 로그인 상태: 해당 경로로 이동
+      router.push(path);
+    } else {
+      // 게스트: 로그인 페이지로 리다이렉트
+      router.push('/login');
+    }
+  };
+
+  // 모달 열기 핸들러: 로그인 상태 확인
+  const handleOpenModal = () => {
+    if (user) {
+      setIsModalOpen(true);
+    } else {
+      router.push('/login');
+    }
+  };
 
   if (isLoading) {
     return (
@@ -49,12 +70,12 @@ export default function HomePage() {
             <p className="text-sm md:text-base text-gray-600 mb-4">
               PDF 업로드만으로 핵심 키워드와 요구사항을 자동 분석합니다.
             </p>
-            <Link
-              href="/job-postings/upload"
+            <button
+              onClick={() => handleNavigation('/job-postings/upload')}
               className="block md:inline-block w-full md:w-auto text-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
             >
               시작하기
-            </Link>
+            </button>
           </div>
 
           <div className="p-6 md:p-8 bg-white rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow-md transition-all">
@@ -64,7 +85,7 @@ export default function HomePage() {
               AI가 당신의 자기소개서를 분석하고 개선점을 제시합니다.
             </p>
             <button
-              onClick={() => setIsModalOpen(true)}
+              onClick={handleOpenModal}
               className="block md:inline-block w-full md:w-auto text-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
             >
               시작하기
@@ -77,12 +98,12 @@ export default function HomePage() {
             <p className="text-sm md:text-base text-gray-600 mb-4">
               실전처럼 AI 면접관과 음성으로 면접을 진행하세요.
             </p>
-            <Link
-              href="/interview"
+            <button
+              onClick={() => handleNavigation('/interview')}
               className="block md:inline-block w-full md:w-auto text-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
             >
               시작하기
-            </Link>
+            </button>
           </div>
 
           <div className="p-6 md:p-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border-2 border-blue-200 hover:border-blue-400 hover:shadow-md transition-all">
@@ -91,12 +112,12 @@ export default function HomePage() {
             <p className="text-sm md:text-base text-gray-600 mb-4">
               내 자기소개서와 면접 기록을 한눈에 확인하세요.
             </p>
-            <Link
-              href="/history"
+            <button
+              onClick={() => handleNavigation('/history')}
               className="block md:inline-block w-full md:w-auto text-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
             >
               히스토리 보기
-            </Link>
+            </button>
           </div>
         </div>
       </div>
