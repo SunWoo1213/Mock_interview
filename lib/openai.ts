@@ -314,10 +314,18 @@ export async function generateInterviewQuestion(
 4. **깊이**: 단순 사실 확인이 아닌 사고력과 문제 해결 능력을 평가
 5. **자연스러움**: 대화 흐름을 고려한 질문 (꼬리 질문 포함)
 
+# 언어 및 발음 최적화 (중요!)
+- **영어 전문 용어 사용 시**: React, AWS, ROI, API, DB 같은 영어 전문 용어를 포함할 때는 한국어 조사(은/는/이/가/을/를)를 자연스럽게 붙여서 작성하세요.
+  - 좋은 예: "React를 사용한 경험이 있으신가요?", "AWS 환경에서 배포해보신 적이 있나요?"
+  - 나쁜 예: "React 경험이 있습니까?", "AWS 배포한 경험?"
+- **구어체 작성**: 소리 내어 읽었을 때 자연스러운 구어체로 작성하세요. TTS가 읽을 때 한국어 흐름이 끊기지 않도록 합니다.
+- **업계 표준 용어**: 해당 직무에서 통용되는 영어 전문 용어를 자연스럽게 사용하되, 한국어 문장 구조 안에 매끄럽게 녹여주세요.
+
 # 금지 사항
 - 자기소개서에 이미 명시된 내용을 그대로 반복하는 질문
 - 지나치게 일반적이거나 포괄적인 질문
-- 예/아니오로 답할 수 있는 단순 질문`;
+- 예/아니오로 답할 수 있는 단순 질문
+- 영어와 한국어가 어색하게 섞인 문장`;
 
   let userPrompt = '';
 
@@ -582,12 +590,13 @@ ${earlyFinishNote}
 export async function textToSpeech(text: string, voice: string = 'nova'): Promise<Buffer> {
   try {
     console.log(`🎤 [TTS] Generating speech for text (${text.length} chars) with voice: ${voice}`);
+    console.log(`🎤 [TTS] Using tts-1-hd model for better multilingual handling`);
     
     const mp3 = await openai.audio.speech.create({
-      model: 'tts-1',
+      model: 'tts-1-hd', // 고화질 모델 사용 (code-switching 처리 우수)
       voice: voice as any, // alloy, echo, fable, onyx, nova, shimmer
       input: text,
-      speed: 1.0,
+      speed: 0.95, // 약간 느리게 하여 언어 전환 시 명확한 발음 유도
       response_format: 'mp3', // 명시적으로 MP3 포맷 지정
     });
 
