@@ -3,7 +3,7 @@
  */
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { apiClient } from '@/lib/api-client';
 
@@ -47,13 +47,7 @@ export default function CoverLetterDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    if (!id) return;
-
-    loadCoverLetter();
-  }, [id]);
-
-  const loadCoverLetter = async () => {
+  const loadCoverLetter = useCallback(async () => {
     setIsLoading(true);
     setError('');
 
@@ -76,7 +70,12 @@ export default function CoverLetterDetailPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    if (!id) return;
+    loadCoverLetter();
+  }, [id, loadCoverLetter]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -260,13 +259,13 @@ export default function CoverLetterDetailPage() {
                       <div className="mb-4">
                         <div className="text-sm text-gray-400 mb-1">❌ 수정 전</div>
                         <div className="p-3 bg-red-900/20 border-l-4 border-red-500 rounded">
-                          <p className="text-gray-300 italic">"{fix.original}"</p>
+                          <p className="text-gray-300 italic">&ldquo;{fix.original}&rdquo;</p>
                         </div>
                       </div>
                       <div className="mb-4">
                         <div className="text-sm text-gray-400 mb-1">✅ 수정 후</div>
                         <div className="p-3 bg-green-900/20 border-l-4 border-green-500 rounded">
-                          <p className="text-gray-300 font-medium">"{fix.improved}"</p>
+                          <p className="text-gray-300 font-medium">&ldquo;{fix.improved}&rdquo;</p>
                         </div>
                       </div>
                       <div className="p-3 bg-blue-900/20 rounded">
