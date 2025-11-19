@@ -15,7 +15,6 @@ interface CoverLetterDetail {
   title?: string;
   company_name?: string;
   feedback_json?: {
-    overallScore?: number;
     summary?: string;
     overall_feedback?: string; // 하위 호환성
     strengths?: string[];
@@ -177,21 +176,10 @@ export default function CoverLetterDetailPage() {
         {/* AI 피드백 */}
         {coverLetter.feedback_json ? (
           <div className="space-y-6">
-            {/* 점수 및 종합 평가 */}
+            {/* 종합 평가 */}
             <div className="p-8 bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg border-2 border-primary-600">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-3xl font-bold">🤖 AI 분석 결과</h2>
-                {coverLetter.feedback_json.overallScore !== undefined && (
-                  <div className="text-right">
-                    <div className="text-5xl font-bold text-primary-400">
-                      {coverLetter.feedback_json.overallScore}
-                    </div>
-                    <div className="text-sm text-gray-400">/ 100점</div>
-                  </div>
-                )}
-              </div>
+              <h2 className="text-3xl font-bold mb-6">🤖 AI 분석 결과</h2>
               
-              {/* 종합 평가 */}
               <div className="p-4 bg-black/30 rounded-lg">
                 <h3 className="text-lg font-semibold mb-3 text-primary-300">종합 평가</h3>
                 <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">

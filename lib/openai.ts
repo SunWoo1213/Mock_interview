@@ -63,7 +63,6 @@ ${extractedText}
 }
 
 export interface CoverLetterFeedback {
-  overallScore: number; // 0-100점 점수
   summary: string; // 전문적인 총평
   strengths: string[]; // 강점 목록
   weaknesses: string[]; // 약점/보완점 목록
@@ -132,7 +131,6 @@ ${coverLetterText}
 
 \`\`\`json
 {
-  "overallScore": 85,
   "summary": "전체적으로 직무 경험이 잘 드러나는 자기소개서입니다. 다만 구체적인 성과 수치와 STAR 기법을 보완하면 더욱 강력해질 것입니다.",
   "strengths": [
     "채용 공고의 필수 요건인 'React 개발 경험'을 명확히 언급하고 있습니다.",
@@ -186,7 +184,6 @@ ${coverLetterText}
 \`\`\`
 
 **중요 지침**:
-- overallScore는 0-100점 사이의 정수로 제공
 - strengths, weaknesses는 각각 3-5개 항목
 - detailedAnalysis는 자기소개서의 주요 섹션별(서론, 본론, 결론 등) 분석
 - actionableFixes는 **반드시 3개**의 구체적인 수정 예시 제공
@@ -207,13 +204,9 @@ ${coverLetterText}
     const parsed = JSON.parse(content || '{}');
     
     console.log('✅ [Cover Letter Feedback] AI 분석 완료');
-    console.log(`📊 [Cover Letter Feedback] Overall Score: ${parsed.overallScore || 0}`);
     
     // 데이터 구조 검증 및 정규화
     const feedback: CoverLetterFeedback = {
-      overallScore: typeof parsed.overallScore === 'number' 
-        ? Math.max(0, Math.min(100, parsed.overallScore)) 
-        : 70, // 기본값
       summary: String(parsed.summary || '종합 분석이 생성되지 않았습니다.'),
       strengths: Array.isArray(parsed.strengths) 
         ? parsed.strengths.map((s: any) => String(s)) 
