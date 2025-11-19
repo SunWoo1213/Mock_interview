@@ -135,6 +135,9 @@ model InterviewSession {
   coverLetterId     Int?      @map("cover_letter_id")              // 참조 자기소개서
   jobPostingId      Int?      @map("job_posting_id")               // 참조 채용공고
   
+  // 면접관 목소리 설정
+  voice             String?   @default("nova") @map("voice") @db.VarChar(20)  // OpenAI TTS 목소리 (alloy, echo, fable, onyx, nova, shimmer)
+  
   // 상태 관리
   status            InterviewSessionStatus @default(PENDING)       // 'pending' | 'in_progress' | 'completed' | 'cancelled'
   totalQuestions    Int       @default(5) @map("total_questions")  // 총 질문 수 (기본값: 5)
