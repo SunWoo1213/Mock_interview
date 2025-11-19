@@ -90,8 +90,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // 사용자 상태 초기화
     setUser(null);
     
-    // 로그인 페이지로 리다이렉트
-    router.push('/login');
+    // 대시보드로 리다이렉트 (게스트도 볼 수 있음)
+    router.push('/');
   };
 
   // Context 값 제공

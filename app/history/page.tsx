@@ -308,12 +308,12 @@ export default function HistoryPage() {
                         </div>
                         <div className="ml-4 flex items-center gap-3">
                           <span
-                            className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                            className={`px-3 py-1.5 rounded-full text-xs font-bold ${
                               interview.status === 'completed'
-                                ? 'bg-green-900/30 text-green-400 border border-green-600'
+                                ? 'bg-green-100 text-green-700 border-2 border-green-400'
                                 : interview.status === 'in_progress'
-                                ? 'bg-yellow-900/30 text-yellow-400 border border-yellow-600'
-                                : 'bg-gray-800 text-gray-600 border border-gray-700'
+                                ? 'bg-yellow-100 text-yellow-700 border-2 border-yellow-400'
+                                : 'bg-gray-100 text-gray-700 border-2 border-gray-400'
                             }`}
                           >
                             {interview.statusLabel}
@@ -392,10 +392,10 @@ export default function HistoryPage() {
                         </div>
                         <div className="ml-4 flex items-center gap-3">
                           <span
-                            className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                            className={`px-3 py-1.5 rounded-full text-xs font-bold ${
                               letter.status === 'Feedback Complete'
-                                ? 'bg-green-900/30 text-green-400 border border-green-600'
-                                : 'bg-gray-800 text-gray-600 border border-gray-700'
+                                ? 'bg-green-100 text-green-700 border-2 border-green-400'
+                                : 'bg-blue-100 text-blue-700 border-2 border-blue-400'
                             }`}
                           >
                             {letter.status}
@@ -468,14 +468,14 @@ export default function HistoryPage() {
                               {posting.analysisJson.keywords.slice(0, 5).map((keyword: string, idx: number) => (
                                 <span
                                   key={idx}
-                                  className="px-2 py-1 bg-primary-900/30 text-primary-400 text-xs rounded border border-primary-700"
+                                  className="px-3 py-1.5 bg-blue-50 text-blue-700 text-xs font-semibold rounded-lg border-2 border-blue-300"
                                 >
                                   {keyword}
                                 </span>
                               ))}
                               {posting.analysisJson.keywords.length > 5 && (
-                                <span className="px-2 py-1 text-gray-500 text-xs">
-                                  +{posting.analysisJson.keywords.length - 5}
+                                <span className="px-3 py-1.5 text-gray-600 text-xs font-medium bg-gray-100 rounded-lg border border-gray-300">
+                                  +{posting.analysisJson.keywords.length - 5}개 더
                                 </span>
                               )}
                             </div>
@@ -484,12 +484,12 @@ export default function HistoryPage() {
                         
                         <div className="ml-4 flex items-center gap-3">
                           <span
-                            className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                            className={`px-3 py-1.5 rounded-full text-xs font-bold ${
                               posting.status === 'analyzed'
-                                ? 'bg-green-900/30 text-green-400 border border-green-600'
+                                ? 'bg-green-100 text-green-700 border-2 border-green-400'
                                 : posting.status === 'pending'
-                                ? 'bg-yellow-900/30 text-yellow-400 border border-yellow-600'
-                                : 'bg-red-900/30 text-red-400 border border-red-600'
+                                ? 'bg-yellow-100 text-yellow-700 border-2 border-yellow-400'
+                                : 'bg-red-100 text-red-700 border-2 border-red-400'
                             }`}
                           >
                             {posting.status === 'analyzed' ? '✅ 분석 완료' : 
@@ -576,7 +576,7 @@ export default function HistoryPage() {
                         {selectedPosting.analysisJson.keywords.map((keyword: string, idx: number) => (
                           <span
                             key={idx}
-                            className="px-3 py-2 bg-primary-50 text-primary-700 text-sm rounded-lg border border-primary-200"
+                            className="px-4 py-2 bg-blue-50 text-blue-700 text-sm font-semibold rounded-lg border-2 border-blue-300"
                           >
                             {keyword}
                           </span>
