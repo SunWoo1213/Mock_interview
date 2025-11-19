@@ -49,7 +49,12 @@ export default function InterviewStartPage() {
   }, []);
 
   const handleStart = async () => {
+    console.log('🎬 [Frontend] ========== 면접 시작 요청 ==========');
+    console.log('🎬 [Frontend] coverLetterId:', coverLetterId);
+    console.log('🎬 [Frontend] coverLetterId type:', typeof coverLetterId);
+
     if (!coverLetterId) {
+      console.error('❌ [Frontend] coverLetterId가 선택되지 않음');
       setError('자기소개서를 선택해주세요.');
       return;
     }
@@ -58,14 +63,30 @@ export default function InterviewStartPage() {
     setError('');
 
     try {
+      console.log('📤 [Frontend] API 호출 시작...');
+      console.log('📤 [Frontend] 전송 데이터:', { coverLetterId });
+      
       const result = await apiClient.startInterview(coverLetterId);
+      
+      console.log('✅ [Frontend] API 응답 수신:');
+      console.log('   - sessionId:', result.sessionId);
+      console.log('   - voice:', result.voice);
+      console.log('   - turnNumber:', result.turnNumber);
+      console.log('   - questionText:', result.questionText?.substring(0, 50) + '...');
+      console.log('   - questionAudioUrl:', result.questionAudioUrl);
+      
       setSessionData(result);
       setIsStarted(true);
+      console.log('🎉 [Frontend] 면접 시작 성공!');
     } catch (err: any) {
+      console.error('❌❌❌ [Frontend] 면접 시작 실패 ❌❌❌');
+      console.error('Error:', err);
+      console.error('Error Message:', err.message);
+      console.error('Error Stack:', err.stack);
       setError(err.message || '면접 시작에 실패했습니다.');
-      console.error('면접 시작 에러:', err);
     } finally {
       setIsLoading(false);
+      console.log('🎬 [Frontend] ==========================================');
     }
   };
 

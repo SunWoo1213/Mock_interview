@@ -224,15 +224,26 @@ export class ApiClient {
 
   // Interview
   async startInterview(coverLetterId: number) {
-    return this.request<{
+    console.log('🌐 [API Client] startInterview called');
+    console.log('🌐 [API Client] Parameter - coverLetterId:', coverLetterId);
+    console.log('🌐 [API Client] Parameter type:', typeof coverLetterId);
+    
+    const payload = { coverLetterId };
+    console.log('🌐 [API Client] Payload:', JSON.stringify(payload));
+    
+    const result = await this.request<{
       sessionId: number;
+      voice: string;
       turnNumber: number;
       questionText: string;
       questionAudioUrl: string;
     }>('/api/interview/start', {
       method: 'POST',
-      body: JSON.stringify({ coverLetterId }),
+      body: JSON.stringify(payload),
     });
+    
+    console.log('🌐 [API Client] Response received:', result);
+    return result;
   }
 
   async submitAnswer(data: { sessionId: number; turnNumber: number; audio: Blob }) {

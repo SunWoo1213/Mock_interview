@@ -43,6 +43,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     // ========================================
+    // 0단계: 요청 정보 로깅
+    // ========================================
+    console.log('📥 [Interview Start] ========== 요청 수신 ==========');
+    console.log('📥 [Interview Start] Request Method:', req.method);
+    console.log('📥 [Interview Start] Request Body:', JSON.stringify(req.body, null, 2));
+    console.log('📥 [Interview Start] Request Headers (Authorization):', req.headers.authorization ? 'EXISTS' : 'MISSING');
+    console.log('📥 [Interview Start] ==========================================');
+
+    // ========================================
     // 1단계: JWT 인증 검증 (최우선)
     // ========================================
     console.log('🔒 [Interview Start] ========== 인증 시작 ==========');
@@ -121,16 +130,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log('🔒 [Interview Start] ========== 인증 완료 ==========');
 
     // ========================================
-    // 요청 본문 검증
+    // 2단계: 요청 본문 검증
     // ========================================
+    console.log('📋 [Interview Start] ========== 요청 본문 검증 시작 ==========');
     const { coverLetterId } = req.body;
 
+    console.log('📋 [Interview Start] Body Keys:', Object.keys(req.body));
+    console.log('📋 [Interview Start] coverLetterId (raw):', coverLetterId);
+    console.log('📋 [Interview Start] coverLetterId (type):', typeof coverLetterId);
+
     if (!coverLetterId) {
-      console.error('❌ [Interview Start] coverLetterId is missing');
-      return res.status(400).json({ error: 'coverLetterId가 필요합니다.' });
+      console.error('❌ [Interview Start] coverLetterId is missing or falsy');
+      console.error('❌ [Interview Start] Request Body:', JSON.stringify(req.body));
+      return res.status(400).json({ 
+        error: 'coverLetterId가 필요합니다.',
+        debug: {
+          receivedBody: req.body,
+          coverLetterId: coverLetterId,
+          bodyKeys: Object.keys(req.body)
+        }
+      });
     }
 
-    console.log('📋 [Interview Start] coverLetterId:', coverLetterId);
+    console.log('✅ [Interview Start] coverLetterId validated:', coverLetterId);
+    console.log('📋 [Interview Start] ========== 요청 본문 검증 완료 ==========');
 
     // ========================================
     // 자기소개서 및 관련 정보 조회
@@ -169,15 +192,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log('✅ [Interview Start] User profile loaded');
 
     // ========================================
-    // 2단계: 랜덤 목소리 선택
+    // 3단계: 랜덤 목소리 선택
     // ========================================
+    console.log('🎤 [Interview Start] ========== 랜덤 목소리 선택 ==========');
+    console.log('🎤 [Interview Start] Available Voices:', TTS_VOICES);
     const selectedVoice = TTS_VOICES[Math.floor(Math.random() * TTS_VOICES.length)];
-    console.log('🎤 [Interview Start] 랜덤 선택된 면접관 목소리:', selectedVoice);
+    console.log('✅ [Interview Start] 랜덤 선택된 면접관 목소리:', selectedVoice);
+    console.log('🎤 [Interview Start] ==========================================');
 
     // ========================================
-    // 3단계: DB 세션 생성
+    // 4단계: DB 세션 생성
     // ========================================
-    console.log('💾 [Interview Start] Creating interview session...');
+    console.log('💾 [Interview Start] ========== DB 세션 생성 ==========');
+    console.log('💾 [Interview Start] Insert Parameters:');
+    console.log('   - userId:', userId);
+    console.log('   - coverLetterId:', coverLetterId);
+    console.log('   - job_posting_id:', coverLetter.job_posting_id);
+    console.log('   - voice:', selectedVoice);
+    
     const sessionResult = await query(
       `INSERT INTO interview_sessions 
        (user_id, cover_letter_id, job_posting_id, voice, status, started_at) 
@@ -187,7 +219,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     );
 
     const sessionId = sessionResult.rows[0].id;
-    console.log('✅ [Interview Start] Session created, ID:', sessionId);
+    console.log('✅ [Interview Start] Session created successfully!');
+    console.log('✅ [Interview Start] Session ID:', sessionId);
+    console.log('💾 [Interview Start] ==========================================');
 
     // ========================================
     // 첫 번째 질문 생성
