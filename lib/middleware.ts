@@ -58,26 +58,63 @@ export function withAuth(
     try {
       // 디버깅: Authorization 헤더 확인
       const authHeader = req.headers.authorization;
+      console.log('🔒 [Backend Auth] ==========================================');
       console.log('🔒 [Backend Auth] Request URL:', req.url);
-      console.log('🔒 [Backend Auth] Authorization Header:', authHeader ? `${authHeader.substring(0, 30)}...` : 'undefined');
+      console.log('🔒 [Backend Auth] Request Method:', req.method);
+      console.log('🔒 [Backend Auth] Authorization Header Raw:', authHeader);
+      console.log('🔒 [Backend Auth] Authorization Header Type:', typeof authHeader);
+      console.log('🔒 [Backend Auth] Authorization Header Length:', authHeader?.length || 0);
+      
+      if (authHeader) {
+        const parts = authHeader.split(' ');
+        console.log('🔒 [Backend Auth] Header Parts Count:', parts.length);
+        console.log('🔒 [Backend Auth] Header Part[0] (Scheme):', parts[0]);
+        console.log('🔒 [Backend Auth] Header Part[1] (Token) Length:', parts[1]?.length || 0);
+        if (parts[1]) {
+          console.log('🔒 [Backend Auth] Token Preview:', parts[1].substring(0, 20) + '...');
+        }
+      }
 
       const token = extractTokenFromHeader(authHeader);
 
       if (!token) {
         console.error('❌ [Backend Auth] Token extraction failed - Header format incorrect or missing');
-        return res.status(401).json({ error: '인증이 필요합니다.' });
+        const errorDetails = {
+          error: '인증이 필요합니다.',
+          debug: {
+            headerExists: !!authHeader,
+            headerValue: authHeader ? `${authHeader.substring(0, 50)}...` : 'null',
+            reason: !authHeader ? 'Header is missing' : 'Invalid header format'
+          }
+        };
+        return res.status(401).json(errorDetails);
       }
 
       console.log('✅ [Backend Auth] Token extracted successfully');
       const payload = verifyToken(token);
-      console.log('✅ [Backend Auth] Token verified - User ID:', payload.userId);
+      console.log('✅ [Backend Auth] Token verified - User ID:', payload.userId, 'Email:', payload.email);
+      console.log('🔒 [Backend Auth] ==========================================');
       
       req.user = payload;
 
       await handler(req, res);
     } catch (error: any) {
+      console.error('❌ [Backend Auth] ==========================================');
       console.error('❌ [Backend Auth] Authentication error:', error.message);
-      return res.status(401).json({ error: '유효하지 않은 토큰입니다.' });
+      console.error('❌ [Backend Auth] Error Stack:', error.stack);
+      console.error('❌ [Backend Auth] ==========================================');
+      
+      const errorDetails = {
+        error: error.message || '유효하지 않은 토큰입니다.',
+        debug: {
+          errorName: error.name,
+          errorMessage: error.message,
+          isExpired: error.name === 'TokenExpiredError',
+          isInvalidSignature: error.name === 'JsonWebTokenError'
+        }
+      };
+      
+      return res.status(401).json(errorDetails);
     }
   });
 }

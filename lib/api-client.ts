@@ -49,6 +49,25 @@ export class ApiClient {
     // 401 Unauthorized 처리
     if (response.status === 401) {
       console.error('❌ [API Client] 401 Unauthorized - Token expired or invalid');
+      
+      // 백엔드의 디버그 정보 확인
+      try {
+        const errorData = await response.json();
+        console.error('📋 [API Client] Backend Error Details:', errorData);
+        
+        if (errorData.debug) {
+          console.error('🔍 [API Client] Debug Info:');
+          console.error('   - Error Name:', errorData.debug.errorName);
+          console.error('   - Error Message:', errorData.debug.errorMessage);
+          console.error('   - Token Expired:', errorData.debug.isExpired);
+          console.error('   - Invalid Signature:', errorData.debug.isInvalidSignature);
+          console.error('   - Header Exists:', errorData.debug.headerExists);
+          console.error('   - Reason:', errorData.debug.reason);
+        }
+      } catch (e) {
+        console.error('⚠️ [API Client] Could not parse error response');
+      }
+      
       console.log('🔄 [API Client] Clearing token and redirecting to login...');
       
       // 잘못된 토큰 삭제
