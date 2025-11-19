@@ -134,11 +134,14 @@ npm run db:migrate
 # 프로필 필드 추가 마이그레이션 (user_profiles 테이블 업데이트)
 npm run db:migrate:profile
 
+# 면접 피드백 구조 마이그레이션 (interview_turns.feedback_text → JSONB)
+npm run db:migrate:feedback
+
 # 마이그레이션 검증
 npm run db:verify
 ```
 
-> 💡 **마이그레이션 가이드**: 자세한 내용은 [마이그레이션 빠른 시작 가이드](./docs/MIGRATION_QUICKSTART.md) 참고
+> 💡 **마이그레이션 가이드**: 자세한 내용은 [MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md) 참고
 
 ### 4. 개발 서버 실행
 

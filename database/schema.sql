@@ -88,7 +88,22 @@ CREATE TABLE IF NOT EXISTS interview_sessions (
     -- 총 질문 수
     final_feedback_json JSONB,
     -- 최종 종합 피드백
-    -- 예: {"overall_feedback": "...", "per_turn_feedback": [...]}
+    -- 예: {
+    --   "overall_feedback": "종합 평가",
+    --   "per_turn_feedback": [
+    --     {
+    --       "turn_number": 1,
+    --       "question": "...",
+    --       "answer": "...",
+    --       "user_answer_summary": "...",
+    --       "strengths": [...],
+    --       "improvements": [...],
+    --       "better_answer_example": "..."
+    --     }
+    --   ],
+    --   "is_early_finish": false,
+    --   "total_questions_answered": 5
+    -- }
     started_at TIMESTAMP,
     completed_at TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -108,8 +123,9 @@ CREATE TABLE IF NOT EXISTS interview_turns (
     -- STT로 변환된 사용자 답변 텍스트
     user_answer_audio_s3_url TEXT,
     -- 사용자가 녹음한 답변 오디오 S3 URL
-    feedback_text TEXT,
-    -- 이 턴에 대한 개별 피드백
+    feedback_text JSONB,
+    -- 구조화된 턴별 피드백 (JSONB)
+    -- 예: {"user_answer_summary": "...", "strengths": [...], "improvements": [...], "better_answer_example": "..."}
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(session_id, turn_number)
 );
@@ -124,6 +140,10 @@ CREATE INDEX idx_cover_letter_feedbacks_cover_letter_id ON cover_letter_feedback
 CREATE INDEX idx_interview_sessions_user_id ON interview_sessions(user_id);
 CREATE INDEX idx_interview_sessions_status ON interview_sessions(status);
 CREATE INDEX idx_interview_turns_session_id ON interview_turns(session_id);
+
+-- JSONB 컬럼에 GIN 인덱스 추가 (쿼리 성능 향상)
+CREATE INDEX IF NOT EXISTS idx_interview_turns_feedback_gin ON interview_turns USING GIN (feedback_text);
+CREATE INDEX IF NOT EXISTS idx_interview_sessions_final_feedback_gin ON interview_sessions USING GIN (final_feedback_json);
 
 -- 업데이트 트리거 함수
 CREATE OR REPLACE FUNCTION update_updated_at_column()
