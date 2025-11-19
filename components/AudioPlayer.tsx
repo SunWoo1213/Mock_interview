@@ -54,7 +54,7 @@ export default function AudioPlayer({ audioUrl, onEnded, autoPlay = false }: Aud
   };
 
   return (
-    <div className="flex items-center gap-4 p-4 bg-gray-800 rounded-lg border border-gray-700">
+    <div className="flex items-center gap-4 p-4 bg-white rounded-lg border-2 border-blue-200 shadow-sm">
       <audio
         ref={audioRef}
         src={audioUrl}
@@ -66,7 +66,8 @@ export default function AudioPlayer({ audioUrl, onEnded, autoPlay = false }: Aud
 
       <button
         onClick={togglePlayPause}
-        className="w-12 h-12 flex items-center justify-center bg-blue-600 hover:bg-blue-700 rounded-full transition-colors"
+        className="w-12 h-12 flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white rounded-full transition-colors shadow-md flex-shrink-0"
+        aria-label={isPlaying ? "일시정지" : "재생"}
       >
         {isPlaying ? (
           <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -79,16 +80,16 @@ export default function AudioPlayer({ audioUrl, onEnded, autoPlay = false }: Aud
         )}
       </button>
 
-      <div className="flex-1">
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-400">{formatTime(currentTime)}</span>
-          <div className="flex-1 h-2 bg-gray-700 rounded-full overflow-hidden">
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 md:gap-3">
+          <span className="text-sm font-medium text-slate-700 flex-shrink-0">{formatTime(currentTime)}</span>
+          <div className="flex-1 h-2.5 bg-blue-100 rounded-full overflow-hidden">
             <div
-              className="h-full bg-blue-500 transition-all"
+              className="h-full bg-blue-600 transition-all rounded-full"
               style={{ width: `${(currentTime / duration) * 100 || 0}%` }}
             />
           </div>
-          <span className="text-sm text-gray-400">{formatTime(duration)}</span>
+          <span className="text-sm font-medium text-slate-700 flex-shrink-0">{formatTime(duration)}</span>
         </div>
       </div>
     </div>
