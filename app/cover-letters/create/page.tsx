@@ -101,24 +101,48 @@ export default function CreateCoverLetterPage() {
             ← 뒤로 가기
           </button>
 
-          <div className="text-center py-12">
-            <h1 className="text-4xl font-black mb-4">📝 자기소개서 작성</h1>
-            <p className="text-gray-400 mb-8">
-              자기소개서를 작성하려면 먼저 채용 공고를 선택해주세요.
-            </p>
+          <div className="text-center py-16">
+            <div className="mb-8">
+              <div className="w-32 h-32 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-6xl">📝</span>
+              </div>
+              <h1 className="text-4xl font-black mb-4">자기소개서 작성</h1>
+              <p className="text-gray-400 text-lg mb-2">
+                자기소개서를 작성하려면 먼저 채용 공고를 선택해주세요.
+              </p>
+              <p className="text-gray-500">
+                공고 분석 결과를 참고하여 더 효과적인 자소서를 작성할 수 있습니다.
+              </p>
+            </div>
 
-            <div className="space-y-4">
+            <div className="max-w-2xl mx-auto space-y-4">
               <button
-                onClick={() => router.push('/job-postings/history')}
-                className="block w-full max-w-md mx-auto px-6 py-4 bg-primary-500 hover:bg-primary-600 text-white font-bold rounded-lg transition-colors"
+                onClick={() => router.push('/cover-letters/select-posting')}
+                className="w-full px-8 py-5 bg-primary-500 hover:bg-primary-600 text-white font-bold text-lg rounded-xl transition-all transform hover:scale-105 shadow-lg hover:shadow-primary-500/50"
               >
-                📋 저장된 공고 선택하기
+                <div className="flex items-center justify-center gap-3">
+                  <span className="text-2xl">📋</span>
+                  <span>분석된 공고 선택하기</span>
+                </div>
               </button>
+              
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-700"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-4 bg-black text-gray-500">또는</span>
+                </div>
+              </div>
+
               <button
                 onClick={() => router.push('/job-postings/upload')}
-                className="block w-full max-w-md mx-auto px-6 py-4 bg-gray-800 hover:bg-gray-700 text-white font-bold rounded-lg transition-colors"
+                className="w-full px-8 py-5 bg-gray-800 hover:bg-gray-700 text-white font-bold text-lg rounded-xl transition-all border-2 border-gray-700 hover:border-gray-600"
               >
-                ➕ 새 공고 업로드하기
+                <div className="flex items-center justify-center gap-3">
+                  <span className="text-2xl">➕</span>
+                  <span>새 공고 업로드 및 분석</span>
+                </div>
               </button>
             </div>
           </div>
@@ -129,80 +153,189 @@ export default function CreateCoverLetterPage() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <div className="max-w-4xl mx-auto px-8 py-16">
-        <div className="mb-8">
-          <button
-            onClick={() => router.push('/job-postings/history')}
-            className="text-gray-400 hover:text-white transition-colors"
-          >
-            ← 공고 히스토리
-          </button>
-        </div>
-
-        {/* 선택된 공고 정보 */}
-        {jobPosting && (
-          <div className="mb-8 p-6 bg-gray-900 border-2 border-primary-500/30 rounded-xl">
-            <div className="flex items-start justify-between mb-4">
+      {/* 헤더 */}
+      <div className="border-b border-gray-800 bg-gray-900/50">
+        <div className="max-w-[1800px] mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => router.push('/cover-letters/select-posting')}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                ← 공고 선택
+              </button>
+              <div className="h-6 w-px bg-gray-700"></div>
               <div>
-                <h2 className="text-2xl font-bold text-white mb-2">
-                  {jobPosting.title || jobPosting.companyName || '선택된 공고'}
-                </h2>
-                {jobPosting.companyName && jobPosting.title && (
-                  <p className="text-gray-400">{jobPosting.companyName}</p>
+                <h1 className="text-xl font-bold">
+                  {jobPosting?.title || jobPosting?.companyName || '자기소개서 작성'}
+                </h1>
+                {jobPosting?.companyName && jobPosting?.title && (
+                  <p className="text-sm text-gray-400">{jobPosting.companyName}</p>
                 )}
               </div>
+            </div>
+            {!feedback && (
               <button
-                onClick={() => router.push('/job-postings/history')}
+                onClick={() => router.push('/cover-letters/select-posting')}
                 className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded transition-colors"
               >
                 공고 변경
               </button>
-            </div>
-            
-            {/* 분석 결과 미리보기 */}
-            {jobPosting.analysisJson && (
-              <JobPostingAnalysis analysisJson={jobPosting.analysisJson} />
             )}
           </div>
-        )}
+        </div>
+      </div>
 
-        <h1 className="text-4xl font-bold mb-8">자기소개서 작성</h1>
-
-        {error && !feedback && (
-          <div className="mb-8 p-4 bg-red-900/20 border border-red-500 rounded-lg">
+      {error && !feedback && (
+        <div className="max-w-[1800px] mx-auto px-6 mt-4">
+          <div className="p-4 bg-red-900/20 border border-red-500 rounded-lg">
             <p className="text-red-400">{error}</p>
           </div>
-        )}
+        </div>
+      )}
 
-        {!feedback ? (
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="p-6 bg-gray-900 rounded-lg border border-gray-800">
-              <label className="block text-lg font-bold mb-4">
-                자기소개서를 작성하세요
-              </label>
-              <textarea
-                value={contentText}
-                onChange={(e) => setContentText(e.target.value)}
-                rows={20}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-primary-500 transition-colors resize-none"
-                placeholder="채용 공고의 요구사항을 바탕으로 자기소개서를 작성해주세요..."
-                required
-              />
-              <p className="mt-2 text-sm text-gray-400">
-                {contentText.length} 자
-              </p>
+      {!feedback ? (
+        /* Split View: 공고 분석 (좌) + 자소서 작성 (우) */
+        <div className="flex h-[calc(100vh-120px)]">
+          {/* 왼쪽: 공고 분석 결과 (참고용) */}
+          <div className="w-2/5 border-r border-gray-800 overflow-y-auto bg-gray-900/30">
+            <div className="p-6">
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
+                  <span>📋</span> 공고 분석 결과
+                </h2>
+                <p className="text-sm text-gray-400">
+                  이 정보를 참고하여 자기소개서를 작성하세요
+                </p>
+              </div>
+
+              {jobPosting?.analysisJson ? (
+                <div className="space-y-6">
+                  {/* 요약 */}
+                  {jobPosting.analysisJson.summary && (
+                    <div className="p-4 bg-gray-800 rounded-lg border border-gray-700">
+                      <h3 className="text-sm font-bold text-primary-400 mb-2">📝 요약</h3>
+                      <p className="text-gray-300 text-sm leading-relaxed">
+                        {jobPosting.analysisJson.summary}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* 핵심 키워드 */}
+                  {jobPosting.analysisJson.keywords && (
+                    <div>
+                      <h3 className="text-sm font-bold text-primary-400 mb-3">🏷️ 핵심 키워드</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {jobPosting.analysisJson.keywords.map((keyword: string, idx: number) => (
+                          <span
+                            key={idx}
+                            className="px-3 py-1.5 bg-primary-900/30 text-primary-300 text-sm rounded-full border border-primary-700"
+                          >
+                            {keyword}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 필수 요건 */}
+                  {jobPosting.analysisJson.must_have && (
+                    <div>
+                      <h3 className="text-sm font-bold text-red-400 mb-3">⭐ 필수 요건</h3>
+                      <ul className="space-y-2">
+                        {jobPosting.analysisJson.must_have.map((item: string, idx: number) => (
+                          <li key={idx} className="flex items-start gap-2 text-sm">
+                            <span className="text-red-400 mt-0.5">•</span>
+                            <span className="text-gray-300">{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* 우대 사항 */}
+                  {jobPosting.analysisJson.nice_to_have && (
+                    <div>
+                      <h3 className="text-sm font-bold text-blue-400 mb-3">✨ 우대 사항</h3>
+                      <ul className="space-y-2">
+                        {jobPosting.analysisJson.nice_to_have.map((item: string, idx: number) => (
+                          <li key={idx} className="flex items-start gap-2 text-sm">
+                            <span className="text-blue-400 mt-0.5">•</span>
+                            <span className="text-gray-300">{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* 작성 팁 */}
+                  <div className="p-4 bg-yellow-900/20 rounded-lg border border-yellow-700">
+                    <h3 className="text-sm font-bold text-yellow-400 mb-2">💡 작성 팁</h3>
+                    <ul className="space-y-1 text-xs text-gray-300">
+                      <li>• 필수 요건을 모두 언급하세요</li>
+                      <li>• 핵심 키워드를 자연스럽게 포함하세요</li>
+                      <li>• 구체적인 경험과 성과를 기술하세요</li>
+                      <li>• STAR 기법(상황-과제-행동-결과)을 활용하세요</li>
+                    </ul>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-12 text-gray-500">
+                  <p>공고 분석 정보가 없습니다.</p>
+                </div>
+              )}
             </div>
+          </div>
 
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full px-6 py-3 bg-primary-600 hover:bg-primary-700 disabled:bg-gray-700 disabled:cursor-not-allowed rounded-lg transition-colors font-semibold"
-            >
-              {isSubmitting ? 'AI 피드백 생성 중...' : 'AI 피드백 받기'}
-            </button>
-          </form>
+          {/* 오른쪽: 자기소개서 작성 */}
+          <div className="flex-1 overflow-y-auto">
+            <form onSubmit={handleSubmit} className="h-full flex flex-col">
+              <div className="flex-1 p-6">
+                <div className="mb-4">
+                  <label className="block text-lg font-bold mb-2">
+                    ✍️ 자기소개서 작성
+                  </label>
+                  <p className="text-sm text-gray-400">
+                    왼쪽의 공고 분석 결과를 참고하여 작성해주세요
+                  </p>
+                </div>
+                <textarea
+                  value={contentText}
+                  onChange={(e) => setContentText(e.target.value)}
+                  className="w-full h-[calc(100vh-280px)] px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:border-primary-500 transition-colors resize-none text-gray-100 leading-relaxed"
+                  placeholder="여기에 자기소개서를 작성해주세요...
+
+팁:
+- 왼쪽의 필수 요건을 모두 다루세요
+- 핵심 키워드를 자연스럽게 포함하세요
+- 구체적인 경험과 성과를 기술하세요
+- STAR 기법을 활용하세요"
+                  required
+                />
+                <div className="flex items-center justify-between mt-3">
+                  <p className="text-sm text-gray-400">
+                    {contentText.length.toLocaleString()} 자
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    권장: 1,000자 이상
+                  </p>
+                </div>
+              </div>
+
+              <div className="border-t border-gray-800 p-6 bg-gray-900/50">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full px-6 py-4 bg-primary-600 hover:bg-primary-700 disabled:bg-gray-700 disabled:cursor-not-allowed rounded-lg transition-colors font-bold text-lg"
+                >
+                  {isSubmitting ? '🤖 AI 피드백 생성 중...' : '🚀 AI 피드백 받기'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
         ) : (
-          <div className="space-y-8">
+          <div className="max-w-5xl mx-auto px-8 py-12 space-y-8">
             {/* 종합 평가 */}
             <div className="p-8 bg-gradient-to-br from-primary-900/30 to-purple-900/30 rounded-lg border-2 border-primary-600">
               <h2 className="text-3xl font-bold mb-6">📊 AI 분석 결과</h2>
