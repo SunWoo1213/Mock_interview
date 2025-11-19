@@ -92,18 +92,19 @@ export default function CreateCoverLetterPage() {
   // 공고 ID가 없는 경우
   if (!jobPostingId) {
     return (
-      <div className="max-w-[1800px] mx-auto px-6 py-8">
+      <div className="min-h-screen bg-gray-50">
         <div className="max-w-4xl mx-auto px-8 py-16">
           <button
-            onClick={() => router.back()}
-            className="mb-8 text-gray-600 hover:text-gray-900 transition-colors"
+            onClick={() => router.push('/')}
+            className="mb-8 text-gray-600 hover:text-gray-900 transition-colors flex items-center gap-2"
           >
-            ← 뒤로 가기
+            <span>←</span>
+            <span>대시보드로 돌아가기</span>
           </button>
 
-          <div className="text-center py-16">
+          <div className="text-center py-16 bg-white rounded-xl shadow-sm border border-gray-200 px-8">
             <div className="mb-8">
-              <div className="w-32 h-32 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-primary-200">
+              <div className="w-32 h-32 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-blue-200">
                 <span className="text-6xl">📝</span>
               </div>
               <h1 className="text-4xl font-black mb-4 text-slate-900">자기소개서 작성</h1>
@@ -117,12 +118,12 @@ export default function CreateCoverLetterPage() {
 
             <div className="max-w-2xl mx-auto space-y-4">
               <button
-                onClick={() => router.push('/cover-letters/select-posting')}
-                className="w-full px-8 py-5 bg-primary-500 hover:bg-primary-600 text-white font-bold text-lg rounded-xl transition-all transform hover:scale-105 shadow-lg hover:shadow-primary-500/50"
+                onClick={() => router.push('/')}
+                className="w-full px-8 py-5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg rounded-xl transition-all transform hover:scale-105 shadow-lg"
               >
                 <div className="flex items-center justify-center gap-3">
                   <span className="text-2xl">📋</span>
-                  <span>분석된 공고 선택하기</span>
+                  <span>대시보드에서 공고 선택하기</span>
                 </div>
               </button>
               

@@ -3,13 +3,15 @@
  */
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import Header from '@/components/Header';
+import JobSelectionModal from '@/components/JobSelectionModal';
 
 export default function HomePage() {
   const { user, isLoading } = useAuth();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (isLoading) {
     return (
@@ -61,12 +63,12 @@ export default function HomePage() {
             <p className="text-gray-600 mb-4">
               AI가 당신의 자기소개서를 분석하고 개선점을 제시합니다.
             </p>
-            <Link
-              href="/cover-letters"
+            <button
+              onClick={() => setIsModalOpen(true)}
               className="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
             >
               시작하기
-            </Link>
+            </button>
           </div>
 
           <div className="p-8 bg-white rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow-md transition-all">
@@ -98,6 +100,12 @@ export default function HomePage() {
           </div>
         </div>
       </div>
+
+      {/* 채용공고 선택 모달 */}
+      <JobSelectionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }
