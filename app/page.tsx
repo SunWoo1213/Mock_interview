@@ -97,15 +97,6 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
-
-        <div className="text-center">
-          <Link
-            href="/profile"
-            className="inline-block px-6 py-3 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
-          >
-            내 프로필 설정하기
-          </Link>
-        </div>
       </div>
     </div>
   );
