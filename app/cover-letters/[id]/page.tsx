@@ -63,6 +63,9 @@ export default function CoverLetterDetailPage() {
       }
 
       const data = await response.json();
+      console.log('📥 [Cover Letter Detail] API Response:', data);
+      console.log('📊 [Cover Letter Detail] Feedback JSON:', data.coverLetter?.feedback_json);
+      
       setCoverLetter(data.coverLetter);
     } catch (err: any) {
       console.error('자기소개서 로드 에러:', err);
@@ -178,6 +181,29 @@ export default function CoverLetterDetailPage() {
         {/* AI 피드백 */}
         {coverLetter.feedback_json ? (
           <div className="space-y-6">
+            {/* 디버그 정보 (개발 중에만 보임) */}
+            {process.env.NODE_ENV === 'development' && (
+              <div className="p-4 bg-yellow-50 border-2 border-yellow-300 rounded-lg">
+                <h3 className="text-sm font-bold text-yellow-800 mb-2">🐛 디버그 정보 (개발 모드)</h3>
+                <pre className="text-xs text-slate-700 overflow-auto max-h-48">
+                  {JSON.stringify({
+                    hasStrengths: !!(coverLetter.feedback_json.strengths?.length),
+                    strengthsCount: coverLetter.feedback_json.strengths?.length || 0,
+                    hasWeaknesses: !!(coverLetter.feedback_json.weaknesses?.length),
+                    weaknessesCount: coverLetter.feedback_json.weaknesses?.length || 0,
+                    hasImprovements: !!(coverLetter.feedback_json.improvements?.length),
+                    improvementsCount: coverLetter.feedback_json.improvements?.length || 0,
+                    hasDetailedAnalysis: !!(coverLetter.feedback_json.detailedAnalysis?.length),
+                    detailedAnalysisCount: coverLetter.feedback_json.detailedAnalysis?.length || 0,
+                    hasActionableFixes: !!(coverLetter.feedback_json.actionableFixes?.length),
+                    actionableFixesCount: coverLetter.feedback_json.actionableFixes?.length || 0,
+                    hasInterviewQuestions: !!(coverLetter.feedback_json.interview_questions?.length),
+                    interviewQuestionsCount: coverLetter.feedback_json.interview_questions?.length || 0,
+                  }, null, 2)}
+                </pre>
+              </div>
+            )}
+
             {/* 종합 평가 */}
             <div className="p-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border-2 border-blue-200 shadow-sm">
               <h2 className="text-3xl font-bold mb-6 text-slate-900">🤖 AI 분석 결과</h2>
@@ -193,113 +219,169 @@ export default function CoverLetterDetailPage() {
             {/* 강점 & 약점 */}
             <div className="grid md:grid-cols-2 gap-6">
               {/* 강점 */}
-              {coverLetter.feedback_json.strengths && coverLetter.feedback_json.strengths.length > 0 && (
-                <div className="p-6 bg-white rounded-lg border-2 border-green-300 shadow-sm">
-                  <h3 className="text-xl font-bold mb-4 text-green-700 flex items-center gap-2">
-                    <span>✅</span> 잘 쓴 부분
-                  </h3>
-                  <ul className="space-y-3">
-                    {coverLetter.feedback_json.strengths.map((strength, idx) => {
-                      const strengthText = typeof strength === 'string' ? strength : JSON.stringify(strength);
-                      return (
-                        <li key={idx} className="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
-                          <span className="text-green-600 mt-0.5 font-bold text-lg">{idx + 1}.</span>
-                          <span className="text-slate-700 leading-relaxed text-base flex-1">{strengthText}</span>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              )}
+              {(() => {
+                const strengths = coverLetter.feedback_json.strengths || [];
+                console.log('💪 [Strengths]:', strengths, 'Length:', strengths.length);
+                
+                if (strengths.length > 0) {
+                  return (
+                    <div className="p-6 bg-white rounded-lg border-2 border-green-300 shadow-sm">
+                      <h3 className="text-xl font-bold mb-4 text-green-700 flex items-center gap-2">
+                        <span>✅</span> 잘 쓴 부분
+                      </h3>
+                      <ul className="space-y-3">
+                        {strengths.map((strength, idx) => {
+                          const strengthText = typeof strength === 'string' ? strength : JSON.stringify(strength);
+                          return (
+                            <li key={idx} className="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
+                              <span className="text-green-600 mt-0.5 font-bold text-lg">{idx + 1}.</span>
+                              <span className="text-slate-700 leading-relaxed text-base flex-1">{strengthText}</span>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  );
+                }
+                return null;
+              })()}
 
-              {/* 약점/개선점 */}
-              {coverLetter.feedback_json.weaknesses && coverLetter.feedback_json.weaknesses.length > 0 && (
-                <div className="p-6 bg-white rounded-lg border-2 border-orange-300 shadow-sm">
-                  <h3 className="text-xl font-bold mb-4 text-orange-700 flex items-center gap-2">
-                    <span>⚠️</span> 보완이 필요한 부분
-                  </h3>
-                  <ul className="space-y-3">
-                    {coverLetter.feedback_json.weaknesses.map((weakness, idx) => {
-                      const weaknessText = typeof weakness === 'string' ? weakness : JSON.stringify(weakness);
-                      return (
-                        <li key={idx} className="flex items-start gap-3 p-3 bg-orange-50 rounded-lg">
-                          <span className="text-orange-600 mt-0.5 font-bold text-lg">{idx + 1}.</span>
-                          <span className="text-slate-700 leading-relaxed text-base flex-1">{weaknessText}</span>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              )}
+              {/* 약점/개선점 - weaknesses 또는 improvements */}
+              {(() => {
+                // weaknesses 또는 improvements 중 있는 것 사용
+                const weaknesses = coverLetter.feedback_json.weaknesses || [];
+                const improvements = coverLetter.feedback_json.improvements || [];
+                const improvementsList = weaknesses.length > 0 ? weaknesses : improvements;
+                
+                console.log('⚠️ [Weaknesses]:', weaknesses, 'Length:', weaknesses.length);
+                console.log('💡 [Improvements]:', improvements, 'Length:', improvements.length);
+                console.log('📝 [Using]:', improvementsList, 'Length:', improvementsList.length);
+                
+                if (improvementsList.length > 0) {
+                  return (
+                    <div className="p-6 bg-white rounded-lg border-2 border-orange-300 shadow-sm">
+                      <h3 className="text-xl font-bold mb-4 text-orange-700 flex items-center gap-2">
+                        <span>⚠️</span> 보완이 필요한 부분
+                      </h3>
+                      <ul className="space-y-3">
+                        {improvementsList.map((item, idx) => {
+                          // improvements가 객체 배열일 수도 있음
+                          let itemText = '';
+                          if (typeof item === 'string') {
+                            itemText = item;
+                          } else if (item && typeof item === 'object') {
+                            // { issue, suggestion, example } 형식
+                            itemText = item.issue || item.suggestion || JSON.stringify(item);
+                          } else {
+                            itemText = JSON.stringify(item);
+                          }
+                          
+                          return (
+                            <li key={idx} className="flex items-start gap-3 p-3 bg-orange-50 rounded-lg">
+                              <span className="text-orange-600 mt-0.5 font-bold text-lg">{idx + 1}.</span>
+                              <span className="text-slate-700 leading-relaxed text-base flex-1">{itemText}</span>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  );
+                }
+                return null;
+              })()}
             </div>
 
             {/* 섹션별 상세 분석 */}
-            {coverLetter.feedback_json.detailedAnalysis && coverLetter.feedback_json.detailedAnalysis.length > 0 && (
-              <div className="p-6 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-                <h3 className="text-2xl font-bold mb-4 flex items-center gap-2 text-slate-900">
-                  <span>🔍</span> 섹션별 상세 분석
-                </h3>
-                <div className="space-y-4">
-                  {coverLetter.feedback_json.detailedAnalysis.map((analysis, idx) => (
-                    <div key={idx} className="p-5 bg-slate-50 rounded-lg border-l-4 border-blue-500 shadow-sm">
-                      <h4 className="font-bold text-blue-700 mb-2 text-lg">{analysis.section}</h4>
-                      <p className="text-slate-700 leading-relaxed text-base">{analysis.feedback}</p>
+            {(() => {
+              const detailedAnalysis = coverLetter.feedback_json.detailedAnalysis || [];
+              console.log('🔍 [Detailed Analysis]:', detailedAnalysis, 'Length:', detailedAnalysis.length);
+              
+              if (detailedAnalysis.length > 0) {
+                return (
+                  <div className="p-6 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+                    <h3 className="text-2xl font-bold mb-4 flex items-center gap-2 text-slate-900">
+                      <span>🔍</span> 섹션별 상세 분석
+                    </h3>
+                    <div className="space-y-4">
+                      {detailedAnalysis.map((analysis, idx) => (
+                        <div key={idx} className="p-5 bg-slate-50 rounded-lg border-l-4 border-blue-500 shadow-sm">
+                          <h4 className="font-bold text-blue-700 mb-2 text-lg">{analysis.section}</h4>
+                          <p className="text-slate-700 leading-relaxed text-base">{analysis.feedback}</p>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
+                  </div>
+                );
+              }
+              return null;
+            })()}
 
             {/* 실질적인 수정 예시 */}
-            {coverLetter.feedback_json.actionableFixes && coverLetter.feedback_json.actionableFixes.length > 0 && (
-              <div className="p-6 bg-white rounded-lg border-2 border-blue-200 shadow-sm">
-                <h3 className="text-2xl font-bold mb-4 flex items-center gap-2 text-blue-700">
-                  <span>✏️</span> 즉시 적용 가능한 수정 예시
-                </h3>
-                <div className="space-y-6">
-                  {coverLetter.feedback_json.actionableFixes.map((fix, idx) => (
-                    <div key={idx} className="p-5 bg-slate-50 rounded-lg border border-gray-200">
-                      <div className="mb-4">
-                        <div className="text-sm text-red-700 font-semibold mb-2">❌ 수정 전</div>
-                        <div className="p-4 bg-red-50 border-l-4 border-red-400 rounded">
-                          <p className="text-slate-700 italic text-base">&ldquo;{fix.original}&rdquo;</p>
+            {(() => {
+              const actionableFixes = coverLetter.feedback_json.actionableFixes || [];
+              console.log('✏️ [Actionable Fixes]:', actionableFixes, 'Length:', actionableFixes.length);
+              
+              if (actionableFixes.length > 0) {
+                return (
+                  <div className="p-6 bg-white rounded-lg border-2 border-blue-200 shadow-sm">
+                    <h3 className="text-2xl font-bold mb-4 flex items-center gap-2 text-blue-700">
+                      <span>✏️</span> 즉시 적용 가능한 수정 예시
+                    </h3>
+                    <div className="space-y-6">
+                      {actionableFixes.map((fix, idx) => (
+                        <div key={idx} className="p-5 bg-slate-50 rounded-lg border border-gray-200">
+                          <div className="mb-4">
+                            <div className="text-sm text-red-700 font-semibold mb-2">❌ 수정 전</div>
+                            <div className="p-4 bg-red-50 border-l-4 border-red-400 rounded">
+                              <p className="text-slate-700 italic text-base">&ldquo;{fix.original}&rdquo;</p>
+                            </div>
+                          </div>
+                          <div className="mb-4">
+                            <div className="text-sm text-green-700 font-semibold mb-2">✅ 수정 후</div>
+                            <div className="p-4 bg-green-50 border-l-4 border-green-400 rounded">
+                              <p className="text-slate-700 font-medium text-base">&ldquo;{fix.improved}&rdquo;</p>
+                            </div>
+                          </div>
+                          <div className="p-4 bg-blue-50 rounded border border-blue-200">
+                            <div className="text-sm text-blue-700 font-semibold mb-2">💡 개선 이유</div>
+                            <p className="text-slate-700 text-base">{fix.reason}</p>
+                          </div>
                         </div>
-                      </div>
-                      <div className="mb-4">
-                        <div className="text-sm text-green-700 font-semibold mb-2">✅ 수정 후</div>
-                        <div className="p-4 bg-green-50 border-l-4 border-green-400 rounded">
-                          <p className="text-slate-700 font-medium text-base">&ldquo;{fix.improved}&rdquo;</p>
-                        </div>
-                      </div>
-                      <div className="p-4 bg-blue-50 rounded border border-blue-200">
-                        <div className="text-sm text-blue-700 font-semibold mb-2">💡 개선 이유</div>
-                        <p className="text-slate-700 text-base">{fix.reason}</p>
-                      </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
+                  </div>
+                );
+              }
+              return null;
+            })()}
 
             {/* 예상 면접 질문 */}
-            {coverLetter.feedback_json.interview_questions && coverLetter.feedback_json.interview_questions.length > 0 && (
-              <div className="p-6 bg-white rounded-lg border-2 border-purple-200 shadow-sm">
-                <h3 className="text-2xl font-bold mb-4 flex items-center gap-2 text-purple-700">
-                  <span>💬</span> 예상 면접 질문
-                </h3>
-                <ul className="space-y-3">
-                  {coverLetter.feedback_json.interview_questions.map((question, idx) => {
-                    const questionText = typeof question === 'string' ? question : JSON.stringify(question);
-                    return (
-                      <li key={idx} className="flex items-start gap-3 p-4 bg-purple-50 rounded-lg border border-purple-200">
-                        <span className="text-purple-600 font-bold mt-1 text-lg">Q{idx + 1}.</span>
-                        <span className="text-slate-700 leading-relaxed text-base flex-1">{questionText}</span>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            )}
+            {(() => {
+              const interviewQuestions = coverLetter.feedback_json.interview_questions || [];
+              console.log('❓ [Interview Questions]:', interviewQuestions, 'Length:', interviewQuestions.length);
+              
+              if (interviewQuestions.length > 0) {
+                return (
+                  <div className="p-6 bg-white rounded-lg border-2 border-purple-200 shadow-sm">
+                    <h3 className="text-2xl font-bold mb-4 flex items-center gap-2 text-purple-700">
+                      <span>💬</span> 예상 면접 질문
+                    </h3>
+                    <ul className="space-y-3">
+                      {interviewQuestions.map((question, idx) => {
+                        const questionText = typeof question === 'string' ? question : JSON.stringify(question);
+                        return (
+                          <li key={idx} className="flex items-start gap-3 p-4 bg-purple-50 rounded-lg border border-purple-200">
+                            <span className="text-purple-600 font-bold mt-1 text-lg">Q{idx + 1}.</span>
+                            <span className="text-slate-700 leading-relaxed text-base flex-1">{questionText}</span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                );
+              }
+              return null;
+            })()}
           </div>
         ) : (
           <div className="p-8 bg-white rounded-lg border-2 border-gray-200 text-center shadow-sm">
