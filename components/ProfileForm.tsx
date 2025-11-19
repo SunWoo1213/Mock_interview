@@ -74,7 +74,7 @@ export default function ProfileForm() {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mb-4" />
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mb-4" />
           <p className="text-gray-400">프로필 로딩 중...</p>
         </div>
       </div>
@@ -101,7 +101,7 @@ export default function ProfileForm() {
             type="number"
             value={age}
             onChange={(e) => setAge(e.target.value)}
-            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 text-gray-900 placeholder:text-gray-400"
+            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-gray-900 placeholder:text-gray-400"
             placeholder="예: 28"
             min="0"
             max="150"
@@ -117,7 +117,7 @@ export default function ProfileForm() {
             id="gender"
             value={gender}
             onChange={(e) => setGender(e.target.value)}
-            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 text-gray-900"
+            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-gray-900"
           >
             <option value="">선택하세요</option>
             <option value="male">남자</option>
@@ -135,7 +135,7 @@ export default function ProfileForm() {
             type="text"
             value={currentJob}
             onChange={(e) => setCurrentJob(e.target.value)}
-            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 text-gray-900 placeholder:text-gray-400"
+            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-gray-900 placeholder:text-gray-400"
             placeholder="예: 소프트웨어 엔지니어"
           />
         </div>
@@ -150,7 +150,7 @@ export default function ProfileForm() {
             value={careerSummary}
             onChange={(e) => setCareerSummary(e.target.value)}
             rows={5}
-            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 text-gray-900 placeholder:text-gray-400 resize-none"
+            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-gray-900 placeholder:text-gray-400 resize-none"
             placeholder="요약된 경력을 입력하세요...&#10;&#10;예:&#10;- ABC 회사 개발팀 (2020-2023)&#10;- XYZ 스타트업 백엔드 개발자 (2018-2020)"
           />
         </div>
@@ -165,7 +165,7 @@ export default function ProfileForm() {
             value={certifications}
             onChange={(e) => setCertifications(e.target.value)}
             rows={4}
-            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 text-gray-900 placeholder:text-gray-400 resize-none"
+            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-gray-900 placeholder:text-gray-400 resize-none"
             placeholder="자격증을 쉼표로 구분하여 입력...&#10;&#10;예: 정보처리기사, AWS Solutions Architect, TOEIC 900점"
           />
         </div>
@@ -175,7 +175,7 @@ export default function ProfileForm() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full px-6 py-3 bg-primary-600 hover:bg-primary-700 disabled:bg-gray-700 disabled:cursor-not-allowed rounded-lg transition-colors font-semibold text-white"
+            className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:cursor-not-allowed rounded-lg transition-colors font-semibold text-white"
           >
             {isLoading ? '저장 중...' : '프로필 저장'}
           </button>

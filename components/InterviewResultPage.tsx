@@ -66,7 +66,7 @@ export default function InterviewResultPage({ session, turns }: InterviewResultP
                 </button>
                 <button
                   onClick={() => window.print()}
-                  className="flex-1 px-4 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors shadow-sm"
+                  className="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors shadow-sm"
                 >
                   결과 출력
                 </button>

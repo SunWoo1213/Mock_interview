@@ -189,7 +189,7 @@ export default function UploadJobPostingPage() {
               <button
                 onClick={handleUpload}
                 disabled={!file || isUploading}
-                className="w-full px-6 py-3 bg-primary-600 hover:bg-primary-700 disabled:bg-gray-700 disabled:cursor-not-allowed rounded-lg transition-colors font-semibold"
+                className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:cursor-not-allowed rounded-lg transition-colors font-semibold"
               >
                 {isUploading ? '업로드 중...' : '업로드 및 분석 시작'}
               </button>
@@ -226,7 +226,7 @@ export default function UploadJobPostingPage() {
               <button
                 onClick={handleTextSubmit}
                 disabled={!manualText.trim() || isUploading}
-                className="w-full px-6 py-3 bg-primary-600 hover:bg-primary-700 disabled:bg-gray-700 disabled:cursor-not-allowed rounded-lg transition-colors font-semibold"
+                className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:cursor-not-allowed rounded-lg transition-colors font-semibold"
               >
                 {isUploading ? '등록 중...' : '등록 및 분석 시작'}
               </button>
@@ -263,7 +263,7 @@ export default function UploadJobPostingPage() {
             <div className="mt-8 flex gap-4">
               <button
                 onClick={() => router.push(`/cover-letters/create?jobPostingId=${jobPostingId}`)}
-                className="flex-1 px-6 py-3 bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors font-semibold"
+                className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors font-semibold"
               >
                 이 공고로 자소서 작성하기
               </button>

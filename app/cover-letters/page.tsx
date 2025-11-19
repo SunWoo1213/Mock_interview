@@ -30,7 +30,7 @@ export default function CoverLettersPage() {
         </p>
         <button
           onClick={() => router.push('/job-postings/upload')}
-          className="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors font-semibold shadow-sm"
+          className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-semibold shadow-sm"
         >
           채용 공고 업로드하기
         </button>

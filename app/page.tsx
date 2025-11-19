@@ -15,7 +15,7 @@ export default function HomePage() {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-2 border-primary-500 mb-4" />
+          <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500 mb-4" />
           <p className="text-gray-600">로딩 중...</p>
         </div>
       </div>
@@ -41,7 +41,7 @@ export default function HomePage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-          <div className="p-8 bg-white rounded-lg border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all">
+          <div className="p-8 bg-white rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow-md transition-all">
             <div className="text-4xl mb-4">📝</div>
             <h3 className="text-2xl font-bold mb-2 text-gray-900">채용 공고 분석</h3>
             <p className="text-gray-600 mb-4">
@@ -49,13 +49,13 @@ export default function HomePage() {
             </p>
             <Link
               href="/job-postings/upload"
-              className="inline-block px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
+              className="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
             >
               시작하기
             </Link>
           </div>
 
-          <div className="p-8 bg-white rounded-lg border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all">
+          <div className="p-8 bg-white rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow-md transition-all">
             <div className="text-4xl mb-4">💬</div>
             <h3 className="text-2xl font-bold mb-2 text-gray-900">자소서 피드백</h3>
             <p className="text-gray-600 mb-4">
@@ -63,13 +63,13 @@ export default function HomePage() {
             </p>
             <Link
               href="/cover-letters"
-              className="inline-block px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
+              className="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
             >
               시작하기
             </Link>
           </div>
 
-          <div className="p-8 bg-white rounded-lg border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all">
+          <div className="p-8 bg-white rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow-md transition-all">
             <div className="text-4xl mb-4">🎤</div>
             <h3 className="text-2xl font-bold mb-2 text-gray-900">모의 면접</h3>
             <p className="text-gray-600 mb-4">
@@ -77,7 +77,7 @@ export default function HomePage() {
             </p>
             <Link
               href="/interview"
-              className="inline-block px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
+              className="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
             >
               시작하기
             </Link>
@@ -91,7 +91,7 @@ export default function HomePage() {
             </p>
             <Link
               href="/history"
-              className="inline-block px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
+              className="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
             >
               히스토리 보기
             </Link>

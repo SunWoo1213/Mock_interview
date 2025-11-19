@@ -66,7 +66,7 @@ export default function AudioPlayer({ audioUrl, onEnded, autoPlay = false }: Aud
 
       <button
         onClick={togglePlayPause}
-        className="w-12 h-12 flex items-center justify-center bg-primary-500 hover:bg-primary-600 rounded-full transition-colors"
+        className="w-12 h-12 flex items-center justify-center bg-blue-500 hover:bg-primary-600 rounded-full transition-colors"
       >
         {isPlaying ? (
           <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -84,7 +84,7 @@ export default function AudioPlayer({ audioUrl, onEnded, autoPlay = false }: Aud
           <span className="text-sm text-gray-400">{formatTime(currentTime)}</span>
           <div className="flex-1 h-2 bg-gray-700 rounded-full overflow-hidden">
             <div
-              className="h-full bg-primary-500 transition-all"
+              className="h-full bg-blue-500 transition-all"
               style={{ width: `${(currentTime / duration) * 100 || 0}%` }}
             />
           </div>

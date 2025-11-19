@@ -82,7 +82,7 @@ export default function CreateCoverLetterPage() {
     return (
       <div className="max-w-[1800px] mx-auto px-6 py-8 flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-2 border-primary-500 mb-4" />
+          <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500 mb-4" />
           <p className="text-gray-400">로딩 중...</p>
         </div>
       </div>
@@ -302,7 +302,7 @@ export default function CreateCoverLetterPage() {
                 <textarea
                   value={contentText}
                   onChange={(e) => setContentText(e.target.value)}
-                  className="w-full h-[calc(100vh-280px)] px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-colors resize-none text-gray-900 leading-relaxed placeholder:text-gray-400"
+                  className="w-full h-[calc(100vh-280px)] px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors resize-none text-gray-900 leading-relaxed placeholder:text-gray-400"
                   placeholder="여기에 자기소개서를 작성해주세요...
 
 팁:
@@ -326,7 +326,7 @@ export default function CreateCoverLetterPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full px-6 py-4 bg-primary-600 hover:bg-primary-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-bold text-lg shadow-sm"
+                  className="w-full px-6 py-4 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-bold text-lg shadow-sm"
                 >
                   {isSubmitting ? '🤖 AI 피드백 생성 중...' : '🚀 AI 피드백 받기'}
                 </button>
@@ -399,7 +399,7 @@ export default function CreateCoverLetterPage() {
                 </h3>
                 <div className="space-y-4">
                   {feedback.detailedAnalysis.map((analysis: any, idx: number) => (
-                    <div key={idx} className="p-4 bg-gray-800 rounded-lg border-l-4 border-primary-500">
+                    <div key={idx} className="p-4 bg-gray-800 rounded-lg border-l-4 border-blue-500">
                       <h4 className="font-bold text-primary-400 mb-2">{analysis.section}</h4>
                       <p className="text-gray-300 leading-relaxed">{analysis.feedback}</p>
                     </div>
@@ -463,7 +463,7 @@ export default function CreateCoverLetterPage() {
             <div className="flex gap-4">
               <button
                 onClick={() => router.push('/interview')}
-                className="flex-1 px-6 py-4 bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors font-semibold text-lg"
+                className="flex-1 px-6 py-4 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors font-semibold text-lg"
               >
                 🎤 모의 면접 시작하기
               </button>

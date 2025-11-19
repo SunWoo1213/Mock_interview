@@ -55,7 +55,7 @@ export default function InterviewTurnCard({
         className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
       >
         <div className="flex items-center gap-4">
-          <span className="text-2xl font-bold text-primary-600">Q{turnNumber}</span>
+          <span className="text-2xl font-bold text-blue-600">Q{turnNumber}</span>
           <span className="text-left text-slate-900 line-clamp-1">{questionText}</span>
         </div>
         <div className="flex items-center gap-3">
@@ -89,7 +89,7 @@ export default function InterviewTurnCard({
 
           {turnFeedbackText && (
             <div className="space-y-4">
-              <h4 className="text-lg font-bold text-primary-600 uppercase">📊 AI 피드백</h4>
+              <h4 className="text-lg font-bold text-blue-600 uppercase">📊 AI 피드백</h4>
               
               {parsedFeedback ? (
                 <div className="space-y-4">

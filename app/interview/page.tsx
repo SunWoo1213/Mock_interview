@@ -127,7 +127,7 @@ export default function InterviewStartPage() {
                 <p className="text-gray-600 mb-4">작성된 자기소개서가 없습니다.</p>
                 <button
                   onClick={() => router.push('/cover-letters/create')}
-                  className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors text-sm shadow-sm"
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm shadow-sm"
                 >
                   자기소개서 작성하러 가기
                 </button>
@@ -182,7 +182,7 @@ export default function InterviewStartPage() {
           <button
             onClick={handleStart}
             disabled={isLoading || !coverLetterId || isLoadingList}
-            className="w-full px-6 py-3 bg-primary-600 hover:bg-primary-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-semibold shadow-sm"
+            className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-semibold shadow-sm"
           >
             {isLoading ? '면접 준비 중...' : '면접 시작'}
           </button>

@@ -376,7 +376,7 @@ export default function InterviewPage({
         <div className="max-w-4xl w-full space-y-8">
           {/* 진행 상태 */}
           <div className="text-center space-y-2">
-            <span className="text-2xl font-bold text-primary-600">질문 {turnNumber} / 5</span>
+            <span className="text-2xl font-bold text-blue-600">질문 {turnNumber} / 5</span>
             <p className="text-gray-600 text-sm">{getStateMessage()}</p>
           </div>
 
@@ -458,7 +458,7 @@ export default function InterviewPage({
               {turnNumber < 5 ? (
                 <button
                   onClick={handleNextQuestion}
-                  className="px-12 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors font-bold text-lg shadow-xl"
+                  className="px-12 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-bold text-lg shadow-xl"
                 >
                   다음 질문 →
                 </button>
@@ -476,8 +476,8 @@ export default function InterviewPage({
           {/* 처리 중 표시 */}
           {interviewState === 'processing' && (
             <div className="text-center">
-              <div className="inline-block animate-spin rounded-full h-16 w-16 border-4 border-primary-500 border-t-transparent mb-6" />
-              <p className="text-2xl font-bold text-primary-600 mb-3">결과 분석 중...</p>
+              <div className="inline-block animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent mb-6" />
+              <p className="text-2xl font-bold text-blue-600 mb-3">결과 분석 중...</p>
               <p className="text-lg text-slate-700 mb-2">AI가 답변을 분석하고 있습니다</p>
               <p className="text-sm text-gray-600">잠시만 기다려주세요. 곧 상세한 피드백을 확인하실 수 있습니다.</p>
             </div>
@@ -503,7 +503,7 @@ export default function InterviewPage({
                   </div>
                   <button
                     onClick={handleManualPlay}
-                    className="px-12 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors font-bold text-lg shadow-xl flex items-center gap-3 mx-auto"
+                    className="px-12 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-bold text-lg shadow-xl flex items-center gap-3 mx-auto"
                   >
                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
@@ -516,9 +516,9 @@ export default function InterviewPage({
                 <div>
                   <div className="inline-block mb-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-primary-500 rounded-full animate-pulse" style={{ animationDelay: '0ms' }} />
-                      <div className="w-3 h-3 bg-primary-500 rounded-full animate-pulse" style={{ animationDelay: '150ms' }} />
-                      <div className="w-3 h-3 bg-primary-500 rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
+                      <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse" style={{ animationDelay: '0ms' }} />
+                      <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse" style={{ animationDelay: '150ms' }} />
+                      <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
                     </div>
                   </div>
                   <p className="text-gray-600">질문을 재생 중입니다...</p>

@@ -316,7 +316,7 @@ export default function CoverLetterDetailPage() {
           </button>
           <button
             onClick={() => router.push('/interview')}
-            className="flex-1 px-6 py-3 bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors font-semibold"
+            className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors font-semibold"
           >
             이 자소서로 모의 면접 시작 →
           </button>

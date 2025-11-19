@@ -66,12 +66,12 @@ export default function CountdownTimer({ duration, isActive, onComplete }: Count
             strokeDasharray={circumference}
             strokeDashoffset={strokeDashoffset}
             className={`transition-all duration-1000 ${
-              timeLeft <= 10 ? 'text-red-500' : 'text-primary-500'
+              timeLeft <= 10 ? 'text-red-500' : 'text-blue-500'
             }`}
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className={`text-4xl font-bold ${timeLeft <= 10 ? 'text-red-500' : 'text-primary-500'}`}>
+          <span className={`text-4xl font-bold ${timeLeft <= 10 ? 'text-red-500' : 'text-blue-500'}`}>
             {timeLeft}
           </span>
         </div>

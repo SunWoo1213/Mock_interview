@@ -16,7 +16,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-8 py-4">
         <div className="flex items-center justify-between">
           {/* 로고/타이틀 */}
-          <Link href="/" className="text-2xl font-bold text-gray-900 hover:text-primary-600 transition-colors">
+          <Link href="/" className="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors">
             AI 취업 준비
           </Link>
 
@@ -25,7 +25,7 @@ export default function Header() {
             {isLoading ? (
               // 로딩 중일 때 작은 스피너 표시
               <div className="flex items-center">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary-500" />
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500" />
               </div>
             ) : user ? (
               // 로그인된 상태
@@ -35,19 +35,19 @@ export default function Header() {
                 </span>
                 <Link
                   href="/profile"
-                  className="px-4 py-2 text-gray-600 hover:text-primary-600 transition-colors font-medium"
+                  className="px-4 py-2 text-gray-600 hover:text-blue-600 transition-colors font-medium"
                 >
                   프로필
                 </Link>
                 <Link
                   href="/history"
-                  className="px-4 py-2 text-gray-600 hover:text-primary-600 transition-colors font-medium"
+                  className="px-4 py-2 text-gray-600 hover:text-blue-600 transition-colors font-medium"
                 >
                   📊 활동 기록
                 </Link>
                 <button
                   onClick={logout}
-                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors text-gray-700 border border-gray-300"
+                  className="px-4 py-2 bg-white hover:bg-gray-50 rounded-lg transition-colors text-gray-700 border border-gray-300"
                 >
                   로그아웃
                 </button>
@@ -57,13 +57,13 @@ export default function Header() {
               <>
                 <Link
                   href="/login"
-                  className="px-4 py-2 text-gray-600 hover:text-primary-600 transition-colors font-medium"
+                  className="px-4 py-2 text-gray-600 hover:text-blue-600 transition-colors font-medium"
                 >
                   로그인
                 </Link>
                 <Link
                   href="/register"
-                  className="px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors text-white shadow-sm"
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors text-white shadow-sm"
                 >
                   회원가입
                 </Link>
