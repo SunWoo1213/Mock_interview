@@ -53,9 +53,27 @@ export function verifyToken(token: string): JWTPayload {
  * Authorization 헤더에서 토큰 추출
  */
 export function extractTokenFromHeader(authHeader?: string): string | null {
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  // 디버깅 로그
+  if (!authHeader) {
+    console.error('❌ [extractToken] Authorization header is undefined or empty');
     return null;
   }
-  return authHeader.substring(7);
+
+  if (!authHeader.startsWith('Bearer ')) {
+    console.error('❌ [extractToken] Authorization header does not start with "Bearer "');
+    console.error('   Received:', authHeader.substring(0, 50));
+    return null;
+  }
+
+  // "Bearer " (7글자) 제거하고 토큰 추출
+  const token = authHeader.substring(7).trim();
+  
+  if (!token || token === 'null' || token === 'undefined') {
+    console.error('❌ [extractToken] Extracted token is invalid:', token);
+    return null;
+  }
+
+  console.log('✅ [extractToken] Token extracted successfully');
+  return token;
 }
 

@@ -56,18 +56,27 @@ export function withAuth(
 ) {
   return withCors(async (req: AuthenticatedRequest, res: NextApiResponse) => {
     try {
-      const token = extractTokenFromHeader(req.headers.authorization);
+      // 디버깅: Authorization 헤더 확인
+      const authHeader = req.headers.authorization;
+      console.log('🔒 [Backend Auth] Request URL:', req.url);
+      console.log('🔒 [Backend Auth] Authorization Header:', authHeader ? `${authHeader.substring(0, 30)}...` : 'undefined');
+
+      const token = extractTokenFromHeader(authHeader);
 
       if (!token) {
+        console.error('❌ [Backend Auth] Token extraction failed - Header format incorrect or missing');
         return res.status(401).json({ error: '인증이 필요합니다.' });
       }
 
+      console.log('✅ [Backend Auth] Token extracted successfully');
       const payload = verifyToken(token);
+      console.log('✅ [Backend Auth] Token verified - User ID:', payload.userId);
+      
       req.user = payload;
 
       await handler(req, res);
     } catch (error: any) {
-      console.error('인증 에러:', error);
+      console.error('❌ [Backend Auth] Authentication error:', error.message);
       return res.status(401).json({ error: '유효하지 않은 토큰입니다.' });
     }
   });

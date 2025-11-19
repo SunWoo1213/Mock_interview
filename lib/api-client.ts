@@ -18,11 +18,23 @@ export class ApiClient {
   ): Promise<T> {
     const token = this.getToken();
 
+    // 토큰 디버깅
+    console.log('🔑 [API Client] Endpoint:', endpoint);
+    console.log('🔑 [API Client] Sending Token:', token ? `${token.substring(0, 20)}...` : 'null');
+
     // Headers 클래스 사용으로 리팩터링
     const headers = new Headers(options.headers);
 
     if (token) {
-      headers.set('Authorization', `Bearer ${token}`);
+      // 토큰이 'null' 문자열이 아닌지 확인
+      if (token !== 'null' && token.trim() !== '') {
+        headers.set('Authorization', `Bearer ${token}`);
+        console.log('✅ [API Client] Authorization header set');
+      } else {
+        console.error('❌ [API Client] Invalid token (null string or empty)');
+      }
+    } else {
+      console.warn('⚠️ [API Client] No token found in localStorage');
     }
 
     if (!(options.body instanceof FormData)) {
@@ -34,8 +46,27 @@ export class ApiClient {
       headers,
     });
 
+    // 401 Unauthorized 처리
+    if (response.status === 401) {
+      console.error('❌ [API Client] 401 Unauthorized - Token expired or invalid');
+      console.log('🔄 [API Client] Clearing token and redirecting to login...');
+      
+      // 잘못된 토큰 삭제
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      
+      // 로그인 페이지로 리다이렉트
+      if (typeof window !== 'undefined') {
+        alert('세션이 만료되었습니다. 다시 로그인해주세요.');
+        window.location.href = '/login';
+      }
+      
+      throw new Error('세션이 만료되었습니다. 다시 로그인해주세요.');
+    }
+
     if (!response.ok) {
       const error = await response.json().catch(() => ({ error: 'Unknown error' }));
+      console.error('❌ [API Client] Request failed:', response.status, error);
       throw new Error(error.error || 'Request failed');
     }
 
