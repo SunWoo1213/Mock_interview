@@ -120,6 +120,28 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse): Promise
 
   console.log('✅ 면접 세션 완료 처리됨');
 
+  // 각 턴별 피드백을 InterviewTurn 레코드에 업데이트
+  console.log('📝 턴별 피드백 업데이트 시작...');
+  for (const turnFeedback of finalFeedback.per_turn_feedback) {
+    const feedbackData = {
+      user_answer_summary: turnFeedback.user_answer_summary,
+      strengths: turnFeedback.strengths,
+      improvements: turnFeedback.improvements,
+      better_answer_example: turnFeedback.better_answer_example,
+    };
+
+    await query(
+      `UPDATE interview_turns 
+       SET feedback_text = $1 
+       WHERE session_id = $2 AND turn_number = $3`,
+      [JSON.stringify(feedbackData), sessionId, turnFeedback.turn_number]
+    );
+    
+    console.log(`  ✅ Turn ${turnFeedback.turn_number} 피드백 저장됨`);
+  }
+
+  console.log('✅ 모든 턴별 피드백 업데이트 완료');
+
   res.status(200).json({
     message: '면접이 조기 종료되었습니다. 피드백이 생성되었습니다.',
     isCompleted: true,

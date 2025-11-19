@@ -415,12 +415,15 @@ ${context.conversationHistory.map((turn, idx) =>
 }
 
 export interface FinalInterviewFeedback {
-  overall_feedback: string;
+  overall_feedback: string; // 종합 평가 (태도, 일관성, 합격 가능성)
   per_turn_feedback: Array<{
     turn_number: number;
     question: string;
     answer: string;
-    feedback: string;
+    user_answer_summary: string; // 사용자 답변 요약
+    strengths: string[]; // 해당 답변의 좋았던 점
+    improvements: string[]; // 해당 답변의 개선할 점
+    better_answer_example: string; // 더 나은 모범 답안 예시
   }>;
   is_early_finish?: boolean;
   total_questions_answered?: number;
@@ -447,55 +450,124 @@ export async function generateFinalInterviewFeedback(
 - 답변의 질과 깊이에 집중하여 피드백을 제공하세요.`
     : '';
   
-  const prompt = `너는 ${context.jobPosting.title} 분야의 최고 전문가 면접관이자 피드백 전문가야.
+  const systemPrompt = `당신은 ${context.jobPosting.title || '해당'} 분야의 최고 전문가 면접관이자 피드백 전문가입니다.
 
-### 면접 대화 기록:
+# 역할 및 전문성
+- 10년 이상의 채용 경험을 보유한 인사 전문가
+- 지원자의 답변을 깊이 있게 분석하고 건설적인 피드백 제공
+- STAR 기법(Situation, Task, Action, Result) 기반 평가
+- 각 답변의 강점과 개선점을 명확히 구분
+
+# 평가 기준
+1. **답변의 구조**: STAR 기법을 활용했는가?
+2. **구체성**: 추상적인 표현이 아닌 구체적인 사례와 수치를 제시했는가?
+3. **깊이**: 단순 사실 나열이 아닌 통찰과 배움을 보여주는가?
+4. **직무 적합성**: 채용공고의 요구사항과 연결되는가?
+5. **커뮤니케이션**: 명확하고 논리적으로 전달했는가?`;
+
+  const userPrompt = `다음은 ${totalQuestionsAnswered}개의 질문과 답변으로 이루어진 면접 기록입니다. **각 턴(Turn)마다** 상세한 피드백을 제공해주세요.
+
+## 📋 채용 공고 정보
+**직무**: ${context.jobPosting.title || '미상'}
+**회사**: ${context.jobPosting.company_name || '미상'}
+**핵심 키워드**: ${JSON.stringify(context.jobPosting.analysis_json?.keywords || [])}
+**필수 요건**: ${JSON.stringify(context.jobPosting.analysis_json?.must_have || [])}
+**우대 사항**: ${JSON.stringify(context.jobPosting.analysis_json?.nice_to_have || [])}
+
+## 👤 지원자 프로필
+- 현재 직무: ${context.userProfile.current_job || '미상'}
+- 경력 요약: ${context.userProfile.career_summary || '제공되지 않음'}
+- 학력: ${JSON.stringify(context.userProfile.education_json || [])}
+- 보유 기술: ${JSON.stringify(context.userProfile.skills_json || [])}
+
+## 💬 면접 대화 기록 (${totalQuestionsAnswered}개 질문)
 ${turns.map((turn, idx) => 
-  `[질문 ${idx + 1}] ${turn.question_text}\n[답변 ${idx + 1}] ${turn.user_answer_text || '(답변 없음)'}`
+  `### [질문 ${idx + 1}]
+${turn.question_text}
+
+### [답변 ${idx + 1}]
+${turn.user_answer_text || '(답변 없음)'}`
 ).join('\n\n')}
-
-### 사용자 스펙:
-${JSON.stringify(context.userProfile, null, 2)}
-
-### 채용 공고:
-${JSON.stringify(context.jobPosting.analysis_json, null, 2)}
 ${earlyFinishNote}
 
-위 면접 내용을 바탕으로 다음 형식의 JSON 피드백을 제공해줘:
+---
+
+위 면접 내용을 바탕으로 다음 JSON 형식으로 **턴별 상세 분석**을 제공해주세요:
+
+\`\`\`json
 {
-  "overall_feedback": "종합 피드백 (5-7문장). 면접 태도, 답변 내용, 일관성, 직무 적합성에 대한 상세한 설명을 포함해줘.${isEarlyFinish ? ' 면접이 조기 종료되었음을 자연스럽게 언급해줘.' : ''}",
+  "overall_feedback": "면접 전체에 대한 종합 평가 (5-7문장). 면접 태도, 답변의 일관성, 직무 적합성, 합격 가능성에 대한 전문적인 의견을 포함하세요.${isEarlyFinish ? ' 면접이 조기 종료되었음을 자연스럽게 언급하세요.' : ''}",
   "per_turn_feedback": [
     {
       "turn_number": 1,
-      "question": "질문",
-      "answer": "답변",
-      "feedback": "이 답변에 대한 구체적이고 상세한 피드백. 좋았던 점과 개선할 점을 모두 포함해줘."
+      "question": "질문 텍스트",
+      "answer": "답변 텍스트",
+      "user_answer_summary": "답변의 핵심 내용을 2-3문장으로 요약",
+      "strengths": [
+        "이 답변에서 잘한 점 1 (구체적으로)",
+        "이 답변에서 잘한 점 2 (구체적으로)"
+      ],
+      "improvements": [
+        "개선이 필요한 점 1과 구체적인 개선 방법",
+        "개선이 필요한 점 2와 구체적인 개선 방법"
+      ],
+      "better_answer_example": "STAR 기법을 활용한 모범 답안 예시. 지원자의 경험을 바탕으로 하되, 더 구체적인 수치와 결과를 포함하여 작성하세요."
     }
   ]
-}`;
+}
+\`\`\`
+
+**중요 지침**:
+- **모든 턴(${totalQuestionsAnswered}개)에 대해** per_turn_feedback를 생성하세요
+- strengths와 improvements는 각각 2-3개 항목
+- better_answer_example은 지원자의 실제 경험을 기반으로 하되, STAR 기법을 활용하여 더욱 강력하게 재구성
+- 모든 피드백은 건설적이고 실용적이어야 함`;
 
   try {
+    console.log(`🤖 [Interview Feedback] Generating feedback for ${totalQuestionsAnswered} turns...`);
+    
     const response = await openai.chat.completions.create({
       model: 'gpt-4o',
       messages: [
-        { role: 'system', content: '당신은 전문 면접관이자 피드백 전문가입니다. 제공된 답변의 질과 깊이에 집중하여 공정하고 건설적인 피드백을 제공합니다.' },
-        { role: 'user', content: prompt },
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
       ],
       response_format: { type: 'json_object' },
-      temperature: 0.5,
+      temperature: 0.7, // 창의적인 모범 답안 생성을 위해 약간 높임
     });
 
     const content = response.choices[0].message.content;
-    const feedback = JSON.parse(content || '{}');
+    const parsed = JSON.parse(content || '{}');
     
-    // 메타데이터 추가
-    return {
-      ...feedback,
+    console.log('✅ [Interview Feedback] AI 분석 완료');
+    
+    // 데이터 구조 검증 및 정규화
+    const feedback: FinalInterviewFeedback = {
+      overall_feedback: String(parsed.overall_feedback || '종합 피드백이 생성되지 않았습니다.'),
+      per_turn_feedback: Array.isArray(parsed.per_turn_feedback)
+        ? parsed.per_turn_feedback.map((turn: any) => ({
+            turn_number: Number(turn.turn_number || 0),
+            question: String(turn.question || ''),
+            answer: String(turn.answer || ''),
+            user_answer_summary: String(turn.user_answer_summary || ''),
+            strengths: Array.isArray(turn.strengths)
+              ? turn.strengths.map((s: any) => String(s))
+              : [],
+            improvements: Array.isArray(turn.improvements)
+              ? turn.improvements.map((i: any) => String(i))
+              : [],
+            better_answer_example: String(turn.better_answer_example || ''),
+          }))
+        : [],
       is_early_finish: isEarlyFinish,
       total_questions_answered: totalQuestionsAnswered,
     };
+    
+    console.log(`📊 [Interview Feedback] Generated feedback for ${feedback.per_turn_feedback.length} turns`);
+    
+    return feedback;
   } catch (error) {
-    console.error('최종 피드백 에러:', error);
+    console.error('❌ [Interview Feedback] 피드백 생성 에러:', error);
     throw new Error('면접 피드백 생성에 실패했습니다.');
   }
 }

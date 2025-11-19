@@ -3,7 +3,7 @@
  */
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import AudioPlayer from './AudioPlayer';
 
 interface InterviewTurnCardProps {
@@ -14,6 +14,13 @@ interface InterviewTurnCardProps {
   turnFeedbackText?: string;
 }
 
+interface ParsedFeedback {
+  user_answer_summary: string;
+  strengths: string[];
+  improvements: string[];
+  better_answer_example: string;
+}
+
 export default function InterviewTurnCard({
   turnNumber,
   questionText,
@@ -22,6 +29,24 @@ export default function InterviewTurnCard({
   turnFeedbackText,
 }: InterviewTurnCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  // 피드백 파싱
+  const parsedFeedback = useMemo<ParsedFeedback | null>(() => {
+    if (!turnFeedbackText) return null;
+    
+    try {
+      const feedback = JSON.parse(turnFeedbackText);
+      return {
+        user_answer_summary: String(feedback.user_answer_summary || ''),
+        strengths: Array.isArray(feedback.strengths) ? feedback.strengths : [],
+        improvements: Array.isArray(feedback.improvements) ? feedback.improvements : [],
+        better_answer_example: String(feedback.better_answer_example || ''),
+      };
+    } catch (error) {
+      // 구버전 피드백 (단순 텍스트)
+      return null;
+    }
+  }, [turnFeedbackText]);
 
   return (
     <div className="border border-gray-800 rounded-lg overflow-hidden bg-gray-900">
@@ -63,11 +88,63 @@ export default function InterviewTurnCard({
           </div>
 
           {turnFeedbackText && (
-            <div>
-              <h4 className="text-sm font-semibold text-gray-400 uppercase mb-2">AI 피드백</h4>
-              <div className="p-4 bg-primary-500/10 border border-primary-500/30 rounded-lg">
-                <p className="text-gray-300 whitespace-pre-wrap">{turnFeedbackText}</p>
-              </div>
+            <div className="space-y-4">
+              <h4 className="text-lg font-bold text-primary-400 uppercase">📊 AI 피드백</h4>
+              
+              {parsedFeedback ? (
+                <div className="space-y-4">
+                  {/* 답변 요약 */}
+                  {parsedFeedback.user_answer_summary && (
+                    <div className="p-4 bg-blue-900/20 border border-blue-700 rounded-lg">
+                      <h5 className="text-sm font-semibold text-blue-400 mb-2">📝 답변 요약</h5>
+                      <p className="text-gray-300">{parsedFeedback.user_answer_summary}</p>
+                    </div>
+                  )}
+
+                  {/* 강점 */}
+                  {parsedFeedback.strengths.length > 0 && (
+                    <div className="p-4 bg-green-900/20 border border-green-700 rounded-lg">
+                      <h5 className="text-sm font-semibold text-green-400 mb-3">✅ 잘한 점</h5>
+                      <ul className="space-y-2">
+                        {parsedFeedback.strengths.map((strength, idx) => (
+                          <li key={idx} className="flex items-start gap-2">
+                            <span className="text-green-400 mt-1">●</span>
+                            <span className="text-gray-300">{strength}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* 개선점 */}
+                  {parsedFeedback.improvements.length > 0 && (
+                    <div className="p-4 bg-yellow-900/20 border border-yellow-700 rounded-lg">
+                      <h5 className="text-sm font-semibold text-yellow-400 mb-3">💡 개선할 점</h5>
+                      <ul className="space-y-2">
+                        {parsedFeedback.improvements.map((improvement, idx) => (
+                          <li key={idx} className="flex items-start gap-2">
+                            <span className="text-yellow-400 mt-1">●</span>
+                            <span className="text-gray-300">{improvement}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* 모범 답안 예시 */}
+                  {parsedFeedback.better_answer_example && (
+                    <div className="p-4 bg-purple-900/20 border border-purple-700 rounded-lg">
+                      <h5 className="text-sm font-semibold text-purple-400 mb-2">🎯 더 나은 답변 예시</h5>
+                      <p className="text-gray-300 italic leading-relaxed">{parsedFeedback.better_answer_example}</p>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                // 구버전 피드백 (단순 텍스트)
+                <div className="p-4 bg-primary-500/10 border border-primary-500/30 rounded-lg">
+                  <p className="text-gray-300 whitespace-pre-wrap">{turnFeedbackText}</p>
+                </div>
+              )}
             </div>
           )}
         </div>
