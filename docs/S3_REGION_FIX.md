@@ -182,3 +182,4 @@ aws s3 sync s3://ai-interview-bucket s3://ai-interview-bucket-new
 **최종 업데이트:** 2025-11-18  
 **수정 완료:** ✅ 기본 리전 `eu-west-2`로 변경
 
+

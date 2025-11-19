@@ -48,6 +48,8 @@ export default function HistoryPage() {
   const [interviews, setInterviews] = useState<Interview[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   useEffect(() => {
     loadData();
@@ -99,6 +101,61 @@ export default function HistoryPage() {
     router.push(`/interview/result/${id}`);
   };
 
+  const handleDelete = async (id: number, type: 'interview' | 'cover_letter', e: React.MouseEvent) => {
+    // 이벤트 전파 방지 (카드 클릭 이벤트와 충돌 방지)
+    e.stopPropagation();
+
+    // 확인 대화상자
+    const itemName = type === 'interview' ? '면접' : '자기소개서';
+    const confirmed = window.confirm(
+      `정말 이 ${itemName}을(를) 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setDeletingId(id);
+    setError('');
+    setSuccessMessage('');
+
+    try {
+      const response = await fetch('/api/history/delete', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify({ id, type }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || '삭제에 실패했습니다.');
+      }
+
+      // UI에서 항목 제거
+      if (type === 'interview') {
+        setInterviews((prev) => prev.filter((item) => item.id !== id));
+        setSuccessMessage('면접이 삭제되었습니다.');
+      } else {
+        setCoverLetters((prev) => prev.filter((item) => item.id !== id));
+        setSuccessMessage('자기소개서가 삭제되었습니다.');
+      }
+
+      // 3초 후 성공 메시지 자동 제거
+      setTimeout(() => {
+        setSuccessMessage('');
+      }, 3000);
+
+    } catch (err: any) {
+      console.error('삭제 에러:', err);
+      setError(err.message || '삭제 중 오류가 발생했습니다.');
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="max-w-6xl mx-auto px-8 py-16">
@@ -139,6 +196,13 @@ export default function HistoryPage() {
             📝 자기소개서 피드백 ({coverLetters.length})
           </button>
         </div>
+
+        {/* Success Message */}
+        {successMessage && (
+          <div className="mb-6 p-4 bg-green-900/20 border border-green-500 rounded-lg">
+            <p className="text-green-400">{successMessage}</p>
+          </div>
+        )}
 
         {/* Error Message */}
         {error && (
@@ -197,7 +261,7 @@ export default function HistoryPage() {
                             </span>
                           </div>
                         </div>
-                        <div className="ml-4">
+                        <div className="ml-4 flex items-center gap-3">
                           <span
                             className={`px-3 py-1 rounded-full text-xs font-semibold ${
                               interview.status === 'completed'
@@ -209,6 +273,18 @@ export default function HistoryPage() {
                           >
                             {interview.statusLabel}
                           </span>
+                          <button
+                            onClick={(e) => handleDelete(interview.id, 'interview', e)}
+                            disabled={deletingId === interview.id}
+                            className="p-2 text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            title="삭제"
+                          >
+                            {deletingId === interview.id ? (
+                              <span className="inline-block animate-spin">⏳</span>
+                            ) : (
+                              <span className="text-xl">🗑️</span>
+                            )}
+                          </button>
                         </div>
                       </div>
 
@@ -269,7 +345,7 @@ export default function HistoryPage() {
                             {letter.contentPreview}
                           </p>
                         </div>
-                        <div className="ml-4">
+                        <div className="ml-4 flex items-center gap-3">
                           <span
                             className={`px-3 py-1 rounded-full text-xs font-semibold ${
                               letter.status === 'Feedback Complete'
@@ -279,6 +355,18 @@ export default function HistoryPage() {
                           >
                             {letter.status}
                           </span>
+                          <button
+                            onClick={(e) => handleDelete(letter.id, 'cover_letter', e)}
+                            disabled={deletingId === letter.id}
+                            className="p-2 text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            title="삭제"
+                          >
+                            {deletingId === letter.id ? (
+                              <span className="inline-block animate-spin">⏳</span>
+                            ) : (
+                              <span className="text-xl">🗑️</span>
+                            )}
+                          </button>
                         </div>
                       </div>
 

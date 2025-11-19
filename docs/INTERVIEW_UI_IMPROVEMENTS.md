@@ -458,3 +458,4 @@ const handleFinishAndViewResults = async () => {
 **버전:** 2.3 (UI Improvements for Early Finish)  
 **작성자:** AI Assistant
 
+

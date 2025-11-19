@@ -531,3 +531,4 @@ await query(
 **버전:** 2.4 (Prisma Schema Full Sync)  
 **작성자:** AI Assistant
 
+

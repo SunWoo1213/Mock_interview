@@ -45,3 +45,4 @@ Write-Host "🔍 확인:" -ForegroundColor Yellow
 Write-Host "   vercel env ls | findstr NEXT_PUBLIC_API_URL" -ForegroundColor White
 Write-Host "   (아무것도 나오지 않으면 성공!)" -ForegroundColor White
 
+

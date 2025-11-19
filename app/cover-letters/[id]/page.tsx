@@ -17,8 +17,13 @@ interface CoverLetterDetail {
   feedback_json?: {
     overall_feedback: string;
     strengths?: string[];
-    improvements?: string[];
+    improvements?: Array<{
+      issue: string;
+      suggestion: string;
+      example: string;
+    }> | string[];
     suggestions?: string[];
+    interview_questions?: string[];
   };
 }
 
@@ -177,12 +182,15 @@ export default function CoverLetterDetailPage() {
               <div className="mb-8">
                 <h3 className="text-xl font-bold mb-3 text-green-400">✅ 잘 쓴 부분</h3>
                 <div className="space-y-3">
-                  {coverLetter.feedback_json.strengths.map((strength, idx) => (
-                    <div key={idx} className="flex items-start gap-3 p-3 bg-green-900/20 rounded-lg border border-green-700">
-                      <span className="text-green-400 text-xl flex-shrink-0">●</span>
-                      <span className="text-gray-300">{strength}</span>
-                    </div>
-                  ))}
+                  {coverLetter.feedback_json.strengths.map((strength, idx) => {
+                    const strengthText = typeof strength === 'string' ? strength : JSON.stringify(strength);
+                    return (
+                      <div key={idx} className="flex items-start gap-3 p-3 bg-green-900/20 rounded-lg border border-green-700">
+                        <span className="text-green-400 text-xl flex-shrink-0">●</span>
+                        <span className="text-gray-300">{strengthText}</span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -192,12 +200,34 @@ export default function CoverLetterDetailPage() {
               <div className="mb-8">
                 <h3 className="text-xl font-bold mb-3 text-yellow-400">⚠️ 개선이 필요한 부분</h3>
                 <div className="space-y-3">
-                  {coverLetter.feedback_json.improvements.map((improvement, idx) => (
-                    <div key={idx} className="flex items-start gap-3 p-3 bg-yellow-900/20 rounded-lg border border-yellow-700">
-                      <span className="text-yellow-400 text-xl flex-shrink-0">●</span>
-                      <span className="text-gray-300">{improvement}</span>
-                    </div>
-                  ))}
+                  {coverLetter.feedback_json.improvements.map((improvement, idx) => {
+                    // 안전하게 문자열로 변환
+                    if (typeof improvement === 'string') {
+                      return (
+                        <div key={idx} className="flex items-start gap-3 p-3 bg-yellow-900/20 rounded-lg border border-yellow-700">
+                          <span className="text-yellow-400 text-xl flex-shrink-0">●</span>
+                          <span className="text-gray-300">{improvement}</span>
+                        </div>
+                      );
+                    } else {
+                      // 객체 형식인 경우
+                      const issue = typeof improvement.issue === 'string' ? improvement.issue : JSON.stringify(improvement.issue || improvement);
+                      const suggestion = typeof improvement.suggestion === 'string' ? improvement.suggestion : JSON.stringify(improvement.suggestion || '');
+                      const example = typeof improvement.example === 'string' ? improvement.example : (improvement.example ? JSON.stringify(improvement.example) : '');
+                      
+                      return (
+                        <div key={idx} className="p-3 bg-yellow-900/20 rounded-lg border border-yellow-700">
+                          <p className="font-semibold text-yellow-400 mb-2">문제: {issue}</p>
+                          {suggestion && (
+                            <p className="text-gray-300 mb-2">제안: {suggestion}</p>
+                          )}
+                          {example && (
+                            <p className="text-sm text-gray-400 italic">예시: {example}</p>
+                          )}
+                        </div>
+                      );
+                    }
+                  })}
                 </div>
               </div>
             )}
@@ -207,12 +237,15 @@ export default function CoverLetterDetailPage() {
               <div>
                 <h3 className="text-xl font-bold mb-3 text-blue-400">💡 추천 사항</h3>
                 <div className="space-y-3">
-                  {coverLetter.feedback_json.suggestions.map((suggestion, idx) => (
-                    <div key={idx} className="flex items-start gap-3 p-3 bg-blue-900/20 rounded-lg border border-blue-700">
-                      <span className="text-blue-400 text-xl flex-shrink-0">●</span>
-                      <span className="text-gray-300">{suggestion}</span>
-                    </div>
-                  ))}
+                  {coverLetter.feedback_json.suggestions.map((suggestion, idx) => {
+                    const suggestionText = typeof suggestion === 'string' ? suggestion : JSON.stringify(suggestion);
+                    return (
+                      <div key={idx} className="flex items-start gap-3 p-3 bg-blue-900/20 rounded-lg border border-blue-700">
+                        <span className="text-blue-400 text-xl flex-shrink-0">●</span>
+                        <span className="text-gray-300">{suggestionText}</span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -244,4 +277,5 @@ export default function CoverLetterDetailPage() {
     </div>
   );
 }
+
 

@@ -594,3 +594,4 @@ if (is_early_finish) {
 **버전:** 2.2 (Interview Early Finish Feature)  
 **작성자:** AI Assistant
 
+

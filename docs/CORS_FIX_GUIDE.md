@@ -254,3 +254,4 @@ cat .env.check | findstr NEXT_PUBLIC_API_URL
 **최종 업데이트:** 2025-11-18  
 **해결 완료:** ✅ 환경 변수 제거 필요
 
+

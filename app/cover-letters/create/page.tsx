@@ -140,12 +140,15 @@ export default function CreateCoverLetterPage() {
                 <div className="mb-6">
                   <h3 className="text-lg font-bold mb-2">✅ 잘 쓴 부분</h3>
                   <ul className="space-y-2">
-                    {feedback.strengths.map((strength: string, idx: number) => (
-                      <li key={idx} className="flex items-start gap-2">
-                        <span className="text-green-400 mt-1">●</span>
-                        <span className="text-gray-300">{strength}</span>
-                      </li>
-                    ))}
+                    {feedback.strengths.map((strength: any, idx: number) => {
+                      const strengthText = typeof strength === 'string' ? strength : JSON.stringify(strength);
+                      return (
+                        <li key={idx} className="flex items-start gap-2">
+                          <span className="text-green-400 mt-1">●</span>
+                          <span className="text-gray-300">{strengthText}</span>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               )}
@@ -155,15 +158,24 @@ export default function CreateCoverLetterPage() {
                 <div className="mb-6">
                   <h3 className="text-lg font-bold mb-2">⚠️ 개선이 필요한 부분</h3>
                   <div className="space-y-4">
-                    {feedback.improvements.map((item: any, idx: number) => (
-                      <div key={idx} className="p-4 bg-gray-800 rounded-lg">
-                        <p className="font-semibold text-red-400 mb-2">문제: {item.issue}</p>
-                        <p className="text-gray-300 mb-2">제안: {item.suggestion}</p>
-                        {item.example && (
-                          <p className="text-sm text-gray-400 italic">예시: {item.example}</p>
-                        )}
-                      </div>
-                    ))}
+                    {feedback.improvements.map((item: any, idx: number) => {
+                      // 안전하게 문자열로 변환
+                      const issue = typeof item === 'string' ? item : (typeof item.issue === 'string' ? item.issue : JSON.stringify(item.issue || item));
+                      const suggestion = typeof item === 'string' ? '' : (typeof item.suggestion === 'string' ? item.suggestion : JSON.stringify(item.suggestion || ''));
+                      const example = typeof item === 'string' ? '' : (typeof item.example === 'string' ? item.example : (item.example ? JSON.stringify(item.example) : ''));
+                      
+                      return (
+                        <div key={idx} className="p-4 bg-gray-800 rounded-lg">
+                          <p className="font-semibold text-red-400 mb-2">문제: {issue}</p>
+                          {suggestion && (
+                            <p className="text-gray-300 mb-2">제안: {suggestion}</p>
+                          )}
+                          {example && (
+                            <p className="text-sm text-gray-400 italic">예시: {example}</p>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -173,12 +185,15 @@ export default function CreateCoverLetterPage() {
                 <div>
                   <h3 className="text-lg font-bold mb-2">💬 예상 면접 질문</h3>
                   <ul className="space-y-2">
-                    {feedback.interview_questions.map((question: string, idx: number) => (
-                      <li key={idx} className="flex items-start gap-2">
-                        <span className="text-primary-400 mt-1">{idx + 1}.</span>
-                        <span className="text-gray-300">{question}</span>
-                      </li>
-                    ))}
+                    {feedback.interview_questions.map((question: any, idx: number) => {
+                      const questionText = typeof question === 'string' ? question : JSON.stringify(question);
+                      return (
+                        <li key={idx} className="flex items-start gap-2">
+                          <span className="text-primary-400 mt-1">{idx + 1}.</span>
+                          <span className="text-gray-300">{questionText}</span>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               )}

@@ -517,3 +517,4 @@ document.addEventListener('click', () => {
 **버전:** 2.0 (Refactored)  
 **작성자:** AI Assistant
 
+

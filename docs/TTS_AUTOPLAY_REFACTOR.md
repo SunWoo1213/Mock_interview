@@ -395,3 +395,4 @@ const canAutoplay = await audioRef.current.play()
 **버전:** 2.0  
 **작성자:** AI Assistant
 
+

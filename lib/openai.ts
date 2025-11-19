@@ -125,7 +125,32 @@ ${coverLetterText}
     });
 
     const content = response.choices[0].message.content;
-    return JSON.parse(content || '{}');
+    const parsed = JSON.parse(content || '{}');
+    
+    // 데이터 구조 검증 및 정규화
+    const feedback: CoverLetterFeedback = {
+      overall_feedback: String(parsed.overall_feedback || ''),
+      strengths: Array.isArray(parsed.strengths) 
+        ? parsed.strengths.map((s: any) => String(s)) 
+        : [],
+      improvements: Array.isArray(parsed.improvements)
+        ? parsed.improvements.map((item: any) => {
+            if (typeof item === 'string') {
+              return { issue: item, suggestion: '', example: '' };
+            }
+            return {
+              issue: String(item.issue || ''),
+              suggestion: String(item.suggestion || ''),
+              example: String(item.example || ''),
+            };
+          })
+        : [],
+      interview_questions: Array.isArray(parsed.interview_questions)
+        ? parsed.interview_questions.map((q: any) => String(q))
+        : [],
+    };
+    
+    return feedback;
   } catch (error) {
     console.error('자소서 피드백 에러:', error);
     throw new Error('자기소개서 피드백 생성에 실패했습니다.');

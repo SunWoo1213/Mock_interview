@@ -497,3 +497,4 @@ const handleManualPlay = async () => {
 **버전:** 2.1 (TTS Autoplay Fixed)  
 **작성자:** AI Assistant
 
+

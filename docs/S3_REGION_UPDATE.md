@@ -178,3 +178,4 @@ vercel --prod --force
 **변경 사항:** eu-west-2 (London) → ap-southeast-2 (Sydney)  
 **버킷 이름:** ai-interview-bucket
 
+
