@@ -3,6 +3,11 @@
  * POST /api/interview/[id]/finish
  * 
  * 5번째 질문 전이라도 사용자가 면접을 종료하고 피드백을 받을 수 있도록 합니다.
+ * 
+ * 주요 로직:
+ * 1. 마지막 턴이 미완료(답변 없음)인 경우 해당 턴을 DB에서 삭제
+ * 2. 남은 완료된 턴들에 대해서만 AI 피드백 생성
+ * 3. 답변이 하나도 없는 경우 세션을 'cancelled' 상태로 변경
  */
 import { NextApiResponse } from 'next';
 import { query } from '@/lib/db';
@@ -47,7 +52,37 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse): Promise
     return;
   }
 
-  // 모든 턴 조회 (답변이 있는 것만)
+  // ===== 1단계: 마지막 턴 식별 및 미완료 턴 삭제 =====
+  console.log('🔍 마지막 턴 확인 중...');
+  
+  const lastTurnResult = await query(
+    `SELECT id, turn_number, question_text, user_answer_text 
+     FROM interview_turns 
+     WHERE session_id = $1 
+     ORDER BY turn_number DESC 
+     LIMIT 1`,
+    [sessionId]
+  );
+
+  if (lastTurnResult.rows.length > 0) {
+    const lastTurn = lastTurnResult.rows[0];
+    
+    // 마지막 턴이 미완료 상태인 경우 (답변이 없는 경우)
+    if (!lastTurn.user_answer_text) {
+      console.log(`🗑️ 미완료 턴 삭제: Turn ${lastTurn.turn_number} (질문: "${lastTurn.question_text.substring(0, 50)}...")`);
+      
+      await query(
+        `DELETE FROM interview_turns WHERE id = $1`,
+        [lastTurn.id]
+      );
+      
+      console.log(`✅ Turn ${lastTurn.turn_number} 삭제 완료`);
+    } else {
+      console.log(`✅ 마지막 턴 (Turn ${lastTurn.turn_number})은 답변이 완료되어 있어 유지합니다.`);
+    }
+  }
+
+  // ===== 2단계: 남은 완료된 턴들만 조회 =====
   const turnsResult = await query(
     `SELECT turn_number, question_text, user_answer_text 
      FROM interview_turns 
@@ -58,15 +93,25 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse): Promise
 
   const turns = turnsResult.rows;
 
-  // 답변이 하나도 없으면 면접을 종료할 수 없음
+  // 답변이 하나도 없으면 세션 삭제 또는 빈 결과 처리
   if (turns.length === 0) {
+    console.log('⚠️ 답변이 하나도 없음. 세션을 취소 상태로 변경합니다.');
+    
+    await query(
+      `UPDATE interview_sessions 
+       SET status = 'cancelled', completed_at = NOW() 
+       WHERE id = $1`,
+      [sessionId]
+    );
+    
     res.status(400).json({ 
-      error: '답변이 하나도 없어 면접을 종료할 수 없습니다. 최소 1개 이상의 질문에 답변해주세요.' 
+      error: '답변이 하나도 없어 면접을 종료할 수 없습니다. 최소 1개 이상의 질문에 답변해주세요.',
+      sessionStatus: 'cancelled'
     });
     return;
   }
 
-  console.log(`📊 답변된 질문 수: ${turns.length}`);
+  console.log(`📊 유효한 답변 수: ${turns.length}개`);
 
   // 관련 정보 조회 (컨텍스트 생성)
   const coverLetterResult = await query(
