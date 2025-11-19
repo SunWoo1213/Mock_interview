@@ -3,7 +3,7 @@
  */
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { apiClient } from '@/lib/api-client';
 import JobPostingAnalysis from '@/components/JobPostingAnalysis';
@@ -20,16 +20,7 @@ export default function CreateCoverLetterPage() {
   const [feedback, setFeedback] = useState<any>(null);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    if (!jobPostingId) {
-      setIsLoading(false);
-      return;
-    }
-
-    loadJobPosting();
-  }, [jobPostingId]);
-
-  const loadJobPosting = async () => {
+  const loadJobPosting = useCallback(async () => {
     if (!jobPostingId) return;
 
     setIsLoading(true);
@@ -44,7 +35,16 @@ export default function CreateCoverLetterPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [jobPostingId]);
+
+  useEffect(() => {
+    if (!jobPostingId) {
+      setIsLoading(false);
+      return;
+    }
+
+    loadJobPosting();
+  }, [jobPostingId, loadJobPosting]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -474,7 +474,6 @@ export default function CreateCoverLetterPage() {
                 다른 공고 작성하기
               </button>
             </div>
-          </div>
         </div>
       )}
     </div>
