@@ -34,9 +34,9 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
     return res.status(400).json({ error: '필수 파라미터가 누락되었습니다.' });
   }
 
-  // 세션 검증
+  // 세션 검증 (voice 포함)
   const sessionResult = await query(
-    'SELECT id, cover_letter_id, job_posting_id, status FROM interview_sessions WHERE id = $1 AND user_id = $2',
+    'SELECT id, cover_letter_id, job_posting_id, voice, status FROM interview_sessions WHERE id = $1 AND user_id = $2',
     [sessionId, userId]
   );
 
@@ -45,6 +45,8 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
   }
 
   const session = sessionResult.rows[0];
+  const sessionVoice = session.voice || 'nova'; // 기본값으로 nova 사용
+  console.log(`🎤 [Interview Answer] 세션 목소리: ${sessionVoice}`);
 
   if (session.status !== 'in_progress') {
     return res.status(400).json({ error: '진행 중인 면접이 아닙니다.' });
@@ -222,8 +224,8 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
   const nextTurnNumber = turnNumber + 1;
   const nextQuestionText = await generateInterviewQuestion(context, nextTurnNumber, totalQuestions);
 
-  // TTS로 음성 생성
-  const audioBuffer2 = await textToSpeech(nextQuestionText);
+  // TTS로 음성 생성 (세션에 저장된 voice 사용)
+  const audioBuffer2 = await textToSpeech(nextQuestionText, sessionVoice);
 
   // S3에 음성 업로드
   const nextQuestionAudioUrl = await uploadToS3({

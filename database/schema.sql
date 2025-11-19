@@ -82,6 +82,8 @@ CREATE TABLE IF NOT EXISTS interview_sessions (
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     cover_letter_id INTEGER REFERENCES cover_letters(id) ON DELETE SET NULL,
     job_posting_id INTEGER REFERENCES job_postings(id) ON DELETE SET NULL,
+    voice VARCHAR(20) DEFAULT 'nova',
+    -- OpenAI TTS 목소리 (alloy, echo, fable, onyx, nova, shimmer)
     status VARCHAR(50) DEFAULT 'pending',
     -- pending, in_progress, completed, cancelled
     total_questions INTEGER DEFAULT 5,

@@ -576,14 +576,16 @@ ${earlyFinishNote}
 
 /**
  * 텍스트를 음성으로 변환 (TTS)
+ * @param text 변환할 텍스트
+ * @param voice 음성 종류 (alloy, echo, fable, onyx, nova, shimmer)
  */
-export async function textToSpeech(text: string): Promise<Buffer> {
+export async function textToSpeech(text: string, voice: string = 'nova'): Promise<Buffer> {
   try {
-    console.log(`🎤 [TTS] Generating speech for text (${text.length} chars)`);
+    console.log(`🎤 [TTS] Generating speech for text (${text.length} chars) with voice: ${voice}`);
     
     const mp3 = await openai.audio.speech.create({
       model: 'tts-1',
-      voice: 'nova', // alloy, echo, fable, onyx, nova, shimmer
+      voice: voice as any, // alloy, echo, fable, onyx, nova, shimmer
       input: text,
       speed: 1.0,
       response_format: 'mp3', // 명시적으로 MP3 포맷 지정

@@ -8,6 +8,16 @@ import { generateInterviewQuestion, textToSpeech } from '@/lib/openai';
 import { uploadToS3 } from '@/lib/s3';
 import { withAuth, withErrorHandler, AuthenticatedRequest } from '@/lib/middleware';
 
+// OpenAI TTS 목소리 목록
+const TTS_VOICES = ['alloy', 'echo', 'fable', 'onyx', 'nova', 'shimmer'] as const;
+
+/**
+ * 배열에서 랜덤 요소 선택
+ */
+function randomChoice<T>(array: readonly T[]): T {
+  return array[Math.floor(Math.random() * array.length)];
+}
+
 async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -47,13 +57,17 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
 
   const userProfile = profileResult.rows[0] || {};
 
-  // 면접 세션 생성
+  // 랜덤으로 면접관 목소리 선택
+  const selectedVoice = randomChoice(TTS_VOICES);
+  console.log(`🎤 [Interview Start] 랜덤 선택된 면접관 목소리: ${selectedVoice}`);
+
+  // 면접 세션 생성 (voice 포함)
   const sessionResult = await query(
     `INSERT INTO interview_sessions 
-     (user_id, cover_letter_id, job_posting_id, status, started_at) 
-     VALUES ($1, $2, $3, 'in_progress', NOW()) 
+     (user_id, cover_letter_id, job_posting_id, voice, status, started_at) 
+     VALUES ($1, $2, $3, $4, 'in_progress', NOW()) 
      RETURNING id`,
-    [userId, coverLetterId, coverLetter.job_posting_id]
+    [userId, coverLetterId, coverLetter.job_posting_id, selectedVoice]
   );
 
   const sessionId = sessionResult.rows[0].id;
@@ -73,8 +87,8 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
 
   const questionText = await generateInterviewQuestion(context, 1, 5);
 
-  // TTS로 음성 생성
-  const audioBuffer = await textToSpeech(questionText);
+  // TTS로 음성 생성 (선택된 voice 사용)
+  const audioBuffer = await textToSpeech(questionText, selectedVoice);
 
   // S3에 음성 업로드
   const questionAudioUrl = await uploadToS3({
