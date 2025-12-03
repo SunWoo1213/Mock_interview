@@ -270,7 +270,7 @@ export default function HistoryPage() {
                 {interviews.length === 0 ? (
                   <div className="text-center py-20">
                     <div className="text-6xl mb-4">🎤</div>
-                    <p className="text-xl text-gray-600 mb-4">
+                    <p className="text-xl text-zinc-600 mb-4">
                       아직 진행한 모의 면접이 없습니다.
                     </p>
                     <button
@@ -296,12 +296,12 @@ export default function HistoryPage() {
                               </h3>
                             </div>
                           ) : (
-                            <h3 className="text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors mb-2">
+                            <h3 className="text-xl font-bold text-zinc-900 group-hover:text-zinc-600 transition-colors mb-2">
                               모의 면접 #{interview.id}
                             </h3>
                           )}
                           <div className="flex items-center gap-4 mt-2">
-                            <span className="text-gray-600 text-sm">
+                            <span className="text-zinc-600 text-sm">
                               📊 진행률: {interview.answeredQuestions} / {interview.totalQuestions} 질문
                             </span>
                           </div>
@@ -313,7 +313,7 @@ export default function HistoryPage() {
                                 ? 'bg-green-100 text-green-700 border-2 border-green-400'
                                 : interview.status === 'in_progress'
                                 ? 'bg-yellow-100 text-yellow-700 border-2 border-yellow-400'
-                                : 'bg-gray-100 text-gray-700 border-2 border-gray-400'
+                                : 'bg-zinc-100 text-zinc-700 border-2 border-zinc-400'
                             }`}
                           >
                             {interview.statusLabel}
@@ -321,7 +321,7 @@ export default function HistoryPage() {
                           <button
                             onClick={(e) => handleDelete(interview.id, 'interview', e)}
                             disabled={deletingId === interview.id}
-                            className="p-2 text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             title="삭제"
                           >
                             {deletingId === interview.id ? (
@@ -333,7 +333,7 @@ export default function HistoryPage() {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-6 text-sm text-gray-500">
+                      <div className="flex items-center gap-6 text-sm text-zinc-500">
                         {interview.startedAt && (
                           <span>🕒 시작: {formatDate(interview.startedAt)}</span>
                         )}
@@ -356,12 +356,12 @@ export default function HistoryPage() {
                 {coverLetters.length === 0 ? (
                   <div className="text-center py-20">
                     <div className="text-6xl mb-4">📝</div>
-                    <p className="text-xl text-gray-600 mb-4">
+                    <p className="text-xl text-zinc-600 mb-4">
                       아직 작성한 자기소개서가 없습니다.
                     </p>
                     <button
                       onClick={() => router.push('/cover-letters')}
-                      className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                      className="px-6 py-3 bg-zinc-900 text-white hover:bg-zinc-800 rounded-lg transition-all font-medium shadow-sm active:scale-95"
                     >
                       자기소개서 작성하기
                     </button>
@@ -382,11 +382,11 @@ export default function HistoryPage() {
                               </h3>
                             </div>
                           ) : (
-                            <h3 className="text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors mb-2">
+                            <h3 className="text-xl font-bold text-zinc-900 group-hover:text-zinc-600 transition-colors mb-2">
                               자기소개서 #{letter.id}
                             </h3>
                           )}
-                          <p className="text-gray-600 text-sm line-clamp-2">
+                          <p className="text-zinc-600 text-sm line-clamp-2">
                             {letter.contentPreview}
                           </p>
                         </div>
@@ -403,7 +403,7 @@ export default function HistoryPage() {
                           <button
                             onClick={(e) => handleDelete(letter.id, 'cover_letter', e)}
                             disabled={deletingId === letter.id}
-                            className="p-2 text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             title="삭제"
                           >
                             {deletingId === letter.id ? (
@@ -415,7 +415,7 @@ export default function HistoryPage() {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-6 text-sm text-gray-500">
+                      <div className="flex items-center gap-6 text-sm text-zinc-500">
                         <span>📅 작성일: {formatDate(letter.createdAt)}</span>
                         {letter.feedbackCount > 0 && (
                           <span>💬 피드백: {letter.feedbackCount}개</span>
@@ -436,12 +436,12 @@ export default function HistoryPage() {
                 {jobPostings.length === 0 ? (
                   <div className="text-center py-20">
                     <div className="text-6xl mb-4">📋</div>
-                    <p className="text-xl text-gray-600 mb-4">
+                    <p className="text-xl text-zinc-600 mb-4">
                       아직 분석한 채용공고가 없습니다.
                     </p>
                     <button
                       onClick={() => router.push('/job-postings/upload')}
-                      className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                      className="px-6 py-3 bg-zinc-900 text-white hover:bg-zinc-800 rounded-lg transition-all font-medium shadow-sm active:scale-95"
                     >
                       채용공고 분석하기
                     </button>
@@ -455,11 +455,11 @@ export default function HistoryPage() {
                     >
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
-                          <h3 className="text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors mb-2">
+                          <h3 className="text-xl font-bold text-zinc-900 group-hover:text-zinc-600 transition-colors mb-2">
                             {posting.title || posting.companyName || '제목 없음'}
                           </h3>
                           {posting.companyName && posting.title && (
-                            <p className="text-gray-600 text-sm mb-3">{posting.companyName}</p>
+                            <p className="text-zinc-600 text-sm mb-3">{posting.companyName}</p>
                           )}
                           
                           {/* 키워드 미리보기 */}
@@ -474,7 +474,7 @@ export default function HistoryPage() {
                                 </span>
                               ))}
                               {posting.analysisJson.keywords.length > 5 && (
-                                <span className="px-3 py-1.5 text-gray-600 text-xs font-medium bg-gray-100 rounded-lg border border-gray-300">
+                                <span className="px-3 py-1.5 text-zinc-600 text-xs font-medium bg-zinc-100 rounded-lg border border-zinc-200">
                                   +{posting.analysisJson.keywords.length - 5}개 더
                                 </span>
                               )}
@@ -498,7 +498,7 @@ export default function HistoryPage() {
                           <button
                             onClick={(e) => handleDelete(posting.id, 'job_posting', e)}
                             disabled={deletingId === posting.id}
-                            className="p-2 text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             title="삭제"
                           >
                             {deletingId === posting.id ? (
@@ -510,9 +510,9 @@ export default function HistoryPage() {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-6 text-sm text-gray-500">
+                      <div className="flex items-center gap-6 text-sm text-zinc-500">
                         <span>📅 분석일: {formatDate(posting.createdAt)}</span>
-                        <span className="text-primary-400 group-hover:text-primary-300">
+                        <span className="text-zinc-900 font-medium group-hover:text-zinc-600">
                           👁️ 상세보기 →
                         </span>
                       </div>
@@ -532,22 +532,22 @@ export default function HistoryPage() {
           onClick={closeModal}
         >
           <div 
-            className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-gray-200 shadow-2xl"
+            className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-zinc-200 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* 모달 헤더 */}
-            <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-start justify-between">
+            <div className="sticky top-0 bg-white border-b border-zinc-200 p-6 flex items-start justify-between">
               <div className="flex-1">
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">
+                <h2 className="text-2xl font-bold text-zinc-900 mb-2">
                   {selectedPosting.title || selectedPosting.companyName || '채용공고'}
                 </h2>
                 {selectedPosting.companyName && selectedPosting.title && (
-                  <p className="text-gray-600">{selectedPosting.companyName}</p>
+                  <p className="text-zinc-600">{selectedPosting.companyName}</p>
                 )}
               </div>
               <button
                 onClick={closeModal}
-                className="ml-4 p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all"
+                className="ml-4 p-2 text-zinc-500 hover:text-zinc-700 hover:bg-zinc-100 rounded-lg transition-all"
                 aria-label="닫기"
               >
                 <span className="text-2xl">✕</span>
@@ -561,8 +561,8 @@ export default function HistoryPage() {
                   {/* 요약 */}
                   {selectedPosting.analysisJson.summary && (
                     <div>
-                      <h3 className="text-lg font-bold text-blue-600 mb-3">📝 요약</h3>
-                      <p className="text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-lg border border-slate-200">
+                      <h3 className="text-lg font-bold text-zinc-900 mb-3">📝 요약</h3>
+                      <p className="text-zinc-700 leading-relaxed bg-zinc-50 p-4 rounded-lg border border-zinc-200">
                         {selectedPosting.analysisJson.summary}
                       </p>
                     </div>
@@ -571,7 +571,7 @@ export default function HistoryPage() {
                   {/* 핵심 키워드 */}
                   {selectedPosting.analysisJson.keywords && (
                     <div>
-                      <h3 className="text-lg font-bold text-blue-600 mb-3">🏷️ 핵심 키워드</h3>
+                      <h3 className="text-lg font-bold text-zinc-900 mb-3">🏷️ 핵심 키워드</h3>
                       <div className="flex flex-wrap gap-2">
                         {selectedPosting.analysisJson.keywords.map((keyword: string, idx: number) => (
                           <span
@@ -593,7 +593,7 @@ export default function HistoryPage() {
                         {selectedPosting.analysisJson.must_have.map((item: string, idx: number) => (
                           <li key={idx} className="flex items-start gap-2">
                             <span className="text-red-600 mt-1">•</span>
-                            <span className="text-slate-700">{item}</span>
+                            <span className="text-zinc-700">{item}</span>
                           </li>
                         ))}
                       </ul>
@@ -608,7 +608,7 @@ export default function HistoryPage() {
                         {selectedPosting.analysisJson.nice_to_have.map((item: string, idx: number) => (
                           <li key={idx} className="flex items-start gap-2">
                             <span className="text-blue-600 mt-1">•</span>
-                            <span className="text-slate-700">{item}</span>
+                            <span className="text-zinc-700">{item}</span>
                           </li>
                         ))}
                       </ul>
@@ -617,32 +617,32 @@ export default function HistoryPage() {
 
                   {/* 원본 텍스트 */}
                   <div>
-                    <h3 className="text-lg font-bold text-slate-700 mb-3">📄 원본 공고 내용</h3>
-                    <div className="bg-slate-50 p-4 rounded-lg max-h-96 overflow-y-auto border border-slate-200">
-                      <pre className="whitespace-pre-wrap text-slate-600 text-sm leading-relaxed font-sans">
+                    <h3 className="text-lg font-bold text-zinc-900 mb-3">📄 원본 공고 내용</h3>
+                    <div className="bg-zinc-50 p-4 rounded-lg max-h-96 overflow-y-auto border border-zinc-200">
+                      <pre className="whitespace-pre-wrap text-zinc-600 text-sm leading-relaxed font-sans">
                         {selectedPosting.extractedText}
                       </pre>
                     </div>
                   </div>
                 </>
               ) : (
-                <div className="text-center py-12 text-gray-500">
+                <div className="text-center py-12 text-zinc-500">
                   <p>분석 결과가 없습니다.</p>
                 </div>
               )}
             </div>
 
             {/* 모달 푸터 */}
-            <div className="sticky bottom-0 bg-white border-t border-gray-200 p-6 flex gap-4">
+            <div className="sticky bottom-0 bg-white border-t border-zinc-200 p-6 flex gap-4">
               <button
                 onClick={() => router.push(`/cover-letters/create?jobPostingId=${selectedPosting.id}`)}
-                className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-colors"
+                className="flex-1 px-6 py-3 bg-zinc-900 hover:bg-zinc-800 text-white font-bold rounded-lg transition-all shadow-sm active:scale-95"
               >
                 📝 이 공고로 자소서 작성하기
               </button>
               <button
                 onClick={closeModal}
-                className="px-6 py-3 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition-colors border border-gray-300"
+                className="px-6 py-3 bg-white hover:bg-zinc-50 text-zinc-700 font-medium rounded-lg transition-colors border border-zinc-200"
               >
                 닫기
               </button>
