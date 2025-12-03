@@ -89,7 +89,7 @@ export default function HomePage() {
             </p>
             <button
               onClick={handleOpenModal}
-              className="w-full px-4 py-3 bg-zinc-900 text-white hover:bg-zinc-800 rounded-lg font-medium shadow-sm active:scale-95 transition-all duration-200"
+              className="w-full px-4 py-3 bg-white text-zinc-900 border border-zinc-200 hover:bg-zinc-50 rounded-lg shadow-sm transition-all duration-200 font-medium"
             >
               피드백 받기
             </button>
@@ -104,7 +104,7 @@ export default function HomePage() {
             </p>
             <button
               onClick={() => handleNavigation('/interview')}
-              className="w-full px-4 py-3 bg-zinc-900 text-white hover:bg-zinc-800 rounded-lg font-medium shadow-sm active:scale-95 transition-all duration-200"
+              className="w-full px-4 py-3 bg-white text-zinc-900 border border-zinc-200 hover:bg-zinc-50 rounded-lg shadow-sm transition-all duration-200 font-medium"
             >
               면접 시작하기
             </button>
