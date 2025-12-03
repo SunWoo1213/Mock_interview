@@ -398,7 +398,7 @@ export default function HistoryPage() {
                                 : 'bg-blue-100 text-blue-700 border-2 border-blue-400'
                             }`}
                           >
-                            {letter.status}
+                            {letter.status === 'Feedback Complete' ? '✅ 완료' : letter.status}
                           </span>
                           <button
                             onClick={(e) => handleDelete(letter.id, 'cover_letter', e)}
