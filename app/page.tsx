@@ -63,66 +63,65 @@ export default function HomePage() {
           )}
         </div>
 
-        {/* 벤토 그리드 레이아웃 */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
-          {/* 모의 면접 - 중요하므로 2칸 차지 */}
-          <div className="md:col-span-2 p-8 bg-white rounded-2xl border border-zinc-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 group">
-            <div className="text-5xl mb-4">🎤</div>
-            <h3 className="text-3xl font-bold mb-3 text-zinc-900">모의 면접</h3>
-            <p className="text-base text-zinc-500 mb-6 leading-relaxed">
-              실전처럼 AI 면접관과 음성으로 면접을 진행하세요. 
-              실시간 피드백과 함께 면접 실력을 향상시킬 수 있습니다.
-            </p>
-            <button
-              onClick={() => handleNavigation('/interview')}
-              className="px-6 py-3 bg-zinc-900 text-white hover:bg-zinc-800 rounded-lg font-medium shadow-sm active:scale-95 transition-all duration-200"
-            >
-              면접 시작하기
-            </button>
-          </div>
-
-          {/* 활동 히스토리 */}
-          <div className="p-6 bg-white rounded-2xl border border-zinc-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
-            <div className="text-4xl mb-3">📊</div>
-            <h3 className="text-2xl font-bold mb-2 text-zinc-900">활동 히스토리</h3>
-            <p className="text-sm text-zinc-500 mb-4 leading-relaxed">
-              내 자기소개서와 면접 기록을 한눈에 확인하세요.
-            </p>
-            <button
-              onClick={() => handleNavigation('/history')}
-              className="w-full px-4 py-2 bg-white text-zinc-900 border border-zinc-200 hover:bg-zinc-50 rounded-lg shadow-sm transition-all duration-200 font-medium"
-            >
-              히스토리 보기
-            </button>
-          </div>
-
+        {/* 균일한 2x2 그리드 레이아웃 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
           {/* 채용 공고 분석 */}
-          <div className="p-6 bg-white rounded-2xl border border-zinc-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
-            <div className="text-4xl mb-3">📝</div>
-            <h3 className="text-2xl font-bold mb-2 text-zinc-900">채용 공고 분석</h3>
-            <p className="text-sm text-zinc-500 mb-4 leading-relaxed">
+          <div className="h-full p-6 bg-white rounded-2xl border border-zinc-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col">
+            <div className="text-5xl mb-4">📝</div>
+            <h3 className="text-2xl font-bold mb-3 text-zinc-900">채용 공고 분석</h3>
+            <p className="text-base text-zinc-500 mb-6 leading-relaxed flex-grow">
               PDF 업로드만으로 핵심 키워드와 요구사항을 자동 분석합니다.
             </p>
             <button
               onClick={() => handleNavigation('/job-postings/upload')}
-              className="w-full px-4 py-2 bg-white text-zinc-900 border border-zinc-200 hover:bg-zinc-50 rounded-lg shadow-sm transition-all duration-200 font-medium"
+              className="w-full px-4 py-3 bg-white text-zinc-900 border border-zinc-200 hover:bg-zinc-50 rounded-lg shadow-sm transition-all duration-200 font-medium"
             >
               시작하기
             </button>
           </div>
 
           {/* 자소서 피드백 */}
-          <div className="md:col-span-2 p-6 bg-white rounded-2xl border border-zinc-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
-            <div className="text-4xl mb-3">💬</div>
-            <h3 className="text-2xl font-bold mb-2 text-zinc-900">자소서 피드백</h3>
-            <p className="text-sm text-zinc-500 mb-4 leading-relaxed">
-              AI가 당신의 자기소개서를 분석하고 개선점을 제시합니다. 맞춤형 피드백으로 합격률을 높이세요.
+          <div className="h-full p-6 bg-white rounded-2xl border border-zinc-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col">
+            <div className="text-5xl mb-4">💬</div>
+            <h3 className="text-2xl font-bold mb-3 text-zinc-900">자소서 피드백</h3>
+            <p className="text-base text-zinc-500 mb-6 leading-relaxed flex-grow">
+              AI가 당신의 자기소개서를 분석하고 개선점을 제시합니다.
             </p>
             <button
               onClick={handleOpenModal}
-              className="px-6 py-3 bg-zinc-900 text-white hover:bg-zinc-800 rounded-lg font-medium shadow-sm active:scale-95 transition-all duration-200"
+              className="w-full px-4 py-3 bg-zinc-900 text-white hover:bg-zinc-800 rounded-lg font-medium shadow-sm active:scale-95 transition-all duration-200"
             >
               피드백 받기
+            </button>
+          </div>
+
+          {/* 모의 면접 */}
+          <div className="h-full p-6 bg-white rounded-2xl border border-zinc-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col">
+            <div className="text-5xl mb-4">🎤</div>
+            <h3 className="text-2xl font-bold mb-3 text-zinc-900">모의 면접</h3>
+            <p className="text-base text-zinc-500 mb-6 leading-relaxed flex-grow">
+              실전처럼 AI 면접관과 음성으로 면접을 진행하세요.
+            </p>
+            <button
+              onClick={() => handleNavigation('/interview')}
+              className="w-full px-4 py-3 bg-zinc-900 text-white hover:bg-zinc-800 rounded-lg font-medium shadow-sm active:scale-95 transition-all duration-200"
+            >
+              면접 시작하기
+            </button>
+          </div>
+
+          {/* 활동 히스토리 */}
+          <div className="h-full p-6 bg-white rounded-2xl border border-zinc-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col">
+            <div className="text-5xl mb-4">📊</div>
+            <h3 className="text-2xl font-bold mb-3 text-zinc-900">활동 히스토리</h3>
+            <p className="text-base text-zinc-500 mb-6 leading-relaxed flex-grow">
+              내 자기소개서와 면접 기록을 한눈에 확인하세요.
+            </p>
+            <button
+              onClick={() => handleNavigation('/history')}
+              className="w-full px-4 py-3 bg-white text-zinc-900 border border-zinc-200 hover:bg-zinc-50 rounded-lg shadow-sm transition-all duration-200 font-medium"
+            >
+              히스토리 보기
             </button>
           </div>
         </div>
