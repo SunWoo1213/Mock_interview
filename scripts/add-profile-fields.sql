@@ -14,3 +14,4 @@ CREATE INDEX IF NOT EXISTS idx_user_profiles_current_job ON user_profiles(curren
 
 
 
+

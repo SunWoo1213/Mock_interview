@@ -52,14 +52,14 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center">
-      <div className="max-w-md w-full px-8 py-16">
+    <div className="min-h-screen bg-zinc-50 flex items-center justify-center p-4">
+      <div className="max-w-md w-full py-8 animate-fade-in">
         <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold mb-2 text-gray-900">회원가입</h1>
-          <p className="text-gray-600">AI와 함께 취업 준비를 시작하세요</p>
+          <h1 className="text-4xl font-bold mb-2 text-zinc-900">회원가입</h1>
+          <p className="text-zinc-500">AI와 함께 취업 준비를 시작하세요</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+        <form onSubmit={handleSubmit} className="space-y-5 bg-white p-8 rounded-2xl shadow-sm border border-zinc-200">
           {error && (
             <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
               <p className="text-red-600 text-sm">{error}</p>
@@ -67,7 +67,7 @@ export default function RegisterPage() {
           )}
 
           <div>
-            <label htmlFor="name" className="block text-sm font-medium mb-2 text-gray-700">
+            <label htmlFor="name" className="block text-sm font-medium mb-2 text-zinc-700">
               이름 (선택사항)
             </label>
             <input
@@ -75,13 +75,13 @@ export default function RegisterPage() {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all text-gray-900"
+              className="w-full h-10 rounded-lg border-zinc-200 bg-white px-3 text-sm focus:ring-2 focus:ring-zinc-900 focus:border-zinc-900 focus:outline-none transition-all text-zinc-900 border"
               placeholder="홍길동"
             />
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium mb-2 text-gray-700">
+            <label htmlFor="email" className="block text-sm font-medium mb-2 text-zinc-700">
               이메일 *
             </label>
             <input
@@ -90,13 +90,13 @@ export default function RegisterPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all text-gray-900"
+              className="w-full h-10 rounded-lg border-zinc-200 bg-white px-3 text-sm focus:ring-2 focus:ring-zinc-900 focus:border-zinc-900 focus:outline-none transition-all text-zinc-900 border"
               placeholder="example@email.com"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium mb-2 text-gray-700">
+            <label htmlFor="password" className="block text-sm font-medium mb-2 text-zinc-700">
               비밀번호 *
             </label>
             <input
@@ -106,14 +106,14 @@ export default function RegisterPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
-              className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all text-gray-900"
+              className="w-full h-10 rounded-lg border-zinc-200 bg-white px-3 text-sm focus:ring-2 focus:ring-zinc-900 focus:border-zinc-900 focus:outline-none transition-all text-zinc-900 border"
               placeholder="••••••••"
             />
-            <p className="mt-1 text-xs text-gray-500">최소 6자 이상</p>
+            <p className="mt-1 text-xs text-zinc-500">최소 6자 이상</p>
           </div>
 
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2 text-gray-700">
+            <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2 text-zinc-700">
               비밀번호 확인 *
             </label>
             <input
@@ -122,7 +122,7 @@ export default function RegisterPage() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
-              className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all text-gray-900"
+              className="w-full h-10 rounded-lg border-zinc-200 bg-white px-3 text-sm focus:ring-2 focus:ring-zinc-900 focus:border-zinc-900 focus:outline-none transition-all text-zinc-900 border"
               placeholder="••••••••"
             />
           </div>
@@ -130,23 +130,23 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-semibold shadow-md hover:shadow-lg"
+            className="w-full px-6 py-3 bg-zinc-900 text-white hover:bg-zinc-800 disabled:bg-zinc-300 disabled:cursor-not-allowed rounded-lg transition-all font-medium shadow-sm active:scale-95"
           >
             {isLoading ? '회원가입 중...' : '회원가입'}
           </button>
         </form>
 
         <div className="mt-6 text-center">
-          <p className="text-gray-600">
+          <p className="text-zinc-600">
             이미 계정이 있으신가요?{' '}
-            <Link href="/login" className="text-primary-600 hover:text-primary-700 font-semibold">
+            <Link href="/login" className="text-zinc-900 hover:text-zinc-700 font-semibold">
               로그인
             </Link>
           </p>
         </div>
 
         <div className="mt-4 text-center">
-          <Link href="/" className="text-gray-500 hover:text-gray-700 text-sm">
+          <Link href="/" className="text-zinc-500 hover:text-zinc-700 text-sm transition-colors">
             ← 홈으로 돌아가기
           </Link>
         </div>

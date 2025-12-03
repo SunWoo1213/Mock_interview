@@ -13,45 +13,45 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <header className="bg-white border-b border-gray-200 shadow-sm">
+    <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-zinc-200/50">
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between">
           {/* 로고/타이틀 */}
           <Link 
             href="/" 
-            className="text-lg md:text-xl lg:text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors"
+            className="text-lg md:text-xl lg:text-2xl font-bold text-zinc-900 hover:text-zinc-600 transition-colors"
           >
             AI 취업 준비
           </Link>
 
           {/* 데스크탑 네비게이션 */}
-          <nav className="hidden md:flex items-center gap-4 lg:gap-6">
+          <nav className="hidden md:flex items-center gap-2 lg:gap-3">
             {isLoading ? (
               // 로딩 중일 때 작은 스피너 표시
               <div className="flex items-center">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500" />
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-zinc-900" />
               </div>
             ) : user ? (
               // 로그인된 상태
               <>
-                <span className="text-sm lg:text-base text-gray-600 hidden lg:inline">
-                  안녕하세요, <span className="text-gray-900 font-semibold">{user.name || user.email}</span>님
+                <span className="text-sm text-zinc-500 hidden lg:inline mr-2">
+                  안녕하세요, <span className="text-zinc-900 font-medium">{user.name || user.email}</span>님
                 </span>
                 <Link
                   href="/profile"
-                  className="px-3 lg:px-4 py-2 text-sm lg:text-base text-gray-600 hover:text-blue-600 transition-colors font-medium"
+                  className="px-3 py-1 text-sm lg:text-base text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded-full transition-all font-medium"
                 >
                   프로필
                 </Link>
                 <Link
                   href="/history"
-                  className="px-3 lg:px-4 py-2 text-sm lg:text-base text-gray-600 hover:text-blue-600 transition-colors font-medium"
+                  className="px-3 py-1 text-sm lg:text-base text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded-full transition-all font-medium"
                 >
                   📊 활동 기록
                 </Link>
                 <button
                   onClick={logout}
-                  className="px-3 lg:px-4 py-2 text-sm lg:text-base bg-white hover:bg-gray-50 rounded-lg transition-colors text-gray-700 border border-gray-300"
+                  className="ml-2 px-4 py-1.5 text-sm lg:text-base bg-white text-zinc-900 border border-zinc-200 hover:bg-zinc-50 rounded-full transition-all shadow-sm"
                 >
                   로그아웃
                 </button>
@@ -61,13 +61,13 @@ export default function Header() {
               <>
                 <Link
                   href="/login"
-                  className="px-3 lg:px-4 py-2 text-sm lg:text-base text-gray-600 hover:text-blue-600 transition-colors font-medium"
+                  className="px-3 py-1 text-sm lg:text-base text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded-full transition-all font-medium"
                 >
                   로그인
                 </Link>
                 <Link
                   href="/register"
-                  className="px-3 lg:px-4 py-2 text-sm lg:text-base bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors text-white shadow-sm"
+                  className="ml-2 px-4 py-1.5 text-sm lg:text-base bg-zinc-900 text-white hover:bg-zinc-800 rounded-full transition-all shadow-sm"
                 >
                   회원가입
                 </Link>
@@ -78,7 +78,7 @@ export default function Header() {
           {/* 모바일 햄버거 메뉴 버튼 */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="block md:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+            className="block md:hidden p-2 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded-lg transition-all"
             aria-label="메뉴"
           >
             {isMobileMenuOpen ? (
@@ -97,27 +97,27 @@ export default function Header() {
 
         {/* 모바일 메뉴 드롭다운 */}
         {isMobileMenuOpen && (
-          <div className="md:hidden mt-4 py-4 border-t border-gray-200">
+          <div className="md:hidden mt-4 py-4 border-t border-zinc-200/50">
             {isLoading ? (
               <div className="flex items-center justify-center py-4">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500" />
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-zinc-900" />
               </div>
             ) : user ? (
               // 로그인된 상태 (모바일)
               <div className="flex flex-col space-y-2">
-                <div className="px-4 py-2 text-sm text-gray-600 border-b border-gray-200">
-                  안녕하세요, <span className="text-gray-900 font-semibold">{user.name || user.email}</span>님
+                <div className="px-4 py-2 text-sm text-zinc-500 border-b border-zinc-200/50">
+                  안녕하세요, <span className="text-zinc-900 font-medium">{user.name || user.email}</span>님
                 </div>
                 <Link
                   href="/profile"
-                  className="px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors font-medium"
+                  className="px-4 py-3 text-zinc-700 hover:bg-zinc-100 transition-all font-medium rounded-lg mx-2"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   프로필
                 </Link>
                 <Link
                   href="/history"
-                  className="px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors font-medium"
+                  className="px-4 py-3 text-zinc-700 hover:bg-zinc-100 transition-all font-medium rounded-lg mx-2"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   📊 활동 기록
@@ -127,7 +127,7 @@ export default function Header() {
                     logout();
                     setIsMobileMenuOpen(false);
                   }}
-                  className="mx-4 px-4 py-3 bg-white hover:bg-gray-50 rounded-lg transition-colors text-gray-700 border border-gray-300 text-left"
+                  className="mx-4 px-4 py-3 bg-white hover:bg-zinc-50 rounded-lg transition-all text-zinc-700 border border-zinc-200 text-left shadow-sm"
                 >
                   로그아웃
                 </button>
@@ -137,14 +137,14 @@ export default function Header() {
               <div className="flex flex-col space-y-2">
                 <Link
                   href="/login"
-                  className="px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors font-medium"
+                  className="px-4 py-3 text-zinc-700 hover:bg-zinc-100 transition-all font-medium rounded-lg mx-2"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   로그인
                 </Link>
                 <Link
                   href="/register"
-                  className="mx-4 px-4 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors text-white text-center shadow-sm"
+                  className="mx-4 px-4 py-3 bg-zinc-900 hover:bg-zinc-800 rounded-lg transition-all text-white text-center shadow-sm"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   회원가입

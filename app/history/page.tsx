@@ -195,27 +195,27 @@ export default function HistoryPage() {
     <>
     <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-12 lg:py-16">
       {/* Header */}
-      <div className="mb-6 md:mb-8">
+      <div className="mb-6 md:mb-8 animate-fade-in">
         <button
           onClick={() => router.push('/')}
-          className="text-gray-600 hover:text-gray-900 transition-colors mb-3 md:mb-4 text-sm md:text-base"
+          className="text-zinc-600 hover:text-zinc-900 transition-colors mb-3 md:mb-4 text-sm md:text-base"
         >
           ← 홈으로 돌아가기
         </button>
-        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">📊 나의 활동 기록</h1>
-        <p className="text-sm md:text-base text-gray-600">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2 text-zinc-900">📊 나의 활동 기록</h1>
+        <p className="text-sm md:text-base text-zinc-500">
           자기소개서, 모의 면접, 채용공고 분석 기록을 확인하세요
         </p>
       </div>
 
       {/* Tabs */}
-      <div className="flex flex-wrap gap-2 md:gap-4 mb-6 md:mb-8 border-b border-gray-200 overflow-x-auto">
+      <div className="flex flex-wrap gap-2 md:gap-4 mb-6 md:mb-8 border-b border-zinc-200 overflow-x-auto">
           <button
             onClick={() => setActiveTab('interviews')}
             className={`px-3 md:px-6 py-2 md:py-3 text-sm md:text-base font-semibold transition-all whitespace-nowrap ${
               activeTab === 'interviews'
-                ? 'text-blue-600 border-b-2 border-blue-600 font-bold'
-                : 'text-gray-500 hover:text-gray-900'
+                ? 'text-zinc-900 border-b-2 border-zinc-900 font-bold'
+                : 'text-zinc-500 hover:text-zinc-900'
             }`}
           >
             🎤 모의면접 ({interviews.length})
@@ -224,8 +224,8 @@ export default function HistoryPage() {
             onClick={() => setActiveTab('cover-letters')}
             className={`px-3 md:px-6 py-2 md:py-3 text-sm md:text-base font-semibold transition-all whitespace-nowrap ${
               activeTab === 'cover-letters'
-                ? 'text-blue-600 border-b-2 border-blue-600 font-bold'
-                : 'text-gray-500 hover:text-gray-900'
+                ? 'text-zinc-900 border-b-2 border-zinc-900 font-bold'
+                : 'text-zinc-500 hover:text-zinc-900'
             }`}
           >
             📝 자기소개서 ({coverLetters.length})
@@ -234,8 +234,8 @@ export default function HistoryPage() {
             onClick={() => setActiveTab('job-postings')}
             className={`px-3 md:px-6 py-2 md:py-3 text-sm md:text-base font-semibold transition-all whitespace-nowrap ${
               activeTab === 'job-postings'
-                ? 'text-blue-600 border-b-2 border-blue-600 font-bold'
-                : 'text-gray-500 hover:text-gray-900'
+                ? 'text-zinc-900 border-b-2 border-zinc-900 font-bold'
+                : 'text-zinc-500 hover:text-zinc-900'
             }`}
           >
             📋 채용공고 분석 ({jobPostings.length})
@@ -258,9 +258,9 @@ export default function HistoryPage() {
 
         {/* Loading State */}
         {isLoading ? (
-          <div className="flex items-center justify-center py-20 bg-white rounded-lg border border-gray-200 shadow-sm">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
-            <span className="ml-4 text-gray-600">데이터 로딩 중...</span>
+          <div className="flex items-center justify-center py-20 bg-white rounded-2xl border border-zinc-200 shadow-sm">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-zinc-900" />
+            <span className="ml-4 text-zinc-600">데이터 로딩 중...</span>
           </div>
         ) : (
           <>
@@ -275,7 +275,7 @@ export default function HistoryPage() {
                     </p>
                     <button
                       onClick={() => router.push('/interview')}
-                      className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                      className="px-6 py-3 bg-zinc-900 text-white hover:bg-zinc-800 rounded-lg transition-all font-medium shadow-sm active:scale-95"
                     >
                       모의 면접 시작하기
                     </button>
@@ -285,13 +285,13 @@ export default function HistoryPage() {
                     <div
                       key={interview.id}
                       onClick={() => handleInterviewClick(interview.id)}
-                      className="p-6 bg-white rounded-lg border border-gray-200 hover:border-blue-500 transition-all cursor-pointer group"
+                      className="p-6 bg-white rounded-2xl border border-zinc-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
                     >
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
                           {interview.jobPosting ? (
                             <div className="mb-2">
-                              <h3 className="text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                              <h3 className="text-xl font-bold text-zinc-900 group-hover:text-zinc-600 transition-colors">
                                 {interview.jobPosting.companyName} - {interview.jobPosting.title}
                               </h3>
                             </div>
@@ -371,13 +371,13 @@ export default function HistoryPage() {
                     <div
                       key={letter.id}
                       onClick={() => handleCoverLetterClick(letter.id)}
-                      className="p-6 bg-white rounded-lg border border-gray-200 hover:border-blue-500 transition-all cursor-pointer group"
+                      className="p-6 bg-white rounded-2xl border border-zinc-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
                     >
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
                           {letter.jobPosting ? (
                             <div className="mb-2">
-                              <h3 className="text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                              <h3 className="text-xl font-bold text-zinc-900 group-hover:text-zinc-600 transition-colors">
                                 {letter.jobPosting.companyName} - {letter.jobPosting.title}
                               </h3>
                             </div>
@@ -451,7 +451,7 @@ export default function HistoryPage() {
                     <div
                       key={posting.id}
                       onClick={() => handleJobPostingClick(posting)}
-                      className="p-6 bg-white rounded-lg border border-gray-200 hover:border-blue-500 transition-all cursor-pointer group"
+                      className="p-6 bg-white rounded-2xl border border-zinc-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
                     >
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">

@@ -49,18 +49,18 @@ export default function InterviewTurnCard({
   }, [turnFeedbackText]);
 
   return (
-    <div className="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
+    <div className="border border-zinc-200 rounded-2xl overflow-hidden bg-white shadow-sm">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+        className="w-full px-6 py-4 flex items-center justify-between hover:bg-zinc-50 transition-colors"
       >
         <div className="flex items-center gap-4">
           <span className="text-2xl font-bold text-blue-600">Q{turnNumber}</span>
-          <span className="text-left text-slate-900 line-clamp-1">{questionText}</span>
+          <span className="text-left text-zinc-900 line-clamp-1">{questionText}</span>
         </div>
         <div className="flex items-center gap-3">
           <svg
-            className={`w-5 h-5 text-gray-600 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+            className={`w-5 h-5 text-zinc-600 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -71,19 +71,19 @@ export default function InterviewTurnCard({
       </button>
 
       {isExpanded && (
-        <div className="px-6 py-4 space-y-4 border-t border-gray-200 bg-slate-50">
+        <div className="px-6 py-4 space-y-4 border-t border-zinc-200 bg-zinc-50">
           <div>
-            <h4 className="text-sm font-semibold text-gray-700 uppercase mb-2">질문</h4>
-            <p className="text-slate-700">{questionText}</p>
+            <h4 className="text-sm font-semibold text-zinc-700 uppercase mb-2">질문</h4>
+            <p className="text-zinc-700">{questionText}</p>
           </div>
 
           <div>
-            <h4 className="text-sm font-semibold text-gray-700 uppercase mb-2">내 답변 (텍스트)</h4>
-            <p className="text-slate-700 whitespace-pre-wrap">{userAnswerText}</p>
+            <h4 className="text-sm font-semibold text-zinc-700 uppercase mb-2">내 답변 (텍스트)</h4>
+            <p className="text-zinc-700 whitespace-pre-wrap">{userAnswerText}</p>
           </div>
 
           <div>
-            <h4 className="text-sm font-semibold text-gray-700 uppercase mb-2">내 답변 (음성)</h4>
+            <h4 className="text-sm font-semibold text-zinc-700 uppercase mb-2">내 답변 (음성)</h4>
             <AudioPlayer audioUrl={userAnswerAudioUrl} />
           </div>
 
@@ -97,7 +97,7 @@ export default function InterviewTurnCard({
                   {parsedFeedback.user_answer_summary && (
                     <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                       <h5 className="text-sm font-semibold text-blue-700 mb-2">📝 답변 요약</h5>
-                      <p className="text-slate-700">{parsedFeedback.user_answer_summary}</p>
+                      <p className="text-zinc-700">{parsedFeedback.user_answer_summary}</p>
                     </div>
                   )}
 
@@ -109,7 +109,7 @@ export default function InterviewTurnCard({
                         {parsedFeedback.strengths.map((strength, idx) => (
                           <li key={idx} className="flex items-start gap-2">
                             <span className="text-green-600 mt-1">●</span>
-                            <span className="text-slate-700">{strength}</span>
+                            <span className="text-zinc-700">{strength}</span>
                           </li>
                         ))}
                       </ul>
@@ -124,7 +124,7 @@ export default function InterviewTurnCard({
                         {parsedFeedback.improvements.map((improvement, idx) => (
                           <li key={idx} className="flex items-start gap-2">
                             <span className="text-yellow-600 mt-1">●</span>
-                            <span className="text-slate-700">{improvement}</span>
+                            <span className="text-zinc-700">{improvement}</span>
                           </li>
                         ))}
                       </ul>
@@ -135,14 +135,14 @@ export default function InterviewTurnCard({
                   {parsedFeedback.better_answer_example && (
                     <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
                       <h5 className="text-sm font-semibold text-purple-700 mb-2">🎯 더 나은 답변 예시</h5>
-                      <p className="text-slate-700 italic leading-relaxed">{parsedFeedback.better_answer_example}</p>
+                      <p className="text-zinc-700 italic leading-relaxed">{parsedFeedback.better_answer_example}</p>
                     </div>
                   )}
                 </div>
               ) : (
                 // 구버전 피드백 (단순 텍스트)
-                <div className="p-4 bg-primary-50 border border-primary-200 rounded-lg">
-                  <p className="text-slate-700 whitespace-pre-wrap">{turnFeedbackText}</p>
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-zinc-700 whitespace-pre-wrap">{turnFeedbackText}</p>
                 </div>
               )}
             </div>

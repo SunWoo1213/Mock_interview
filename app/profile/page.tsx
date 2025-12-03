@@ -89,23 +89,23 @@ export default function ProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-zinc-50 flex items-center justify-center px-4">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 md:h-16 w-12 md:w-16 border-b-2 border-blue-500 mb-4" />
-          <p className="text-sm md:text-base text-gray-600">프로필 로딩 중...</p>
+          <div className="inline-block animate-spin rounded-full h-12 md:h-16 w-12 md:w-16 border-b-2 border-zinc-900 mb-4" />
+          <p className="text-sm md:text-base text-zinc-600">프로필 로딩 중...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-12 lg:py-16">
+    <div className="min-h-screen bg-zinc-50">
+      <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-12 lg:py-16 animate-fade-in">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 md:mb-8">
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-900">내 프로필</h1>
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-zinc-900">내 프로필</h1>
           <button
             onClick={handleLogout}
-            className="px-4 py-2 text-sm md:text-base bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+            className="px-4 py-2 text-sm md:text-base bg-white border border-zinc-200 text-zinc-700 hover:bg-zinc-50 rounded-lg transition-all shadow-sm"
           >
             로그아웃
           </button>
@@ -123,29 +123,29 @@ export default function ProfilePage() {
           </div>
         )}
 
-        <div className="space-y-8">
+        <div className="space-y-6">
           {/* 기본 정보 */}
-          <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
-            <h2 className="text-2xl font-bold mb-4 text-slate-900">기본 정보</h2>
+          <div className="p-6 bg-white rounded-2xl border border-zinc-200 shadow-sm">
+            <h2 className="text-2xl font-bold mb-4 text-zinc-900">기본 정보</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2 text-gray-700">나이</label>
+                <label className="block text-sm font-medium mb-2 text-zinc-700">나이</label>
                 <input
                   type="number"
                   value={age}
                   onChange={(e) => setAge(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-gray-900"
+                  className="w-full h-10 rounded-lg border-zinc-200 bg-white px-3 text-sm focus:ring-2 focus:ring-zinc-900 focus:border-zinc-900 focus:outline-none transition-all text-zinc-900 border"
                   placeholder="예: 28"
                   min="0"
                   max="150"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2 text-gray-700">성별</label>
+                <label className="block text-sm font-medium mb-2 text-zinc-700">성별</label>
                 <select
                   value={gender}
                   onChange={(e) => setGender(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-gray-900"
+                  className="w-full h-10 rounded-lg border-zinc-200 bg-white px-3 text-sm focus:ring-2 focus:ring-zinc-900 focus:border-zinc-900 focus:outline-none transition-all text-zinc-900 border"
                 >
                   <option value="">선택하세요</option>
                   <option value="male">남자</option>
@@ -156,36 +156,36 @@ export default function ProfilePage() {
           </div>
 
           {/* 직업 및 경력 정보 */}
-          <div className="p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
-            <h2 className="text-2xl font-bold mb-4 text-slate-900">직업 및 경력</h2>
+          <div className="p-6 bg-white rounded-2xl border border-zinc-200 shadow-sm">
+            <h2 className="text-2xl font-bold mb-4 text-zinc-900">직업 및 경력</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2 text-gray-700">현재 직업</label>
+                <label className="block text-sm font-medium mb-2 text-zinc-700">현재 직업</label>
                 <input
                   type="text"
                   value={currentJob}
                   onChange={(e) => setCurrentJob(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-gray-900 placeholder:text-gray-400"
+                  className="w-full h-10 rounded-lg border-zinc-200 bg-white px-3 text-sm focus:ring-2 focus:ring-zinc-900 focus:border-zinc-900 focus:outline-none transition-all text-zinc-900 placeholder:text-zinc-400 border"
                   placeholder="예: 소프트웨어 엔지니어"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2 text-gray-700">경력 요약</label>
+                <label className="block text-sm font-medium mb-2 text-zinc-700">경력 요약</label>
                 <textarea
                   value={careerSummary}
                   onChange={(e) => setCareerSummary(e.target.value)}
                   rows={5}
-                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-gray-900 placeholder:text-gray-400 resize-none"
+                  className="w-full rounded-lg border-zinc-200 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-zinc-900 focus:border-zinc-900 focus:outline-none transition-all text-zinc-900 placeholder:text-zinc-400 resize-none border"
                   placeholder="요약된 경력을 입력하세요...&#10;&#10;예:&#10;- ABC 회사 개발팀 (2020-2023)&#10;- XYZ 스타트업 백엔드 개발자 (2018-2020)"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2 text-gray-700">소유한 자격증</label>
+                <label className="block text-sm font-medium mb-2 text-zinc-700">소유한 자격증</label>
                 <textarea
                   value={certifications}
                   onChange={(e) => setCertifications(e.target.value)}
                   rows={4}
-                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-gray-900 placeholder:text-gray-400 resize-none"
+                  className="w-full rounded-lg border-zinc-200 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-zinc-900 focus:border-zinc-900 focus:outline-none transition-all text-zinc-900 placeholder:text-zinc-400 resize-none border"
                   placeholder="자격증을 쉼표로 구분하여 입력...&#10;&#10;예: 정보처리기사, AWS Solutions Architect, TOEIC 900점"
                 />
               </div>
@@ -197,21 +197,21 @@ export default function ProfilePage() {
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="flex-1 px-4 md:px-6 py-2.5 md:py-3 text-sm md:text-base bg-blue-600 hover:bg-blue-700 text-white disabled:bg-gray-400 disabled:cursor-not-allowed rounded-lg transition-colors font-semibold"
+              className="flex-1 px-4 md:px-6 py-2.5 md:py-3 text-sm md:text-base bg-zinc-900 hover:bg-zinc-800 text-white disabled:bg-zinc-400 disabled:cursor-not-allowed rounded-lg transition-all font-medium shadow-sm active:scale-95"
             >
               {isSaving ? '저장 중...' : '프로필 저장'}
             </button>
             <button
               onClick={() => router.push('/')}
-              className="px-4 md:px-6 py-2.5 md:py-3 text-sm md:text-base bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+              className="px-4 md:px-6 py-2.5 md:py-3 text-sm md:text-base bg-white border border-zinc-200 text-zinc-700 hover:bg-zinc-50 rounded-lg transition-all shadow-sm"
             >
               홈으로
             </button>
           </div>
         </div>
 
-        <div className="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
-          <p className="text-sm text-gray-700">
+        <div className="mt-8 p-4 bg-zinc-100 rounded-lg border border-zinc-200">
+          <p className="text-sm text-zinc-700">
             💡 <strong>팁:</strong> 자세한 프로필 정보를 입력할수록 AI가 더 정확한 피드백을 제공할 수 있습니다.
             경력, 학력, 자격증 등의 정보는 추후 업데이트 예정입니다.
           </p>
