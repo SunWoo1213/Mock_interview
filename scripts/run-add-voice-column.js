@@ -24,7 +24,7 @@ async function runMigration() {
     console.log('✅ Connected to database\n');
 
     // Read SQL file
-    const sqlPath = path.join(__dirname, 'add-voice-column.sql');
+    const sqlPath = path.join(__dirname, '..', 'database', 'migrations', 'add-voice-column.sql');
     const sql = fs.readFileSync(sqlPath, 'utf8');
 
     // Execute migration

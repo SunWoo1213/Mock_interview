@@ -27,7 +27,7 @@ async function runMigration() {
     console.log('🚀 면접 피드백 구조 마이그레이션 시작...\n');
 
     // SQL 파일 읽기
-    const sqlPath = path.join(__dirname, 'update-interview-feedback-structure.sql');
+    const sqlPath = path.join(__dirname, '..', 'database', 'migrations', 'update-interview-feedback-structure.sql');
     const sql = fs.readFileSync(sqlPath, 'utf8');
 
     console.log('📋 마이그레이션 SQL:');

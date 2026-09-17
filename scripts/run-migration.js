@@ -48,7 +48,7 @@ async function runMigration() {
     console.log('✅ 데이터베이스 연결 성공\n');
 
     // 마이그레이션 파일 읽기
-    const migrationPath = path.join(__dirname, 'add-profile-fields.sql');
+    const migrationPath = path.join(__dirname, '..', 'database', 'migrations', 'add-profile-fields.sql');
     const migrationSql = fs.readFileSync(migrationPath, 'utf8');
 
     console.log('📝 실행할 마이그레이션:');

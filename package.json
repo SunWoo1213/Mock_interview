@@ -10,6 +10,7 @@
     "db:migrate": "node scripts/migrate.js",
     "db:migrate:profile": "node scripts/run-migration.js",
     "db:migrate:feedback": "node scripts/run-feedback-migration.js",
+    "db:migrate:voice": "node scripts/run-add-voice-column.js",
     "db:verify": "node scripts/verify-migration.js",
     "db:verify:schema": "node scripts/verify-db-schema.js",
     "db:init": "node scripts/init-db.js"
