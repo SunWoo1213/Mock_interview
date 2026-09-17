@@ -25,8 +25,6 @@ export default function LoginPage() {
       const result = await apiClient.login({ email, password });
       
       console.log('✅ [Login] Login successful, received token');
-      console.log('🔑 [Login] Token:', result.token ? `${result.token.substring(0, 20)}...` : 'null');
-      console.log('👤 [Login] User:', result.user);
       
       // AuthContext의 login 함수를 호출
       // 자동으로 토큰 저장, 상태 업데이트, 리다이렉트 처리

@@ -18,9 +18,7 @@ export class ApiClient {
   ): Promise<T> {
     const token = this.getToken();
 
-    // 토큰 디버깅
-    console.log('🔑 [API Client] Endpoint:', endpoint);
-    console.log('🔑 [API Client] Sending Token:', token ? `${token.substring(0, 20)}...` : 'null');
+    console.log('🔑 [API Client] Endpoint:', endpoint, '- token:', token ? 'EXISTS' : 'MISSING');
 
     // Headers 클래스 사용으로 리팩터링
     const headers = new Headers(options.headers);

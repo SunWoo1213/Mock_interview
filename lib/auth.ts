@@ -5,12 +5,18 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 const SALT_ROUNDS = 10;
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
-// JWT_SECRET 환경 변수 확인 로그
-console.log('🔐 [Auth Init] JWT_SECRET exists:', !!process.env.JWT_SECRET);
-console.log('🔐 [Auth Init] JWT_SECRET length:', process.env.JWT_SECRET?.length || 0);
-console.log('🔐 [Auth Init] Using JWT_SECRET:', JWT_SECRET.substring(0, 10) + '...');
+/**
+ * JWT 서명 키 조회
+ * 하드코딩된 기본값으로 토큰이 위조되지 않도록, 환경 변수가 없으면 즉시 실패시킨다.
+ */
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error('JWT_SECRET 환경 변수가 설정되지 않았습니다.');
+  }
+  return secret;
+}
 
 export interface JWTPayload {
   userId: number;
@@ -38,7 +44,7 @@ export async function verifyPassword(
  * JWT 토큰 생성
  */
 export function generateToken(payload: JWTPayload): string {
-  return jwt.sign(payload, JWT_SECRET, {
+  return jwt.sign(payload, getJwtSecret(), {
     expiresIn: '7d',
   });
 }
@@ -47,14 +53,8 @@ export function generateToken(payload: JWTPayload): string {
  * JWT 토큰 검증
  */
 export function verifyToken(token: string): JWTPayload {
-  console.log('🔍 [verifyToken] Starting token verification...');
-  console.log('🔍 [verifyToken] Token length:', token.length);
-  console.log('🔍 [verifyToken] Token preview:', token.substring(0, 20) + '...' + token.substring(token.length - 20));
-  
   try {
-    const payload = jwt.verify(token, JWT_SECRET) as JWTPayload;
-    console.log('✅ [verifyToken] Token verified successfully');
-    console.log('✅ [verifyToken] Payload:', { userId: payload.userId, email: payload.email });
+    const payload = jwt.verify(token, getJwtSecret()) as JWTPayload;
     return payload;
   } catch (error: any) {
     // 구체적인 JWT 에러 타입 확인
@@ -91,7 +91,6 @@ export function extractTokenFromHeader(authHeader?: string): string | null {
 
   if (!authHeader.startsWith('Bearer ')) {
     console.error('❌ [extractToken] Authorization header does not start with "Bearer "');
-    console.error('   Received:', authHeader.substring(0, 50));
     return null;
   }
 
@@ -99,7 +98,7 @@ export function extractTokenFromHeader(authHeader?: string): string | null {
   const token = authHeader.substring(7).trim();
   
   if (!token || token === 'null' || token === 'undefined') {
-    console.error('❌ [extractToken] Extracted token is invalid:', token);
+    console.error('❌ [extractToken] Extracted token is invalid');
     return null;
   }
 

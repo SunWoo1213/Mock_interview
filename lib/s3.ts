@@ -7,7 +7,7 @@ import { Readable } from 'stream';
 
 // S3 버킷 리전 (실제 버킷 위치: ap-southeast-2 시드니)
 const BUCKET_REGION = process.env.AWS_REGION || 'ap-southeast-2';
-const BUCKET_NAME = process.env.S3_BUCKET_NAME || 'ai-interview-bucket';
+const BUCKET_NAME = process.env.S3_BUCKET_NAME || '';
 
 const s3Client = new S3Client({
   region: BUCKET_REGION,
