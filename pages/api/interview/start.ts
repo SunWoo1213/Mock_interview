@@ -14,6 +14,7 @@ import jwt from 'jsonwebtoken';
 import { query } from '@/lib/db';
 import { generateInterviewQuestion, textToSpeech } from '@/lib/openai';
 import { uploadToS3 } from '@/lib/s3';
+import { withCors } from '@/lib/middleware';
 
 // OpenAI TTS 목소리 목록
 const TTS_VOICES = ['alloy', 'echo', 'fable', 'onyx', 'nova', 'shimmer'];
@@ -24,16 +25,8 @@ interface JWTPayload {
   email: string;
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // CORS 헤더 설정
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
+// CORS는 다른 API와 같은 허용 목록(withCors)을 쓴다. 와일드카드(*)는 쓰지 않는다.
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -146,14 +139,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!coverLetterId) {
       console.error('❌ [Interview Start] coverLetterId is missing or falsy');
       console.error('❌ [Interview Start] Request Body:', JSON.stringify(req.body));
-      return res.status(400).json({ 
-        error: 'coverLetterId가 필요합니다.',
-        debug: {
-          receivedBody: req.body,
-          coverLetterId: coverLetterId,
-          bodyKeys: Object.keys(req.body)
-        }
-      });
+      return res.status(400).json({ error: 'coverLetterId가 필요합니다.' });
     }
 
     console.log('✅ [Interview Start] coverLetterId validated:', coverLetterId);
@@ -300,21 +286,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.error('Stack Trace:', error.stack);
     console.error('❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌');
     
-    return res.status(500).json({ 
-      error: '서버 오류가 발생했습니다.',
-      details: error.message,
-      debug: {
-        name: error.name,
-        message: error.message,
-        code: error.code,
-        detail: error.detail,
-        hint: error.hint,
-        stack: error.stack,
-        // PostgreSQL specific error info
-        column: error.column,
-        table: error.table,
-        constraint: error.constraint
-      }
-    });
+    // 에러 상세(stack, DB 컬럼 등)는 서버 로그에만 남기고 응답에는 넣지 않는다.
+    return res.status(500).json({ error: '서버 오류가 발생했습니다.' });
   }
 }
+
+export default withCors(handler);
+
