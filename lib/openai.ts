@@ -12,6 +12,25 @@ const openai = new OpenAI({
 
 // ==================== GPT-4o 관련 ====================
 
+// LLM이 문자열 대신 {issue, suggestion} 같은 객체를 주면 String()은 "[object Object]"가 된다.
+// 알려진 필드를 꺼내 문장으로 만들고, 그래도 없으면 JSON 문자열로 남긴다.
+function toText(value: any): string {
+  if (typeof value === 'string') return value;
+  if (value && typeof value === 'object') {
+    const parts = ['issue', 'point', 'text', 'description', 'suggestion', 'example']
+      .map((key) => value[key])
+      .filter((v) => typeof v === 'string' && v.trim() !== '');
+    return parts.length > 0 ? parts.join(' — ') : JSON.stringify(value);
+  }
+  return value == null ? '' : String(value);
+}
+
+function toTextList(value: any, max?: number): string[] {
+  if (!Array.isArray(value)) return [];
+  const list = value.map(toText).filter((t) => t !== '');
+  return max ? list.slice(0, max) : list;
+}
+
 export interface JobPostingAnalysis {
   keywords: string[];
   must_have: string[];
@@ -208,12 +227,9 @@ ${coverLetterText}
     // 데이터 구조 검증 및 정규화
     const feedback: CoverLetterFeedback = {
       summary: String(parsed.summary || '종합 분석이 생성되지 않았습니다.'),
-      strengths: Array.isArray(parsed.strengths) 
-        ? parsed.strengths.map((s: any) => String(s)) 
-        : [],
-      weaknesses: Array.isArray(parsed.weaknesses)
-        ? parsed.weaknesses.map((w: any) => String(w))
-        : [],
+      strengths: toTextList(parsed.strengths),
+      // 모델이 필드 이름을 improvements로 바꿔 반환하는 경우가 있어 함께 받는다.
+      weaknesses: toTextList(parsed.weaknesses ?? parsed.improvements),
       detailedAnalysis: Array.isArray(parsed.detailedAnalysis)
         ? parsed.detailedAnalysis.map((item: any) => ({
             section: String(item.section || ''),
@@ -227,9 +243,7 @@ ${coverLetterText}
             reason: String(fix.reason || ''),
           })).slice(0, 3) // 최대 3개만
         : [],
-      interview_questions: Array.isArray(parsed.interview_questions)
-        ? parsed.interview_questions.map((q: any) => String(q))
-        : [],
+      interview_questions: toTextList(parsed.interview_questions),
     };
     
     return feedback;
@@ -558,12 +572,8 @@ ${earlyFinishNote}
             question: String(turn.question || ''),
             answer: String(turn.answer || ''),
             user_answer_summary: String(turn.user_answer_summary || ''),
-            strengths: Array.isArray(turn.strengths)
-              ? turn.strengths.map((s: any) => String(s))
-              : [],
-            improvements: Array.isArray(turn.improvements)
-              ? turn.improvements.map((i: any) => String(i))
-              : [],
+            strengths: toTextList(turn.strengths, 3), // 프롬프트: 2~3개
+            improvements: toTextList(turn.improvements, 3),
             better_answer_example: String(turn.better_answer_example || ''),
           }))
         : [],

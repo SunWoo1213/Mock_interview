@@ -178,7 +178,7 @@ sequenceDiagram
 
 ### LLM 출력 정규화
 - GPT가 문자열 대신 객체를 배열에 넣어 돌려주는 경우가 있었고, 이를 그대로 렌더링하다 **React 에러 #31**(Objects are not valid as a React child)이 발생했습니다.
-- 서버에서 응답을 스키마에 맞게 정규화하고(문자열·배열 강제, 수정 예시는 최대 3개), 클라이언트에서도 객체면 문자열로 변환해 렌더링합니다.
+- 서버에서 응답을 스키마에 맞게 정규화하고(문자열·배열 강제, 객체로 온 항목은 `issue`·`suggestion` 등 필드를 꺼내 문장으로 변환, `improvements`로 바뀐 필드명도 수용, 수정 예시 최대 3개·턴별 강점/개선점 최대 3개), 클라이언트에서도 객체면 문자열로 변환해 렌더링합니다.
 
 ### 구조화된 피드백 저장 (TEXT → JSONB)
 - 면접 턴별 피드백을 자유 텍스트에서 `user_answer_summary / strengths / improvements / better_answer_example` 구조의 **JSONB**로 바꿨습니다.
