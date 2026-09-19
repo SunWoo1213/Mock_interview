@@ -6,6 +6,7 @@
 import { NextApiResponse } from 'next';
 import { query } from '@/lib/db';
 import { withAuth, withErrorHandler, AuthenticatedRequest } from '@/lib/middleware';
+import { refreshPresignedUrl } from '@/lib/s3';
 
 async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
   const userId = req.user!.userId;
@@ -49,7 +50,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
         id: row.id,
         title: row.title,
         companyName: row.company_name,
-        originalS3Url: row.original_s3_url,
+        originalS3Url: await refreshPresignedUrl(row.original_s3_url),
         extractedText: row.extracted_text,
         analysisJson: row.analysis_json,
         status: row.status,

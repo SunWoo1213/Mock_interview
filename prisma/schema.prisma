@@ -180,7 +180,7 @@ model InterviewTurn {
   userAnswerAudioS3Url   String?  @map("user_answer_audio_s3_url") @db.Text   // 사용자가 녹음한 답변 오디오 S3 URL
   
   // 개별 피드백 (면접 완료 시 생성, 현재는 finalFeedbackJson의 per_turn_feedback에 통합 저장)
-  feedbackText           String?  @map("feedback_text") @db.Text          // 이 턴에 대한 AI 피드백 (선택적)
+  feedbackText           Json?    @map("feedback_text") @db.JsonB         // 이 턴에 대한 AI 피드백 (구조화 JSONB, schema.sql과 동일)
   
   // 타임스탬프
   createdAt              DateTime @default(now()) @map("created_at")

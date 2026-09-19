@@ -5,6 +5,7 @@
 import { NextApiResponse } from 'next';
 import { query } from '@/lib/db';
 import { withAuth, withErrorHandler, AuthenticatedRequest } from '@/lib/middleware';
+import { refreshPresignedUrl } from '@/lib/s3';
 
 async function handler(req: AuthenticatedRequest, res: NextApiResponse): Promise<void> {
   if (req.method !== 'GET') {
@@ -78,6 +79,15 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse): Promise
 
   console.log(`✅ 면접 결과 조회 성공`);
 
+  // 저장된 Presigned URL은 24시간 뒤 만료되므로 조회 시점에 다시 서명한다.
+  const turns = await Promise.all(
+    turnsResult.rows.map(async (t: any) => ({
+      ...t,
+      question_audio_s3_url: await refreshPresignedUrl(t.question_audio_s3_url),
+      user_answer_audio_s3_url: await refreshPresignedUrl(t.user_answer_audio_s3_url),
+    }))
+  );
+
   res.status(200).json({
     session: {
       id: session.id,
@@ -86,7 +96,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse): Promise
       completedAt: session.completed_at,
       finalFeedback: session.final_feedback_json,
     },
-    turns: turnsResult.rows,
+    turns,
   });
 }
 

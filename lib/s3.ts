@@ -98,32 +98,29 @@ export async function downloadFromS3(key: string): Promise<Buffer> {
 }
 
 /**
- * Presigned URL 생성 (클라이언트 직접 업로드용)
- */
-export async function getPresignedUploadUrl(
-  folder: string,
-  fileName: string,
-  contentType: string
-): Promise<{ uploadUrl: string; fileUrl: string }> {
-  const key = `${folder}/${Date.now()}_${fileName}`;
-
-  const command = new PutObjectCommand({
-    Bucket: BUCKET_NAME,
-    Key: key,
-    ContentType: contentType,
-  });
-
-  const uploadUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
-  const fileUrl = `https://${BUCKET_NAME}.s3.${BUCKET_REGION}.amazonaws.com/${key}`;
-
-  return { uploadUrl, fileUrl };
-}
-
-/**
  * S3 URL에서 Key 추출
  */
 export function extractKeyFromUrl(url: string): string {
   const urlObj = new URL(url);
-  return urlObj.pathname.substring(1); // 첫 번째 '/' 제거
+  return decodeURIComponent(urlObj.pathname.substring(1)); // 첫 번째 '/' 제거
+}
+
+/**
+ * DB에 저장된 S3 URL로 새 Presigned URL을 발급한다.
+ *
+ * 업로드 시 발급한 Presigned URL(24시간)을 DB에 그대로 저장하기 때문에, 조회할 때 다시 서명하지 않으면
+ * 하루가 지난 녹음·공고 PDF를 열 수 없다. 조회 API는 저장값 대신 이 함수의 결과를 내려준다.
+ * 이 버킷의 URL이 아니거나 해석할 수 없으면 저장값을 그대로 돌려준다.
+ */
+export async function refreshPresignedUrl(storedUrl: string | null | undefined): Promise<string | null> {
+  if (!storedUrl) return null;
+  try {
+    const { hostname } = new URL(storedUrl);
+    if (!BUCKET_NAME || !hostname.startsWith(`${BUCKET_NAME}.s3`)) return storedUrl;
+    const command = new GetObjectCommand({ Bucket: BUCKET_NAME, Key: extractKeyFromUrl(storedUrl) });
+    return await getSignedUrl(s3Client, command, { expiresIn: 86400 });
+  } catch {
+    return storedUrl;
+  }
 }
 
