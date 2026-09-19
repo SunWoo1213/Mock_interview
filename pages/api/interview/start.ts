@@ -15,9 +15,6 @@ import { query } from '@/lib/db';
 import { generateInterviewQuestion, textToSpeech } from '@/lib/openai';
 import { uploadToS3 } from '@/lib/s3';
 
-// JWT 시크릿 키
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
-
 // OpenAI TTS 목소리 목록
 const TTS_VOICES = ['alloy', 'echo', 'fable', 'onyx', 'nova', 'shimmer'];
 
@@ -87,12 +84,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
+    // JWT 시크릿 확인: 하드코딩된 기본값으로 위조 토큰이 통과하지 않도록 없으면 거부한다
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      console.error('❌ [Interview Start] JWT_SECRET 환경 변수가 설정되지 않았습니다.');
+      return res.status(500).json({ error: '서버 설정 오류' });
+    }
+
     // JWT 토큰 검증
     console.log('🔍 [Interview Start] Verifying JWT token...');
     let userId: number;
     
     try {
-      const payload = jwt.verify(token, JWT_SECRET) as JWTPayload;
+      const payload = jwt.verify(token, jwtSecret) as JWTPayload;
       userId = payload.userId;
       console.log('✅ [Interview Start] JWT verified successfully, userId:', userId);
     } catch (jwtError: any) {
