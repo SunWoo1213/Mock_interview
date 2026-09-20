@@ -10,17 +10,17 @@
 ![OpenAI](https://img.shields.io/badge/OpenAI-412991?logo=openai&logoColor=white)
 ![Vercel](https://img.shields.io/badge/Vercel-000000?logo=vercel&logoColor=white)
 
-| 항목 | 내용 |
+| 항목| 내용 |
 | --- | --- |
 | 개발 기간 | 2024.09 ~ 2024.11 |
 | 개발 인원 | 1인 (기획 · 프론트엔드 · 백엔드 · 인프라) |
-| 배포 | Vercel (Serverless Functions) + PostgreSQL(Neon) + AWS S3 |
+| 배포<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Vercel (Serverless Functions) + PostgreSQL(Neon) + AWS S3 |
 
 > 현재 저장소의 커밋·문서 날짜(2025.11~12)는 이후 재업로드 시점이며 실제 개발 기간과 다릅니다.
 
 ## 한눈에 보기
 
-| | |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | |
 | --- | --- |
 | **무엇** | 채용 공고 분석 → 자기소개서 정성 피드백 → **음성 모의 면접**(질문 음성 → 60초 녹음 → 음성 인식 → 다음 질문, 5턴)을 잇는 서비스 |
 | **내 역할** | 1인 개발 — 기획, 화면, API Routes 20개, PostgreSQL 테이블 7개, S3 · Vercel 배포 |
@@ -30,7 +30,7 @@
 | **배운 점** | 로컬에서 되던 기능이 배포 환경(S3 리전 오진 2회, Preview CORS, 운영 DB 스키마 불일치, 브라우저 자동 재생 정책)에서 연달아 깨짐 → [트러블슈팅 10건](#-트러블슈팅) |
 | **한계** | 자동화 테스트 없음, 한 요청에 여러 외부 호출을 순서대로 처리 ([한계와 개선 과제](#-한계와-개선-과제)) |
 
-### 화면과 실제 실행 확인 (2026-09-19)
+### 화면
 
 | 대시보드 | 채용 공고 분석 (GPT-4o) |
 | --- | --- |
@@ -38,12 +38,7 @@
 | **자기소개서 피드백** | **음성 면접 — 첫 질문** |
 | ![자소서 피드백](docs/images/cover-letter-feedback.png) | ![면접 질문](docs/images/interview-question.png) |
 
-포트폴리오 정리 중 로컬(임시 PostgreSQL, 실제 OpenAI · AWS S3)에서 전체 흐름을 다시 실행해 확인했습니다. 공고는 예시로 만든 가상의 공고입니다.
-
-1. **공고 분석**: 텍스트 공고를 GPT-4o가 회사 · 직무 · 키워드 10개 · 필수/우대 요건 · 요약으로 구조화
-2. **자기소개서 피드백**: 프로필 + 공고 분석 + 자소서를 함께 넣어 강점 · 보완점 · 섹션별 분석 · 수정 예시 생성 (예: 공고 우대 사항 "LangGraph 경험"을 언급한 점을 강점으로, 정량 성과 부족을 보완점으로 지적)
-3. **면접 첫 질문**: 프로필 · 공고 · 자소서를 반영한 질문 생성("FastAPI를 활용한 AI 투자 리포트 서비스 백엔드 경험이 … 데모핀테크의 LLM 기반 금융 리포트 … 에 어떻게 도움이 될까요?") → TTS mp3를 S3(비공개 버킷)에 업로드 → Presigned URL로 15초 음성이 브라우저에서 재생되는 것까지 확인
-4. 답변 녹음 이후 단계(Whisper · 다음 질문 · 피드백)는 마이크 입력이 필요해 이번 확인에서는 실행하지 않았습니다.
+> 화면의 채용 공고는 예시로 만든 가상의 공고입니다.
 
 ---
 
@@ -143,10 +138,10 @@ sequenceDiagram
 
 ## 🛠 기술 스택과 설계 선택
 
-| 구분 | 기술 |
+| 구분| 기술 |
 | --- | --- |
 | Frontend | Next.js 14 (App Router), React 18, TypeScript, Tailwind CSS |
-| Backend | Next.js API Routes (Pages Router, Vercel Serverless Functions) |
+| Backend<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Next.js API Routes (Pages Router, Vercel Serverless Functions) |
 | Database | PostgreSQL (`pg` 커넥션 풀로 직접 쿼리), Prisma 스키마(모델 문서화용) |
 | Storage | AWS S3 (`@aws-sdk/client-s3`, Presigned URL) |
 | AI | OpenAI GPT-4o, TTS(`tts-1-hd`), Whisper(`whisper-1`) |
@@ -305,18 +300,17 @@ sequenceDiagram
 
 ## 📈 개발 과정과 주요 변경 이력
 
-| 단계 | 주요 작업 |
+| 단계| 주요 작업 |
 | --- | --- |
 | 0. MVP 구축 | 공고 분석 → 자소서 피드백 → 음성 면접 전체 흐름을 한 번에 구현. 점수형 피드백, 단일 TTS 목소리(`nova`), 다크 UI |
 | 1. 배포 안정화 · 인증 | Vercel 빌드 오류(TS strict null / ESLint / `pdf-parse` 타입), AuthGuard · AuthContext · `/api/auth/me`, 회원가입 · 로그인 · 프로필, 누락 페이지 404 해결, 면접 점수 제거 |
 | 2. 기능 확장 · 인프라 트러블슈팅 | Prisma 스키마, 프로필 필드 · UPSERT · 마이그레이션, PDF/텍스트 입력, S3 AccessDenied → 리전(2회) → CORS → 환경 변수 정리, 맥락 기반 질문, 면접 UI(녹음 · 상태 흐름), 자동 재생 폴백, 조기 종료, 히스토리 |
-| 3. 품질 고도화 | Presigned URL, 자소서 피드백 재설계(STAR), 턴별 피드백 · JSONB 전환, LLM 응답 정규화, 공고 관리 · Split View, 목소리 랜덤 · `voice` 마이그레이션, 한·영 TTS, JWT 401 대응, 라이트 테마 · 모바일 · 게스트 접근 |
+| 3. 품질 고도화<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Presigned URL, 자소서 피드백 재설계(STAR), 턴별 피드백 · JSONB 전환, LLM 응답 정규화, 공고 관리 · Split View, 목소리 랜덤 · `voice` 마이그레이션, 한·영 TTS, JWT 401 대응, 라이트 테마 · 모바일 · 게스트 접근 |
 | 4. 디자인 개편 | Modern SaaS(Zinc) 디자인 시스템 전면 적용(42개 파일), 대시보드 2x2 그리드 |
-| 5. 포트폴리오 정리 (사후) | 개발 기간 이후 작업. 보안 점검(하드코딩 JWT 시크릿 · 민감 정보 로그 · 무인증 관리자 API 제거, `/api/interview/start`의 와일드카드 CORS와 응답 속 stack · 요청 본문 노출 제거), 문서 재분류와 키 · 버킷 · 도메인 마스킹, 일회성 스크립트 삭제, `.env.example` 추가, 조회 시 Presigned URL 재서명(24시간 만료 해결), 쓰지 않는 코드 · 의존성 제거와 Prisma 스키마 타입 정합 |
 
 ### 변경 사항 요약 (Before → After)
 
-| 영역 | Before | After |
+| 영역| Before | After |
 | --- | --- | --- |
 | 면접 질문 | 기본 프로필 + (2번째부터) 대화 이력 | 직무·경력 요약·자격증·**공고 분석·자소서·대화 이력**을 모든 턴에 반영 |
 | 답변 제출 | 60초 후 자동 제출 | 녹음 후 "다음 질문" 버튼으로 제출 |
@@ -326,12 +320,12 @@ sequenceDiagram
 | 오디오 제공 | S3 공개 URL | **Presigned URL** (24시간) |
 | API 호출 | `NEXT_PUBLIC_API_URL` 절대 경로 | 상대 경로 (`/api`) |
 | 환경 변수 | 26개 (오타·중복 포함) | **7개** |
-| S3 리전 | `ap-northeast-2` → `eu-west-2` (둘 다 오진) | `ap-southeast-2` (실제 버킷 위치) |
+| S3 리전<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | `ap-northeast-2` → `eu-west-2` (둘 다 오진) | `ap-southeast-2` (실제 버킷 위치) |
 | UI | 다크 모드 → 라이트 테마(blue-600) | 모던 SaaS (Zinc, Inter, 글래스모피즘 헤더) |
 
 ### 주요 설정값
 
-| 항목 | 값 |
+| 항목 | 값|
 | --- | --- |
 | 면접 질문 수 / 답변 시간 | 5개 / 60초 |
 | GPT-4o temperature | 공고 분석 0.3 · 자소서·질문·피드백 0.7 |
@@ -350,7 +344,7 @@ sequenceDiagram
 - **Vercel 3개 환경**: Production · Preview · Development 환경별로 환경 변수를 설정(`AWS_REGION` 등). Preview 도메인은 CORS 허용 목록에 정규식으로 등록
 - **`vercel.json`**: `pages/api/**` 함수의 `maxDuration` 60초
 - **재배포**: 환경 변수 변경이나 빌드 캐시 문제 시 `vercel --prod --force`로 강제 재배포
-- **운영 스크립트**: 개발 중에는 Vercel CLI를 호출하는 PowerShell 스크립트로 배포, 환경 변수 정리, 프로덕션 마이그레이션, 프로덕션 API 점검을 수행. 일회성 작업이라 포트폴리오 정리 때 삭제했고 기록은 문서에 남아 있음
+- **운영 스크립트**: 개발 중에는 Vercel CLI를 호출하는 PowerShell 스크립트로 배포, 환경 변수 정리, 프로덕션 마이그레이션, 프로덕션 API 점검을 수행
 - **DB**: Vercel Storage로 연결한 Neon PostgreSQL. 스키마 변경은 [안전한 스키마 변경](#안전한-스키마-변경) 절차로 반영
 - 📄 [DEPLOYMENT.md](docs/guides/DEPLOYMENT.md) · [ENVIRONMENT_VARIABLES.md](docs/guides/ENVIRONMENT_VARIABLES.md)
 
@@ -434,13 +428,13 @@ npm run dev                   # http://localhost:3000
 
 > `db:migrate:feedback`, `db:verify:schema`는 `.env`를 자동으로 읽지 않습니다. 예: `DATABASE_URL=... npm run db:verify:schema`
 
-| 환경 변수 | 설명 |
+| 환경 변수| 설명 |
 | --- | --- |
 | `DATABASE_URL` | PostgreSQL 연결 문자열 |
 | `AWS_REGION` / `S3_BUCKET_NAME` | S3 버킷 리전 / 이름 |
 | `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` | S3 접근용 IAM 자격 증명 |
 | `OPENAI_API_KEY` | OpenAI API 키 |
-| `JWT_SECRET` | JWT 서명 키 (필수, 미설정 시 인증 실패) |
+| `JWT_SECRET`<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | JWT 서명 키 (필수, 미설정 시 인증 실패) |
 
 배포 절차는 [DEPLOYMENT.md](docs/guides/DEPLOYMENT.md)를 참고하세요.
 
