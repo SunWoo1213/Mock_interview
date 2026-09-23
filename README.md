@@ -15,7 +15,7 @@
 | 항목| 내용 |
 | --- | --- |
 | 프로젝트명 | AI 모의 면접 & 자기소개서 피드백 서비스 |
-| 개발 기간 | 2024.09 ~ 2024.11 (저장소의 커밋 · 문서 날짜는 이후 재업로드 시점) |
+| 개발 기간 | 2025.09 ~ 2025.12 (저장소의 커밋 · 문서 날짜는 이후 재업로드 시점) |
 | 참여 인원 | 1인 |
 | 나의 역할<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | 전체 — 기획, 화면, API Routes 20개, PostgreSQL 테이블 7개, S3 · Vercel 배포 |
 
