@@ -398,7 +398,7 @@ Origin의 Preview 도메인은 원문 기록에 자리표시자로 적혀 있습
   ```
 
 - Preview 주소는 배포마다 바뀌어 환경변수에 고정 값을 넣어 둘 수 없습니다. Vercel 시스템 변수 `VERCEL_URL`로 주소를 조립하는 방법도 있지만, 화면과 API가 같은 앱이라 상대 경로가 더 단순했습니다. 상대 경로로 부르면 각 배포가 자기 도메인의 API를 호출하므로 환경이 몇 개든 설정할 것이 없습니다. 화면과 API를 한 Next.js 앱에서 함께 배포하기 때문에 가능한 방법이고, API를 다른 도메인에 따로 둔다면 이 변수가 다시 필요합니다.
-- Production API에 Preview 출처를 허용해도 에러는 사라지지만, 그러면 Preview 화면이 자기 배포의 API 대신 Production API를 계속 부르게 됩니다. 화면과 API가 같은 출처가 되면 브라우저는 CORS 검사를 하지 않습니다. 그 밖의 출처를 위해 서버의 `withCors` 래퍼에 허용 목록(localhost · Production 도메인 · Preview 도메인 패턴)을 두었습니다. 허용된 Origin에만 `Access-Control-Allow-Origin`을 돌려주고(개발 환경은 모두 허용), `OPTIONS` preflight에는 바로 응답합니다.
+- Production API에 Preview 출처를 허용해도 에러는 사라지지만, 그러면 Preview 화면이 자기 배포의 API 대신 Production API를 계속 부르게 됩니다. 화면과 API가 같은 출처가 되면 브라우저는 CORS 검사를 하지 않습니다. 그 밖의 출처를 위해 서버의 `withCors` 래퍼에 허용 목록(localhost · Production 도메인)을 두었습니다. 처음에는 Preview 도메인 패턴(`/https:\/\/ai-service2-6-.*\.vercel\.app$/`)도 넣었지만, 같은 접두사로 이름을 지은 다른 사람의 Vercel 프로젝트까지 통과할 만큼 넓었습니다. 상대 경로로 바꾼 뒤에는 Preview 화면이 자기 배포의 API를 부르므로 필요 없어져 지웠습니다. 허용된 Origin에만 `Access-Control-Allow-Origin`을 돌려주고(개발 환경은 모두 허용), `OPTIONS` preflight에는 바로 응답합니다.
 
 **테스트**
 

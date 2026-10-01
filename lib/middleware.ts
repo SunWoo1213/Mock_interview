@@ -18,19 +18,14 @@ export function withCors(
     // CORS 헤더 설정
     const origin = req.headers.origin || '*';
     
-    // Vercel 도메인 또는 로컬호스트만 허용
+    // Production 도메인과 로컬호스트만 허용한다.
+    // Preview 배포는 화면이 API를 상대 경로(/api)로 부르므로 같은 출처라 CORS 허용이 필요 없다.
     const allowedOrigins = [
       'http://localhost:3000',
       'https://ai-service2-6.vercel.app',
-      /https:\/\/ai-service2-6-.*\.vercel\.app$/, // Vercel preview 배포
     ];
 
-    const isAllowed = allowedOrigins.some(allowed => {
-      if (typeof allowed === 'string') {
-        return origin === allowed;
-      }
-      return allowed.test(origin);
-    });
+    const isAllowed = allowedOrigins.includes(origin);
 
     if (isAllowed || process.env.NODE_ENV === 'development') {
       res.setHeader('Access-Control-Allow-Origin', origin);
